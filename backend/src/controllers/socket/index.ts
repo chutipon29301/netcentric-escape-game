@@ -1,3 +1,5 @@
+import { WaitingRoomSocket } from "./waitingRoom";
+
 export class Sockets {
 
     public static getInstance(): Sockets {
@@ -12,7 +14,7 @@ export class Sockets {
     private constructor() { }
 
     public init() {
-        // TODO: Initialize socket
+        WaitingRoomSocket.getInstance().init();
     }
 
 }
