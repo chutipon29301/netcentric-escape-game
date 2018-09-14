@@ -4,7 +4,20 @@ services:
   server:
     env_file: docker.dev.env
     build: backend/
+    restart: always
     volumes: 
       - ./backend:/backend
     ports: 
       - "3000:3000"
+    depends_on: 
+      - postgres
+    environment: 
+      DATABASE_URL: postgres://escape@postgres/escape
+  postgres:
+    image: postgres:9.6.2-alpine
+    restart: always
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: escape
+      POSTGRES_DB: escape
