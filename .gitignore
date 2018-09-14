@@ -1,1 +1,9 @@
+# Editor data
 .vscode
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Environment vairable
+docker.dev.env

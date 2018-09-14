@@ -2,6 +2,7 @@ version: "3.6"
 
 services: 
   server:
+    env_file: docker.dev.env
     build: backend/
     volumes: 
       - ./backend:/backend
