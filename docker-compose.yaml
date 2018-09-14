@@ -1,0 +1,9 @@
+version: "3.6"
+
+services: 
+  server:
+    build: backend/
+    volumes: 
+      - ./backend:/backend
+    ports: 
+      - "3000:3000"
