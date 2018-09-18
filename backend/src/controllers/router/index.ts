@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { Timer } from "../GameRunner/timer";
+import { GameMap } from "../GameRunner/maps";
 
 export const router = Router();
 
@@ -10,3 +12,12 @@ router.get(
         });
     },
 );
+router.get("/timer/:count",(req,res)=>{
+    res.json({
+        msg: Timer.startCountdown(req.params.count),
+    })
+})
+router.get("/maping/:x/:y/:player",(req,res)=>{
+    let game = new GameMap(+req.params.x,+req.params.y,+req.params.player);
+    res.sendStatus(200);
+})
