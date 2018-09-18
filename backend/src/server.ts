@@ -1,8 +1,13 @@
 import { createServer } from "http";
 import app from "./app";
 import { Sockets } from "./controllers/socket";
+import { initDatabase } from "./sequelize";
 import { SocketGenerator } from "./socket";
 import logger from "./util/logger";
+
+initDatabase().then((_) => {
+    logger.info(`Database initialize`);
+});
 
 export const server = createServer(app);
 

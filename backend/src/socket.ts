@@ -1,5 +1,13 @@
-import { IncomingMessage, Server } from "http";
-import WebSocket from "ws";
+import { Server } from "http";
+import { Observable } from "rxjs";
+import WebSocket, { ServerOptions } from "ws";
+import { ISocketHandler } from "./type/socket";
+
+export interface ISocket {
+    webSocketServer: WebSocket.Server;
+    socket: WebSocket;
+    error?: Error;
+}
 
 export class SocketGenerator {
     public static getInstance(): SocketGenerator {
@@ -19,35 +27,38 @@ export class SocketGenerator {
         this.server = server;
     }
 
-    public getSocket(): WebSocket.Server {
-        return new WebSocket.Server({ server: this.server });
+    public getSocket(): Observable<ISocket> {
+        return this.createSocket({ server: this.server });
     }
 
-    public getSocketWithPath(path: string): WebSocket.Server {
-        return new WebSocket.Server({
+    public getSocketWithPath(path: string): Observable<ISocket> {
+        return this.createSocket({
             path,
             server: this.server,
         });
     }
 
-    public getVerifySocket(): WebSocket.Server {
-        return new WebSocket.Server({
-            server: this.server,
-            verifyClient: this.verifyClient,
-        });
+    public setSocketResolver(socket: WebSocket, ...params: [ISocketHandler]) {
+        for (const param of params) {
+            socket.on(param.key, (data: any) => {
+                param.handler(data);
+            });
+        }
     }
 
-    public getVerifySocketWithPath(path: string): WebSocket.Server {
-        return new WebSocket.Server({
-            path,
-            server: this.server,
-            verifyClient: this.verifyClient,
+    private createSocket(options?: ServerOptions, callback?: () => void): Observable<ISocket> {
+        return new Observable((observer) => {
+            const webSocketServer = new WebSocket.Server(options);
+            webSocketServer.on("connection", (socket: WebSocket) => {
+                observer.next({
+                    socket, webSocketServer,
+                });
+            });
+            webSocketServer.on("error", (socket: WebSocket, error: Error) => {
+                observer.error({
+                    error, socket, webSocketServer,
+                });
+            });
         });
-    }
-
-    private verifyClient(
-        info: { origin: string; secure: boolean; req: IncomingMessage },
-    ): boolean {
-        return info.origin === process.env.ALLOW_ORIGIN;
     }
 }
