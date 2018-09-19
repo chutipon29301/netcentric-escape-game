@@ -1,4 +1,4 @@
-import { from, Observable } from "rxjs";
+import { from, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import Player from "../dataModel/player.model";
 import { Crypto } from "./crypto";
@@ -60,5 +60,20 @@ export class User {
                 }
             }),
         );
+    }
+
+    public findUser(
+        token: string,
+    ): Observable<Player | null> {
+        try {
+            const email = JWTAuth.decodeToken(token);
+            if (email) {
+                return from(Player.findOne({ where: { email } }));
+            } else {
+                return of(null);
+            }
+        } catch (error) {
+            return of(null);
+        }
     }
 }

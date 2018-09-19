@@ -6,7 +6,8 @@
     "jsRules": {},
     "rules": {
         "no-console": [true],
-        "max-line-length": [true, {"limit": 140, "ignore-pattern": "^import | //"}]
+        "max-line-length": [true, {"limit": 140, "ignore-pattern": "^import | //"}],
+        "max-classes-per-file": false
     },
     "rulesDirectory": []
 }
