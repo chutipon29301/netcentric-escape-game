@@ -15,6 +15,11 @@ export default class Player extends Model<Player> {
     public password: string;
 
     @Column({
+        allowNull: false,
+    })
+    public nickname: string;
+
+    @Column({
         defaultValue: 0,
     })
     public win: number;
