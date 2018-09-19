@@ -1,13 +1,6 @@
 import { Server } from "http";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import WebSocket, { ServerOptions } from "ws";
-import { ISocketHandler } from "./type/socket";
-
-export interface ISocket {
-    webSocketServer: WebSocket.Server;
-    socket: WebSocket;
-    error?: Error;
-}
 
 export class SocketGenerator {
     public static getInstance(): SocketGenerator {
@@ -27,38 +20,18 @@ export class SocketGenerator {
         this.server = server;
     }
 
-    public getSocket(): Observable<ISocket> {
+    public getSocket(): WebSocket.Server {
         return this.createSocket({ server: this.server });
     }
 
-    public getSocketWithPath(path: string): Observable<ISocket> {
+    public getSocketWithPath(path: string): WebSocket.Server {
         return this.createSocket({
             path,
             server: this.server,
         });
     }
 
-    public setSocketResolver(socket: WebSocket, ...params: [ISocketHandler]) {
-        for (const param of params) {
-            socket.on(param.key, (data: any) => {
-                param.handler(data);
-            });
-        }
-    }
-
-    private createSocket(options?: ServerOptions, callback?: () => void): Observable<ISocket> {
-        return new Observable((observer) => {
-            const webSocketServer = new WebSocket.Server(options);
-            webSocketServer.on("connection", (socket: WebSocket) => {
-                observer.next({
-                    socket, webSocketServer,
-                });
-            });
-            webSocketServer.on("error", (socket: WebSocket, error: Error) => {
-                observer.error({
-                    error, socket, webSocketServer,
-                });
-            });
-        });
+    private createSocket(options?: ServerOptions, callback?: () => void): WebSocket.Server {
+        return new WebSocket.Server(options);
     }
 }
