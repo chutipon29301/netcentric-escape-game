@@ -1,6 +1,6 @@
-import { Observable } from "rxjs";
-import { Server } from "ws";
-import { ISocket, SocketGenerator } from "../../socket";
+import WebSocket, { Server } from "ws";
+import { Socket } from "../../model/Socket";
+import { SocketGenerator } from "../../socket";
 
 export class WaitingRoomSocket {
 
@@ -14,29 +14,15 @@ export class WaitingRoomSocket {
     private static instance: WaitingRoomSocket;
 
     private webSocketServer: Server;
-    private socketObservable: Observable<ISocket>;
 
     private constructor() {
-        this.socketObservable = SocketGenerator.getInstance().getSocketWithPath("/waitingRoom");
+        this.webSocketServer = SocketGenerator.getInstance().getSocketWithPath("/waitingRoom");
     }
 
     public init() {
-        this.socketObservable.subscribe(
-            (socketInstance) => {
-                this.webSocketServer = socketInstance.webSocketServer;
-                SocketGenerator.getInstance().setSocketResolver(socketInstance.socket, {
-                    handler: (data) => {
-                        socketInstance.socket.send(`${data} receive hello`);
-                    },
-                    key: "message",
-                });
-            },
-        );
-    }
+        this.webSocketServer.on("connection", (socket: WebSocket) => {
+            const observableSocket = new Socket<string, string>(socket);
 
-    public broadcast() {
-        this.webSocketServer.clients.forEach((socket) => {
-            socket.send("Hello");
         });
     }
 

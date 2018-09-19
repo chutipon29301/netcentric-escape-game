@@ -39,6 +39,11 @@ export class JWTAuth {
         }
     }
 
+    public static getTokenFromRefreshToken(token: string): IToken {
+        const email = JWTAuth.decodeToken(token);
+        return this.getToken(email);
+    }
+
     public static getToken(email: string): IToken {
         return {
             exp: moment().add(7, "days").toDate(),
