@@ -1,8 +1,5 @@
 import { Router } from "express";
 import { body } from "express-validator/check";
-import { Timer } from "../GameRunner/timer";
-import { GameMap } from "../GameRunner/maps";
-import Player from "../../dataModel/player.model";
 import { JWTAuth } from "../../repositories/JWTAuth";
 import { User } from "../../repositories/User";
 import { completionHandler, errorHandler, validateRequest } from "../util/requestHandler";
@@ -15,22 +12,6 @@ router.get(
         res.json({
             msg: "pong",
         });
-    },
-);
-router.get("/timer/:count",(req,res)=>{
-    res.json({
-        msg: Timer.startCountdown(req.params.count),
-    })
-})
-router.get("/maping/:x/:y/:player",(req,res)=>{
-    let game = new GameMap(+req.params.x,+req.params.y,+req.params.player);
-    res.sendStatus(200);
-})
-
-router.get(
-    "/list",
-    (_, res) => {
-        Player.findAll().then((result) => res.status(200).send({ result })).catch((err) => res.status(500).send({ err }));
     },
 );
 
