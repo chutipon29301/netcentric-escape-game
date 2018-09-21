@@ -1,7 +1,7 @@
 import { from, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import Player from "../dataModel/player.model";
-import { Crypto } from "./crypto";
+import { Crypto } from "./Crypto";
 import { IFullToken, JWTAuth } from "./JWTAuth";
 import { partialOf } from "./util/ObjectMapper";
 
