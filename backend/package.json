@@ -33,6 +33,7 @@
     "moment": "^2.22.2",
     "morgan": "^1.9.0",
     "pg": "^7.4.3",
+    "pug": "^2.0.3",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.2.1",
     "sequelize": "^4.38.1",
