@@ -1,5 +1,5 @@
 /*jshint esversion: 6 */
-const BASE_URL = "ws://localhost:3000";
+const BASE_URL = "ws://localhost/api";
 const waitingRoomConnection = document.getElementById("waitingRoomConnection");
 const waitingRoomConnectionBtn = document.getElementById("waitingRoomConnectionBtn");
 let socket;
@@ -28,11 +28,6 @@ function disconnectFromWaitingRoom() {
     socket.close();
 }
 
-
-
-// Listen for messages
-
-
 function btnClicked() {
-    socket.send("Hello")
+    socket.send("Hello");
 }

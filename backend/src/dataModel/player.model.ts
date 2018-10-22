@@ -1,32 +1,27 @@
-import { Column, Model, Table } from "sequelize-typescript";
+import { AllowNull, Column, Default, Model, PrimaryKey, Table } from "sequelize-typescript";
 
 @Table
 export default class Player extends Model<Player> {
 
-    @Column({
-        allowNull: false,
-        primaryKey: true,
-    })
+    @AllowNull(false)
+    @PrimaryKey
+    @Column
     public email: string;
 
-    @Column({
-        allowNull: false,
-    })
+    @AllowNull(false)
+    @Column
     public password: string;
 
-    @Column({
-        allowNull: false,
-    })
+    @AllowNull(false)
+    @Column
     public nickname: string;
 
-    @Column({
-        defaultValue: 0,
-    })
+    @Default(0)
+    @Column
     public win: number;
 
-    @Column({
-        defaultValue: 0,
-    })
+    @Default(0)
+    @Column
     public lose: number;
 
 }

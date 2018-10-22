@@ -7,17 +7,7 @@ import { partialOf } from "./util/ObjectMapper";
 
 export class User {
 
-    public static getInstance(): User {
-        if (!this.instance) {
-            this.instance = new User();
-        }
-        return this.instance;
-    }
-    private static instance: User;
-
-    private constructor() { }
-
-    public addUser(
+    public static addUser(
         nickname: string,
         email: string,
         password: string,
@@ -28,13 +18,13 @@ export class User {
         return from(player.save());
     }
 
-    public deleteUser(
+    public static deleteUser(
         email: string,
     ): Observable<number> {
         return from(Player.destroy({ where: { email } }));
     }
 
-    public edit(
+    public static edit(
         email: string,
         value: Partial<Player>,
     ): Observable<number> {
@@ -43,7 +33,7 @@ export class User {
         );
     }
 
-    public login(
+    public static login(
         email: string,
         password: string,
     ): Observable<IFullToken> {
@@ -62,7 +52,7 @@ export class User {
         );
     }
 
-    public findUser(
+    public static findUser(
         token: string,
     ): Observable<Player | null> {
         try {

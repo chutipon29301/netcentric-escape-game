@@ -12,6 +12,10 @@ const app = express();
 // Set running port form environment
 app.set("port", 3000);
 
+// Set view engine to pug
+// app.set("views", join(__dirname, "../views"));
+// app.set("view engine", "pug");
+
 // Static file
 app.use(express.static(join(__dirname, "../public")));
 app.use("/debug", express.static(join(__dirname, "../debug")));
@@ -40,7 +44,7 @@ app.use(
 app.use((req, res, next) => {
     // Allow access from other domain
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PATCH,DELETE");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PATCH, DELETE");
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept, authorization",

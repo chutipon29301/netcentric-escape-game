@@ -1,5 +1,10 @@
-import WebSocket, { Server } from "ws";
-import { Socket } from "../../model/Socket";
+import { forkJoin, of } from "rxjs";
+import { flatMap } from "rxjs/operators";
+import WebSocket from "ws";
+import { WaitingRoomMessage, WaitingRoomType } from "../../model/waitingRoom/WaitingRoomMessage";
+import { WaitingRoomSocket as Socket } from "../../model/waitingRoom/WaitingRoomSocket";
+import { WaitingRoomSocketArray } from "../../model/waitingRoom/WaitingRoomSocketArray";
+import { User } from "../../repositories/User";
 import { SocketGenerator } from "../../socket";
 
 export class WaitingRoomSocket {
@@ -13,16 +18,39 @@ export class WaitingRoomSocket {
 
     private static instance: WaitingRoomSocket;
 
-    private webSocketServer: Server;
-
-    private constructor() {
-        this.webSocketServer = SocketGenerator.getInstance().getSocketWithPath("/waitingRoom");
-    }
+    private webSocketServer = SocketGenerator.getInstance().getSocketWithPath("/waitingRoom");
+    private sockets = new WaitingRoomSocketArray();
 
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket) => {
-            const observableSocket = new Socket<string, string>(socket);
+            const observableSocket = new Socket(socket);
+            this.sockets.push(observableSocket);
         });
     }
 
+    public listen(socket: Socket) {
+        socket.data().pipe(
+            flatMap((message) => {
+                if (message.type === WaitingRoomType.register || message.type === WaitingRoomType.play) {
+                    throw new Error("Wrong waitingRoom message type");
+                }
+                return forkJoin([
+                    User.findUser(message.getToken()),
+                    of(message.getToken()),
+                ]);
+            }),
+        ).subscribe(
+            ([player, token]) => {
+                socket.registerWith(token);
+                this.sockets.broadcast(new WaitingRoomMessage(
+                    WaitingRoomType.update, {
+                        name: player.nickname,
+                        token,
+                    },
+                ));
+            },
+            (error) => this.sockets.delete(socket),
+            () => this.sockets.delete(socket),
+        );
+    }
 }

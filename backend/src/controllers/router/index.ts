@@ -3,11 +3,8 @@ import { body } from "express-validator/check";
 import { JWTAuth } from "../../repositories/JWTAuth";
 import { User } from "../../repositories/User";
 import { completionHandler, errorHandler, validateRequest } from "../util/requestHandler";
-import { router as debug } from "./debug";
 
 export const router = Router();
-
-router.use("/debug", debug);
 
 router.get(
     "/ping",
