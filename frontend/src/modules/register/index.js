@@ -7,7 +7,9 @@ import { withRouter } from "react-router-dom";
 @withRouter
 @observer
 class Register extends Component {
-  
+  handleSubmit() {
+    this.props.routing.push("/login");
+  }
   render() {
     return (
       <div className="register">
@@ -51,6 +53,7 @@ class Register extends Component {
                     <button
                       className="btn btn-lg btn-primary btn-block text-uppercase"
                       type="submit"
+                      onClick={()=>this.handleSubmit()}
                     >
                       SUBMIT
                     </button>
