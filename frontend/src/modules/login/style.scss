@@ -3,7 +3,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 100px;
+
+  position: relative;
+  width: 100%;
+  padding-top: 100px;
+  padding-bottom: 100px;
   background: url("https://i.pinimg.com/originals/4f/6d/05/4f6d052bb1b26150115888ea06d4c106.jpg");
   background-position: center;
   background-repeat: no-repeat;
