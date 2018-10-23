@@ -11,11 +11,11 @@ services:
       - postgres
     environment: 
       DATABASE_URL: postgres://escape@postgres/escape
-  frontend:
-    build: frontend/netcentric-escape-game
-    restart: always
-    volumes: 
-      - ./frontend/netcentric-escape-game:/frontend
+  # frontend:
+  #   build: frontend/netcentric-escape-game
+  #   restart: always
+  #   volumes: 
+  #     - ./frontend/netcentric-escape-game:/frontend
   postgres:
     image: postgres:9.6.2-alpine
     restart: always
@@ -26,12 +26,13 @@ services:
       POSTGRES_DB: escape
   nginx:
     image: nginx
+    restart: always
     ports: 
       - "80:80"
       - "443:443"
     depends_on: 
       - api
-      - frontend
+      # - frontend
     volumes: 
       - ./config/nginx.conf:/etc/nginx/nginx.conf
       - ./config/sites-enabled/server.conf:/etc/nginx/sites-enabled/server.conf

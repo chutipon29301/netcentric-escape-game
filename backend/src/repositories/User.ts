@@ -1,6 +1,7 @@
 import { from, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import Player from "../dataModel/player.model";
+import { PlayerSocket } from "../controllers/socket/player";
+import Player from "../models/Player.model";
 import { Crypto } from "./Crypto";
 import { IFullToken, JWTAuth } from "./JWTAuth";
 import { partialOf } from "./util/ObjectMapper";
@@ -31,6 +32,11 @@ export class User {
         return from(Player.update(partialOf<Player>(value), { where: { email } })).pipe(
             map((result) => result[0]),
         );
+    }
+
+    public static list(
+    ): Observable<Player[]> {
+        return from(Player.findAll());
     }
 
     public static login(
@@ -65,5 +71,9 @@ export class User {
         } catch (error) {
             return of(null);
         }
+    }
+
+    private static updateUserList() {
+        PlayerSocket.getInstance().updatePlayer(this.list());
     }
 }

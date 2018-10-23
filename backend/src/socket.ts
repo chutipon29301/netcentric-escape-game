@@ -1,6 +1,11 @@
-import { Server } from "http";
-import { Observable, of } from "rxjs";
+import { IncomingMessage, Server } from "http";
 import WebSocket, { ServerOptions } from "ws";
+
+interface IInfo {
+    origin: string;
+    req: IncomingMessage;
+    secure: boolean;
+}
 
 export class SocketGenerator {
     public static getInstance(): SocketGenerator {
@@ -24,14 +29,15 @@ export class SocketGenerator {
         return this.createSocket({ server: this.server });
     }
 
-    public getSocketWithPath(path: string): WebSocket.Server {
+    public getSocketWithPath(path: string, verifyClient?: (info: IInfo) => boolean): WebSocket.Server {
         return this.createSocket({
             path,
             server: this.server,
+            verifyClient,
         });
     }
 
     private createSocket(options?: ServerOptions, callback?: () => void): WebSocket.Server {
-        return new WebSocket.Server(options);
+        return new WebSocket.Server(options, callback);
     }
 }

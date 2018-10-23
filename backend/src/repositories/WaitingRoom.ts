@@ -1,8 +1,8 @@
 import _ from "lodash";
 import { Observable } from "rxjs";
 import { first, flatMap, map } from "rxjs/operators";
-import Player from "../dataModel/player.model";
 import { Socket } from "../model/Socket";
+import Player from "../models/Player.model";
 import { IWaitingRoomRequest, IWaitingRoomResponse, IWaitingRoomUser } from "../type/waitingRoom";
 import { User } from "./User";
 
@@ -72,7 +72,7 @@ class WaitingUser {
             first(),
             flatMap((data) => {
                 token = data.token;
-                return User.getInstance().findUser(data.token);
+                return User.findUser(data.token);
             }),
             map((user) => new WaitingUser(user, socket, token)),
         );

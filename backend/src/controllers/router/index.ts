@@ -15,6 +15,16 @@ router.get(
     },
 );
 
+router.get(
+    "/listUser",
+    (_, res) => {
+        User.list().subscribe(
+            (player) => res.status(200).send({player}),
+            errorHandler(res),
+        );
+    },
+);
+
 router.post(
     "/register",
     body("nickname").isString(),
@@ -57,5 +67,14 @@ router.post(
         } catch (error) {
             res.status(401).send(error);
         }
+    },
+);
+
+router.delete(
+    "/user",
+    body("email").isEmail(),
+    validateRequest,
+    (req, res) => {
+        User.deleteUser(req.body.email).subscribe(completionHandler(res));
     },
 );

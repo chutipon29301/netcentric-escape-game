@@ -9,6 +9,7 @@ export enum WaitingRoomType {
     update = "update",
     request = "request",
 }
+
 export class WaitingRoomMessage {
 
     constructor(public type: WaitingRoomType = WaitingRoomType.update, public value: string | IWaitingRoomUserMessage = "") { }
