@@ -12,7 +12,7 @@ export enum WaitingRoomType {
 
 export class WaitingRoomMessage {
 
-    constructor(public type: WaitingRoomType = WaitingRoomType.update, public value: string | IWaitingRoomUserMessage = "") { }
+    constructor(public type: WaitingRoomType = WaitingRoomType.update, public value: string | IWaitingRoomUserMessage[] = "") { }
 
     public getToken(): string {
         if (this.type === WaitingRoomType.register || this.type === WaitingRoomType.play) {

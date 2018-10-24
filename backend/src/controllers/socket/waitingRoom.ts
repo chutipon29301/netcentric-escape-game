@@ -24,6 +24,7 @@ export class WaitingRoomSocket {
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket) => {
             const observableSocket = new Socket(socket);
+            this.listen(observableSocket);
             this.sockets.push(observableSocket);
         });
     }
@@ -31,26 +32,26 @@ export class WaitingRoomSocket {
     public listen(socket: Socket) {
         socket.data().pipe(
             flatMap((message) => {
-                if (message.type === WaitingRoomType.register || message.type === WaitingRoomType.play) {
+                message = new WaitingRoomMessage(message.type, message.value);
+                if (message.type !== WaitingRoomType.register.toString() && message.type !== WaitingRoomType.play.toString()) {
                     throw new Error("Wrong waitingRoom message type");
                 }
-                return forkJoin([
-                    User.findUser(message.getToken()),
-                    of(message.getToken()),
-                ]);
+                if (message.type === WaitingRoomType.register) {
+                    socket.registerWith(message.getToken());
+                }
+                return this.sockets.broadcastRegisterUser();
             }),
         ).subscribe(
-            ([player, token]) => {
-                socket.registerWith(token);
-                this.sockets.broadcast(new WaitingRoomMessage(
-                    WaitingRoomType.update, {
-                        name: player.nickname,
-                        token,
-                    },
-                ));
+            // tslint:disable-next-line:no-empty
+            () => { },
+            (error) => {
+                this.sockets.delete(socket);
             },
-            (error) => this.sockets.delete(socket),
             () => this.sockets.delete(socket),
         );
+    }
+
+    public remove(token: string) {
+        this.sockets.deleteUserWith(token);
     }
 }
