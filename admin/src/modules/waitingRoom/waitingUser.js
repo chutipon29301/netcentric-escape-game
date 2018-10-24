@@ -1,6 +1,8 @@
 import React from 'react'
 import Axios from '../../axiosConfig'
 import {BASE_URL} from '../../env'
+import TokenStore from './store'
+import {autorun} from 'mobx'
 
 class WaitingUser extends React.Component {
     constructor(props) {
@@ -18,6 +20,8 @@ class WaitingUser extends React.Component {
             url: '/user',
             data: user
         }).then((response) => {});
+
+        console.log(TokenStore.token)
     }
 
     handleSubmit(event) {
@@ -25,21 +29,14 @@ class WaitingUser extends React.Component {
     }
 
     componentDidMount() {
-        let socket = new WebSocket(`${BASE_URL}/player`);
-
-        socket.addEventListener("message", (event) => {
-            let tableData = [];
-            try{
-                tableData = JSON.parse(event.data);
-                this.setState({ tableData  });
-            }catch(error){
-
-            }
+        let socket = new WebSocket(`${BASE_URL}/waitingRoom`);
+        socket.addEventListener('open', function (event) {
+            autorun(() => {
+                socket.send(JSON.stringify({type:"register", value:TokenStore.token}));
+                console.log(JSON.stringify({type:"register", value:TokenStore.token}));
+            });
         });
-
-        socket.addEventListener("error",(error) => {
-            alert(error);
-        });
+        
     }
 
 

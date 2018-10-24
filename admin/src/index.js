@@ -4,6 +4,7 @@ import { configure } from 'mobx';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
 import home from 'modules/home/store';
+import TokenStore from 'modules/waitingRoom/store'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
@@ -14,6 +15,7 @@ const browserHistory = createBrowserHistory();
 export const routingStore = new RouterStore();
 const history = syncHistoryWithStore(browserHistory, routingStore);
 const stores = {
+	TokenStore,
 	home,
 	routing: routingStore
 };
