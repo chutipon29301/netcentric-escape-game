@@ -32,11 +32,21 @@ class WaitingUser extends React.Component {
         let socket = new WebSocket(`${BASE_URL}/waitingRoom`);
         socket.addEventListener('open', function (event) {
             autorun(() => {
-                socket.send(JSON.stringify({type:"register", value:TokenStore.token}));
-                console.log(JSON.stringify({type:"register", value:TokenStore.token}));
+                if(TokenStore.token !== ""){
+                    socket.send(JSON.stringify({type:"register", value: TokenStore.token}));
+                    console.log(JSON.stringify({type:"register", value: TokenStore.token}));
+                }
             });
         });
-        
+        socket.addEventListener('message', function(event) {
+            console.log(event.data);
+        });
+        socket.addEventListener('error', function(error) {
+            alert(error.toString());
+        });
+        socket.addEventListener('close', function() {
+            console.log("Closed");
+        });
     }
 
 
