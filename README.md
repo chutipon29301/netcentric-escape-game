@@ -21,9 +21,13 @@ git clone https://github.com/chutipon29301/netcentric-escape-game.git
 - Create `.env` file at root of this project using variable name from `docker.example.env`
 
 
-- Start project with the following command
+- Start project in watch mode with the following command
 ```sh
 docker-compose up
+```
+- Start project with the following command
+```sh
+docker-compose -f docker-compose.dev.yml up
 ```
 
 ## Deployment
