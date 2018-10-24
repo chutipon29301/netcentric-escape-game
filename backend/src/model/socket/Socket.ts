@@ -8,7 +8,11 @@ export class Socket<Send, Receive> {
     public data(): Observable<Receive> {
         return new Observable<Receive>((observer) => {
             this.socket.on("message", (data: string) => {
-                observer.next(JSON.parse(data) as Receive);
+                try {
+                    observer.next(JSON.parse(data) as Receive);
+                } catch (error) {
+                    observer.error(error);
+                }
             });
             this.socket.on("close", (_) => {
                 observer.complete();
@@ -21,6 +25,10 @@ export class Socket<Send, Receive> {
 
     public send(data: Send) {
         this.socket.send(JSON.stringify(data));
+    }
+
+    public close(code?: number, data?: string) {
+        this.socket.close(code, data);
     }
 
 }
