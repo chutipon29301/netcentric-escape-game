@@ -1,10 +1,10 @@
 import { Observable } from "rxjs";
 import WebSocket from "ws";
-import { IPlayerMessage } from "../../model/playerSocket/PlayerMessage";
-import { PlayerSocket as Socket } from "../../model/playerSocket/PlayerSocket";
+import { IPlayerMessage } from "../../model/player/PlayerMessage";
+import { PlayerSocket as Socket } from "../../model/player/PlayerSocket";
+import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import Player from "../../models/Player.model";
 import { User } from "../../repositories/User";
-import { SocketGenerator } from "../../socket";
 
 export class PlayerSocket {
     public static getInstance(): PlayerSocket {
@@ -16,31 +16,21 @@ export class PlayerSocket {
 
     private static instance: PlayerSocket;
 
-    private webSocketServer = SocketGenerator.getInstance().getSocketWithPath("/player");
+    private webSocketServer = SocketGenerator.getInstance().createSocket("/player");
 
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket) => {
             const observableSocket = new Socket(socket);
-            User.list().subscribe(
-                (players) => observableSocket.send(this.mapPlayerMessage(players)),
+            Player.listPlayers().subscribe(
+                (players) => observableSocket.send(players),
             );
         });
     }
 
-    public updatePlayer(users: Observable<Player[]>) {
+    public updatePlayer(users: Observable<IPlayerMessage[]>) {
         users.subscribe(
-            (players) => this.webSocketServer.clients.forEach((client) => client.send(this.mapPlayerMessage(players))),
+            (players) => this.webSocketServer.clients.forEach((client) => client.send(players)),
         );
     }
 
-    private mapPlayerMessage(players: Player[]): IPlayerMessage[] {
-        return players.map((player) => {
-            return {
-                email: player.email,
-                lose: player.lose,
-                nickname: player.nickname,
-                win: player.win,
-            };
-        });
-    }
 }

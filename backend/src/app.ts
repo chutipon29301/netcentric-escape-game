@@ -12,10 +12,6 @@ const app = express();
 // Set running port form environment
 app.set("port", 3000);
 
-// Set view engine to pug
-// app.set("views", join(__dirname, "../views"));
-// app.set("view engine", "pug");
-
 // Static file
 app.use(express.static(join(__dirname, "../public")));
 app.use("/debug", express.static(join(__dirname, "../debug")));
