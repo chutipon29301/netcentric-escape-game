@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 import WebSocket from "ws";
-import { IPlayerMessage } from "../../model/playerSocket/PlayerMessage";
-import { PlayerSocket as Socket } from "../../model/playerSocket/PlayerSocket";
+import { IPlayerMessage } from "../../model/player/PlayerMessage";
+import { PlayerSocket as Socket } from "../../model/player/PlayerSocket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import Player from "../../models/Player.model";
 import { User } from "../../repositories/User";
