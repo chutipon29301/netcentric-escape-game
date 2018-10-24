@@ -1,0 +1,27 @@
+{
+	"parser": "babel-eslint",
+	"env": {
+		"es6": true,
+		"browser": true,
+		"node": true,
+		"jest": true
+	},
+	"extends": ["eslint:recommended", "plugin:react/recommended"],
+	"parserOptions": {
+		"ecmaFeatures": {
+			"experimentalObjectRestSpread": true,
+			"jsx": true
+		},
+		"sourceType": "module"
+	},
+	"plugins": ["react"],
+	"rules": {
+		"react/display-name": 0,
+		"react/prop-types": 0,
+		"no-console": 0,
+		"no-unused-vars": "warn",
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"quotes": ["error", "single"],
+		"semi": ["error", "always"]
+	}
+}
