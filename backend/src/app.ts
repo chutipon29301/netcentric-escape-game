@@ -14,7 +14,6 @@ app.set("port", 3000);
 
 // Static file
 app.use(express.static(join(__dirname, "../public")));
-app.use("/debug", express.static(join(__dirname, "../debug")));
 
 // Middleware for secure server
 app.use(helmet());
