@@ -6,7 +6,6 @@
 Thumbs.db
 
 # Environment vairable
-docker.dev.env
 .env
 
 # Database
