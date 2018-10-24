@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Observable } from "rxjs";
 import { first, flatMap, map } from "rxjs/operators";
-import { Socket } from "../model/Socket";
+import { Socket } from "../model/socket/Socket";
 import Player from "../models/Player.model";
 import { IWaitingRoomRequest, IWaitingRoomResponse, IWaitingRoomUser } from "../type/waitingRoom";
 import { User } from "./User";

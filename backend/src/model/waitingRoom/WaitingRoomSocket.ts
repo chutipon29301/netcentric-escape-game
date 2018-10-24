@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { Socket } from "../Socket";
+import { Socket } from "../socket/Socket";
 import { WaitingRoomMessage } from "./WaitingRoomMessage";
 
 export class WaitingRoomSocket extends Socket<WaitingRoomMessage, WaitingRoomMessage> {

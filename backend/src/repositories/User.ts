@@ -73,14 +73,10 @@ export class User {
         }
     }
 
-    private static updateUserList() {
-        PlayerSocket.getInstance().updatePlayer(Player.listPlayers());
-    }
-
     private static notifySocketFrom<T>(input: ObservableInput<T>, scheduler?: SchedulerLike): Observable<T> {
         return from(input, scheduler).pipe(
             map((result) => {
-                this.updateUserList();
+                PlayerSocket.getInstance().updatePlayer(Player.listPlayers());
                 return result;
             }),
         );

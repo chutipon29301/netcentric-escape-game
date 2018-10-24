@@ -36,6 +36,7 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
     public delete(socket: WaitingRoomSocket) {
         const index = this.indexOf(socket);
         this.deleteAtIndex(index);
+        socket.close();
         return index;
     }
 
@@ -47,10 +48,5 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
         if (index > -1) {
             this.splice(index, 1);
         }
-        // this.listRegisteredUser().pipe(
-        //     map((users) => users.map((user) => ({
-        //         name: user.
-        //     })))
-        // )
     }
 }
