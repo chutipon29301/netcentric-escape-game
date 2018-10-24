@@ -9,7 +9,7 @@ export class SocketHandler extends WebSocket.Server {
     }
 
     public getPath(): string {
-        return this.path;
+        return this.handlerPath;
     }
 
     public customHandleUpgrade(request: IncomingMessage, socket: Socket, head: Buffer) {

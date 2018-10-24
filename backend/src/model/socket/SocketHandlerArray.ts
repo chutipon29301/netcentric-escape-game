@@ -6,6 +6,7 @@ export class SocketHandlerArray extends Array<SocketHandler> {
         for (const socketHandler of this) {
             if (pathName === socketHandler.getPath()) {
                 socketHandler.customHandleUpgrade(request, socket, head);
+                return;
             }
         }
         socket.destroy();
