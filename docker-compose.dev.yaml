@@ -2,7 +2,9 @@ version: "3.6"
 
 services: 
   api:
-    build: backend/
+    build: 
+      context: ./backend
+      dockerfile: build.Dockerfile
     restart: always
     volumes: 
       - ./backend:/backend

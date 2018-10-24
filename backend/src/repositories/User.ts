@@ -1,6 +1,7 @@
-import { from, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
+import { from, Observable, ObservableInput, of, SchedulerLike } from "rxjs";
+import { flatMap, map } from "rxjs/operators";
 import { PlayerSocket } from "../controllers/socket/player";
+import { IPlayerMessage } from "../model/player/PlayerMessage";
 import Player from "../models/Player.model";
 import { Crypto } from "./Crypto";
 import { IFullToken, JWTAuth } from "./JWTAuth";
@@ -16,27 +17,26 @@ export class User {
         const player = new Player({
             email, nickname, password: Crypto.encrypt(password),
         });
-        return from(player.save());
+        return this.notifySocketFrom(player.save());
     }
 
     public static deleteUser(
         email: string,
     ): Observable<number> {
-        return from(Player.destroy({ where: { email } }));
+        return this.notifySocketFrom(Player.destroy({ where: { email } }));
     }
 
     public static edit(
         email: string,
         value: Partial<Player>,
     ): Observable<number> {
-        return from(Player.update(partialOf<Player>(value), { where: { email } })).pipe(
+        return this.notifySocketFrom(Player.update(partialOf<Player>(value), { where: { email } })).pipe(
             map((result) => result[0]),
         );
     }
 
-    public static list(
-    ): Observable<Player[]> {
-        return from(Player.findAll());
+    public static list(): Observable<IPlayerMessage[]> {
+        return Player.listPlayers();
     }
 
     public static login(
@@ -73,7 +73,14 @@ export class User {
         }
     }
 
-    private static updateUserList() {
-        PlayerSocket.getInstance().updatePlayer(this.list());
+    private static notifySocketFrom<T>(input: ObservableInput<T>, scheduler?: SchedulerLike): Observable<T> {
+        let response: T;
+        return from(input, scheduler).pipe(
+            flatMap((result) => {
+                response = result;
+                return PlayerSocket.getInstance().updatePlayer(Player.listPlayers());
+            }),
+            map((_) => response),
+        );
     }
 }

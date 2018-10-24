@@ -7,6 +7,7 @@ This repository is a part of the project in Netcentric Architecture (2190472) of
 Install the following tools and program to run the project
 
 - [Docker](https://docs.docker.com/install/)
+- [docker-compose](https://docs.docker.com/compose/install/)
 
 ### Installing
 
@@ -17,12 +18,16 @@ Follow these steps to running in development mode.
 git clone https://github.com/chutipon29301/netcentric-escape-game.git
 ```
 
-- Create `docker.dev.env` file at root of this project using variable name from `docker.example.env`
+- Create `.env` file at root of this project using variable name from `docker.example.env`
 
 
-- Start project with the following command
+- Start project in watch mode with the following command
 ```sh
 docker-compose up
+```
+- Start project with the following command
+```sh
+docker-compose -f docker-compose.dev.yml up
 ```
 
 ## Deployment

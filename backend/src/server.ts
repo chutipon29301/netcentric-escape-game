@@ -1,8 +1,8 @@
 import { createServer } from "http";
 import app from "./app";
 import { Sockets } from "./controllers/socket";
+import { SocketGenerator } from "./model/socket/SocketGenerator";
 import { initDatabase } from "./sequelize";
-import { SocketGenerator } from "./socket";
 import logger from "./util/logger";
 
 initDatabase().then((_) => {
@@ -16,5 +16,5 @@ server.listen(app.get("port"), () => {
     logger.info("  Press CTRL-C to stop\n");
 });
 
-SocketGenerator.getInstance().setServer(server);
-Sockets.getInstance().init();
+SocketGenerator.getInstance().setHttpServer(server);
+Sockets.init();

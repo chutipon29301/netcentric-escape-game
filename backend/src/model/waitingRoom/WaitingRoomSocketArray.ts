@@ -1,7 +1,7 @@
-import { forkJoin, Observable } from "rxjs";
+import { forkJoin, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { User } from "../../repositories/User";
-import { IWaitingRoomUserMessage, WaitingRoomMessage } from "./WaitingRoomMessage";
+import { IWaitingRoomUserMessage, WaitingRoomMessage, WaitingRoomType } from "./WaitingRoomMessage";
 import { WaitingRoomSocket } from "./WaitingRoomSocket";
 
 export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
@@ -14,12 +14,20 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
         return forkJoin(this.map((socket) => {
             return forkJoin([
                 User.findUser(socket.getToken()),
-                socket.getToken(),
+                of(socket.getToken()),
             ]);
         })).pipe(
             map((results) => {
-                return results.map(([player, token]) => ({ name: player.nickname, token }));
+                return results.map(([player, token]) => {
+                    return ({ name: player.nickname, token });
+                });
             }),
+        );
+    }
+
+    public broadcastRegisterUser(): Observable<void> {
+        return this.listRegisteredUser().pipe(
+            map((users) => this.broadcast(new WaitingRoomMessage(WaitingRoomType.update, users))),
         );
     }
 
@@ -36,6 +44,7 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
     public delete(socket: WaitingRoomSocket) {
         const index = this.indexOf(socket);
         this.deleteAtIndex(index);
+        socket.close();
         return index;
     }
 
@@ -44,13 +53,10 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
     }
 
     private deleteAtIndex(index: number) {
+        this[index].close();
         if (index > -1) {
             this.splice(index, 1);
         }
-        // this.listRegisteredUser().pipe(
-        //     map((users) => users.map((user) => ({
-        //         name: user.
-        //     })))
-        // )
+        this.broadcastRegisterUser().subscribe();
     }
 }
