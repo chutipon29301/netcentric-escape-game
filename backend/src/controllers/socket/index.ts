@@ -15,7 +15,7 @@ export class Sockets {
     private constructor() { }
 
     public init() {
-        WaitingRoomSocket.getInstance().init();
+        // WaitingRoomSocket.getInstance().init();
         PlayerSocket.getInstance().init();
     }
 
