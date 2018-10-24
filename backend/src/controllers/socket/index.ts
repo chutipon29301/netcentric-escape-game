@@ -1,3 +1,4 @@
+import { PlayerSocket } from "./player";
 import { WaitingRoomSocket } from "./waitingRoom";
 
 export class Sockets {
@@ -15,6 +16,7 @@ export class Sockets {
 
     public init() {
         WaitingRoomSocket.getInstance().init();
+        PlayerSocket.getInstance().init();
     }
 
 }
