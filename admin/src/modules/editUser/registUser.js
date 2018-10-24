@@ -4,14 +4,21 @@ class RegistUser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-                nickname: '',
-                email: '',
-                password: '',
-            
+            nickname: '',
+            email: '',
+            password: '',
+
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+    static initialState = {
+        nickname: '',
+        email: '',
+        password: '',
+
+    }
+
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
     }
@@ -22,10 +29,11 @@ class RegistUser extends React.Component {
             method: 'post',
             url: '/register',
             data: this.state
-          })
-          .then(function (response) {
-            console.log(response);
-          });
+        })
+            .then(function (response) {
+                console.log(response);
+            });
+        this.setState(this.initialState);
     }
     render() {
 

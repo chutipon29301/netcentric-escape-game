@@ -1,5 +1,6 @@
 import React from 'react'
 import Axios from '../../axiosConfig'
+
 class CurrentUser extends React.Component {
     constructor(props) {
         super(props);
@@ -26,12 +27,6 @@ class CurrentUser extends React.Component {
     }
 
     componentDidMount() {
-        Axios.get('/listUser', {
-            responseType: 'json'
-        }).then(response => {
-            // console.log(response.data);
-            this.setState({ tableData: response.data.player });
-        });
         const BASE_URL = "ws://localhost/api";
         let socket = new WebSocket(`${BASE_URL}/player`);
         socket.addEventListener("open", (event) => {
@@ -39,7 +34,15 @@ class CurrentUser extends React.Component {
         });
 
         socket.addEventListener("message", (event) => {
-            console.log(event.data);
+            let tableData = [];
+            try{
+                tableData = JSON.parse(event.data);
+                this.setState({ tableData  });
+            }catch(error){
+
+            }
+            // console.log(event.data);
+            // console.log(typeof event.data);
         })
         socket.addEventListener("error",(error) => {
             console.log(error);
