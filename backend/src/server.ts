@@ -17,4 +17,4 @@ server.listen(app.get("port"), () => {
 });
 
 SocketGenerator.getInstance().setHttpServer(server);
-Sockets.getInstance().init();
+Sockets.init();

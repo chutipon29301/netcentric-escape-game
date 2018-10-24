@@ -21,26 +21,16 @@ export class PlayerSocket {
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket) => {
             const observableSocket = new Socket(socket);
-            User.list().subscribe(
-                (players) => observableSocket.send(this.mapPlayerMessage(players)),
+            Player.listPlayers().subscribe(
+                (players) => observableSocket.send(players),
             );
         });
     }
 
-    public updatePlayer(users: Observable<Player[]>) {
+    public updatePlayer(users: Observable<IPlayerMessage[]>) {
         users.subscribe(
-            (players) => this.webSocketServer.clients.forEach((client) => client.send(this.mapPlayerMessage(players))),
+            (players) => this.webSocketServer.clients.forEach((client) => client.send(players)),
         );
     }
 
-    private mapPlayerMessage(players: Player[]): IPlayerMessage[] {
-        return players.map((player) => {
-            return {
-                email: player.email,
-                lose: player.lose,
-                nickname: player.nickname,
-                win: player.win,
-            };
-        });
-    }
 }

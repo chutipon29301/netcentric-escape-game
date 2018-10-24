@@ -1,7 +1,37 @@
+import { from, Observable, of } from "rxjs";
+import { map } from "rxjs/operators";
 import { AllowNull, Column, Default, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { IPlayerMessage } from "../model/player/PlayerMessage";
+import { JWTAuth } from "../repositories/JWTAuth";
 
 @Table
 export default class Player extends Model<Player> {
+
+    public static listPlayers(): Observable<IPlayerMessage[]> {
+        return from(this.findAll()).pipe(
+            map((players) =>
+                players.map((player) => ({
+                    email: player.email,
+                    lose: player.lose,
+                    nickname: player.nickname,
+                    win: player.win,
+                })),
+            ),
+        );
+    }
+
+    public static findWithToken(token: string): Observable<Player> {
+        try {
+            const email = JWTAuth.decodeToken(token);
+            if (email) {
+                return from(Player.findOne({ where: { email } }));
+            } else {
+                return of(null);
+            }
+        } catch (error) {
+            return of(null);
+        }
+    }
 
     @AllowNull(false)
     @PrimaryKey
