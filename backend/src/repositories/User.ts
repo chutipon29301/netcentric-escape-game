@@ -1,6 +1,7 @@
 import { from, Observable, ObservableInput, of, SchedulerLike } from "rxjs";
 import { map } from "rxjs/operators";
 import { PlayerSocket } from "../controllers/socket/player";
+import { IPlayerMessage } from "../model/player/PlayerMessage";
 import Player from "../models/Player.model";
 import { Crypto } from "./Crypto";
 import { IFullToken, JWTAuth } from "./JWTAuth";
@@ -32,6 +33,10 @@ export class User {
         return this.notifySocketFrom(Player.update(partialOf<Player>(value), { where: { email } })).pipe(
             map((result) => result[0]),
         );
+    }
+
+    public static list(): Observable<IPlayerMessage[]> {
+        return Player.listPlayers();
     }
 
     public static login(
