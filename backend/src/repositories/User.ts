@@ -1,5 +1,5 @@
 import { from, Observable, ObservableInput, of, SchedulerLike } from "rxjs";
-import { map } from "rxjs/operators";
+import { flatMap, map } from "rxjs/operators";
 import { PlayerSocket } from "../controllers/socket/player";
 import { IPlayerMessage } from "../model/player/PlayerMessage";
 import Player from "../models/Player.model";
@@ -74,11 +74,13 @@ export class User {
     }
 
     private static notifySocketFrom<T>(input: ObservableInput<T>, scheduler?: SchedulerLike): Observable<T> {
+        let response: T;
         return from(input, scheduler).pipe(
-            map((result) => {
-                PlayerSocket.getInstance().updatePlayer(Player.listPlayers());
-                return result;
+            flatMap((result) => {
+                response = result;
+                return PlayerSocket.getInstance().updatePlayer(Player.listPlayers());
             }),
+            map((_) => response),
         );
     }
 }
