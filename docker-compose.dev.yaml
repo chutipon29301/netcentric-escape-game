@@ -1,0 +1,36 @@
+version: "3.6"
+
+services: 
+  api:
+    build: 
+      context: ./backend
+      dockerfile: build.Dockerfile
+    restart: always
+    volumes: 
+      - ./backend:/backend
+    depends_on: 
+      - postgres
+    environment: 
+      DATABASE_URL: postgres://escape@postgres/escape
+      NODE_ENV:
+      AES_SECRET:
+      JWT_SECRET:
+  postgres:
+    image: postgres:9.6.2-alpine
+    restart: always
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: escape
+      POSTGRES_DB: escape
+  nginx:
+    image: nginx
+    restart: always
+    ports: 
+      - "80:80"
+      - "443:443"
+    depends_on: 
+      - api
+    volumes: 
+      - ./config/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/sites-enabled/server.conf:/etc/nginx/sites-enabled/server.conf
