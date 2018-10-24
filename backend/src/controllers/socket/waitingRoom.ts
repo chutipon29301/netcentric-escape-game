@@ -1,11 +1,11 @@
 import { forkJoin, of } from "rxjs";
 import { flatMap } from "rxjs/operators";
 import WebSocket from "ws";
+import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import { WaitingRoomMessage, WaitingRoomType } from "../../model/waitingRoom/WaitingRoomMessage";
 import { WaitingRoomSocket as Socket } from "../../model/waitingRoom/WaitingRoomSocket";
 import { WaitingRoomSocketArray } from "../../model/waitingRoom/WaitingRoomSocketArray";
 import { User } from "../../repositories/User";
-import { SocketGenerator } from "../../socket";
 
 export class WaitingRoomSocket {
 
@@ -18,7 +18,7 @@ export class WaitingRoomSocket {
 
     private static instance: WaitingRoomSocket;
 
-    private webSocketServer = SocketGenerator.getInstance().getSocketWithPath("/waitingRoom");
+    private webSocketServer = SocketGenerator.getInstance().createSocket("/waitingRoom");
     private sockets = new WaitingRoomSocketArray();
 
     public init() {

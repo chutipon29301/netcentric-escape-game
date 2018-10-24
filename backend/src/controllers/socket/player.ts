@@ -2,9 +2,9 @@ import { Observable } from "rxjs";
 import WebSocket from "ws";
 import { IPlayerMessage } from "../../model/playerSocket/PlayerMessage";
 import { PlayerSocket as Socket } from "../../model/playerSocket/PlayerSocket";
+import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import Player from "../../models/Player.model";
 import { User } from "../../repositories/User";
-import { SocketGenerator } from "../../socket";
 
 export class PlayerSocket {
     public static getInstance(): PlayerSocket {
@@ -16,7 +16,7 @@ export class PlayerSocket {
 
     private static instance: PlayerSocket;
 
-    private webSocketServer = SocketGenerator.getInstance().getSocketWithPath("/player");
+    private webSocketServer = SocketGenerator.getInstance().createSocket("/player");
 
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket) => {

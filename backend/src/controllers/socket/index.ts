@@ -16,7 +16,7 @@ export class Sockets {
 
     public init() {
         WaitingRoomSocket.getInstance().init();
-        PlayerSocket.getInstance().init();
+        // PlayerSocket.getInstance().init();
     }
 
 }

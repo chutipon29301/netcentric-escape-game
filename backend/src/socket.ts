@@ -25,14 +25,15 @@ export class SocketGenerator {
         this.server = server;
     }
 
-    public getSocket(): WebSocket.Server {
-        return this.createSocket({ server: this.server });
-    }
+    // public getSocket(): WebSocket.Server {
+    //     return this.createSocket({ server: this.server });
+    // }
 
     public getSocketWithPath(path: string, verifyClient?: (info: IInfo) => boolean): WebSocket.Server {
         return this.createSocket({
-            path,
-            server: this.server,
+            // path,
+            // server: this.server,
+            noServer: true,
             verifyClient,
         });
     }
