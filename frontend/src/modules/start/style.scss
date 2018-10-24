@@ -11,11 +11,7 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  //   background: url("../img/bg-pattern.png"), $theme-secondary;
-  //   background: url("../img/bg-pattern.png"),
-  //     -webkit-linear-gradient(to left, $theme-secondary, $theme-tertiary);
-  //   background: url("../img/bg-pattern.png"),
-  //     linear-gradient(to left, $theme-secondary, $theme-tertiary);
+
   .header-content {
     max-width: 500px;
     margin-bottom: 100px;
@@ -84,6 +80,6 @@
     }
     .device-container {
       max-width: 325px;
-    }
+	}
   }
 }

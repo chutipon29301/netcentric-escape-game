@@ -9,8 +9,8 @@ import { withRouter } from "react-router-dom";
 class Start extends Component {
   handleStart() {
     this.props.routing.push("/login");
-  }
-
+  } 
+//  source =>  https://startbootstrap.com/template-overviews/new-age/
   render() {
     return (
       <div className="start">
@@ -18,19 +18,20 @@ class Start extends Component {
           <div className="row h-100">
             <div className="col-lg-7 my-auto">
               <div className="header-content mx-auto">
-                <h1 className="mb-5">
-                  Netcentric Escape Socket Game
-                </h1>
-				<p className="mb-5">
-                  New Age is an web landing page that will help you beautifully
-                  showcase your new mobile web app, or anything else!
+                <h1 className="mb-5">Netcentric Escape Socket Game</h1>
+                <p className="mb-5">
+                  Play the best escape games online! These games might be tricky
+                  sometimes, so be prepared. The player must solve some
+                  difficult puzzles and use them with objects to find a way out
+                  from a different mysterious places. Room escape games are a
+                  sub-genre of adventures and puzzles, usually created as a free
+                  online game.
                 </p>
                 <a
-                  href="#download"
-				  className="btn btn-outline btn-xl js-scroll-trigger"
-				  onClick={()=>this.handleStart()}
+                  className="btn btn-outline btn-xl js-scroll-trigger"
+                  onClick={() => this.handleStart()}
                 >
-                  Start Now for Free!
+                  Start Now
                 </a>
               </div>
             </div>
