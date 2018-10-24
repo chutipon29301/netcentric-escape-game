@@ -44,14 +44,14 @@ class Login extends Component {
                       />
                     </div>
                     <button
-                      className="btn btn-lg btn-primary btn-block text-uppercase"
+                      className="btn btn-lg btn-warning btn-block text-uppercase"
                       type="submit"
                     >
                       Sign in
                     </button>
 
                     <button
-                      className="btn btn-lg btn-primary btn-block text-uppercase fade"
+                      className="btn btn-lg btn-warning btn-block text-uppercase fade"
                       onClick={() => this.handleRegister()}
                     >
                       Register
