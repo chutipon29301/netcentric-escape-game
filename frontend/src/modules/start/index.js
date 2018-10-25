@@ -41,7 +41,7 @@ class Start extends Component {
                   <div className="device">
                     <div className="screen">
                       <img
-                        src="http://breakout.gamemiles.com/content/images/thumbs/0161767_580.jpeg"
+                        src="https://4.bp.blogspot.com/-MmLC2hR8sQw/WKxeqKd_FbI/AAAAAAAGFcU/JTR99uF7cy8aQur18lkjC7yR5AyCSLhDACLcB/s1600/AW381168_12.gif"
                         className="img-fluid"
                         alt=""
                       />
