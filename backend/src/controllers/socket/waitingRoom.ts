@@ -1,11 +1,10 @@
-import { forkJoin, of } from "rxjs";
+import { Observable } from "rxjs";
 import { flatMap } from "rxjs/operators";
 import WebSocket from "ws";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
-import { WaitingRoomMessage, WaitingRoomType } from "../../model/waitingRoom/WaitingRoomMessage";
+import { IWaitingRoomUserMessage, WaitingRoomMessage, WaitingRoomType } from "../../model/waitingRoom/WaitingRoomMessage";
 import { WaitingRoomSocket as Socket } from "../../model/waitingRoom/WaitingRoomSocket";
 import { WaitingRoomSocketArray } from "../../model/waitingRoom/WaitingRoomSocketArray";
-import { User } from "../../repositories/User";
 
 export class WaitingRoomSocket {
 
@@ -21,11 +20,13 @@ export class WaitingRoomSocket {
     private webSocketServer = SocketGenerator.getInstance().createSocket("/waitingRoom");
     private sockets = new WaitingRoomSocketArray();
 
+    private constructor() { }
+
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket) => {
             const observableSocket = new Socket(socket);
             this.listen(observableSocket);
-            this.sockets.push(observableSocket);
+            this.sockets.pushSocket(observableSocket);
         });
     }
 
@@ -53,5 +54,13 @@ export class WaitingRoomSocket {
 
     public remove(token: string) {
         this.sockets.deleteUserWith(token);
+    }
+
+    public listActiveSocket(): Observable<IWaitingRoomUserMessage[]> {
+        return this.sockets.listRegisteredUser();
+    }
+
+    public addUpdateHook(hook: (message: WaitingRoomMessage) => void) {
+        this.sockets.addUpdateHook(hook);
     }
 }

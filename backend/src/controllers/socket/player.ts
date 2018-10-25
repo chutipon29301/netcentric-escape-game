@@ -29,7 +29,7 @@ export class PlayerSocket {
 
     public updatePlayer(users: Observable<IPlayerMessage[]>): Observable<void> {
         return users.pipe(
-            map((players) => this.webSocketServer.clients.forEach((client) => client.send(JSON.stringify(players)))),
+            map((players) => this.webSocketServer.clients.forEach((client) => new Socket(client).send(players))),
         );
     }
 
