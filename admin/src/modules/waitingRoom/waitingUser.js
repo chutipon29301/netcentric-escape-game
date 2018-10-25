@@ -34,13 +34,23 @@ class WaitingUser extends React.Component {
             autorun(() => {
                 if(TokenStore.token !== ""){
                     socket.send(JSON.stringify({type:"register", value: TokenStore.token}));
-                    console.log(JSON.stringify({type:"register", value: TokenStore.token}));
                 }
             });
         });
-        socket.addEventListener('message', function(event) {
-            console.log(event.data);
+        
+        socket.addEventListener("message", (event) => {
+            let tableData = [];
+            try{
+                const {type, value} = JSON.parse(event.data); 
+                if(type==="update"){
+                    tableData = value
+                    this.setState({ tableData });
+                    console.log(tableData)
+                }
+            }catch(error){
+            }               
         });
+
         socket.addEventListener('error', function(error) {
             alert(error.toString());
         });
@@ -58,10 +68,7 @@ class WaitingUser extends React.Component {
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Nickname</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Win</th>
-                            <th scope="col">Lose</th>
-                            <th scope="col">Edit</th>
+                            <th scope="col">Kick</th>
 
                         </tr>
                     </thead>
@@ -70,10 +77,7 @@ class WaitingUser extends React.Component {
                             this.state.tableData.map(function (row, index) {
                                 return <tr key={index} >
                                     <td>{index + 1}</td>
-                                    <td>{row.nickname}</td>
-                                    <td>{row.email}</td>
-                                    <td>{row.win}</td>
-                                    <td>{row.lose}</td>
+                                    <td>{row.name}</td>
                                     <td><button name="delete" onClick={this.deletePost.bind(this, row)} className="btn btn-outline-danger btn-sm remove">Kick</button></td>
                                 </tr>
                             }.bind(this))
