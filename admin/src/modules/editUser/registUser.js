@@ -1,5 +1,5 @@
 import React from 'react'
-import Axios from '../../axiosConfig'
+import Axios from '../axiosConfig'
 class RegistUser extends React.Component {
 
     constructor(props) {

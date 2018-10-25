@@ -1,7 +1,6 @@
 import React from 'react'
 import Axios from '../../axiosConfig'
-import TokenStore from './store'
-
+import TokenStore from '../stores/tokenStore'
 
 class LoginUser extends React.Component {
 
@@ -32,7 +31,6 @@ class LoginUser extends React.Component {
                 password: '',
             });
             TokenStore.setToken(response.data.token);
-
         });
     }
 

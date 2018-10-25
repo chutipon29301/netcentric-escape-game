@@ -1,5 +1,5 @@
 import React from 'react'
-import Axios from '../../axiosConfig'
+import Axios from '../axiosConfig'
 import {BASE_URL} from '../../env'
 
 class CurrentUser extends React.Component {
