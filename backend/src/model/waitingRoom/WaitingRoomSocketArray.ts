@@ -18,9 +18,9 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
             ]);
         })).pipe(
             map((results) => {
-                return results.map(([player, token]) => {
-                    return ({ name: player.nickname, token });
-                });
+                return results.filter(([player]) => {
+                    return player;
+                }).map(([player, token]) => ({ name: player.nickname, token }));
             }),
         );
     }
@@ -33,6 +33,7 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
 
     public pushSocket(socket: WaitingRoomSocket) {
         this.push(socket);
+        this.broadcastRegisterUser().subscribe();
     }
 
     public deleteUserWith(token: string) {

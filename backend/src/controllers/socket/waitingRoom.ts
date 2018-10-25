@@ -25,7 +25,7 @@ export class WaitingRoomSocket {
         this.webSocketServer.on("connection", (socket: WebSocket) => {
             const observableSocket = new Socket(socket);
             this.listen(observableSocket);
-            this.sockets.push(observableSocket);
+            this.sockets.pushSocket(observableSocket);
         });
     }
 
