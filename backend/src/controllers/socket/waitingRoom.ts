@@ -1,11 +1,9 @@
-import { forkJoin, of } from "rxjs";
 import { flatMap } from "rxjs/operators";
 import WebSocket from "ws";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import { WaitingRoomMessage, WaitingRoomType } from "../../model/waitingRoom/WaitingRoomMessage";
 import { WaitingRoomSocket as Socket } from "../../model/waitingRoom/WaitingRoomSocket";
 import { WaitingRoomSocketArray } from "../../model/waitingRoom/WaitingRoomSocketArray";
-import { User } from "../../repositories/User";
 
 export class WaitingRoomSocket {
 
