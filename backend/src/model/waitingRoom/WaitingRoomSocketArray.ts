@@ -6,11 +6,16 @@ import { WaitingRoomSocket } from "./WaitingRoomSocket";
 
 export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
 
+    private updateHook: Array<(message: WaitingRoomMessage) => void> = [];
+
     public broadcast(message: WaitingRoomMessage) {
         this.forEach((socket) => socket.send(message));
     }
 
     public listRegisteredUser(): Observable<IWaitingRoomUserMessage[]> {
+        if (this.length === 0) {
+            return of([]);
+        }
         return forkJoin(this.map((socket) => {
             return forkJoin([
                 User.findUser(socket.getToken()),
@@ -27,7 +32,11 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
 
     public broadcastRegisterUser(): Observable<void> {
         return this.listRegisteredUser().pipe(
-            map((users) => this.broadcast(new WaitingRoomMessage(WaitingRoomType.update, users))),
+            map((users) => {
+                const message = new WaitingRoomMessage(WaitingRoomType.update, users);
+                this.broadcast(message);
+                this.updateHook.forEach((hook) => hook(message));
+            }),
         );
     }
 
@@ -51,6 +60,10 @@ export class WaitingRoomSocketArray extends Array<WaitingRoomSocket> {
 
     public findIndexOfUserWith(token: string) {
         return this.findIndex((waitingRoomSocket) => waitingRoomSocket.getToken() === token);
+    }
+
+    public addUpdateHook(hook: (message: WaitingRoomMessage) => void) {
+        this.updateHook.push(hook);
     }
 
     private deleteAtIndex(index: number) {
