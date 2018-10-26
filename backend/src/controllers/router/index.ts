@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { body } from "express-validator/check";
+import { body, param } from "express-validator/check";
 import { JWTAuth } from "../../repositories/JWTAuth";
 import { User } from "../../repositories/User";
+import { WaitingRoomSocket } from "../socket/waitingRoom";
 import { completionHandler, errorHandler, validateRequest } from "../util/requestHandler";
 
 export const router = Router();
@@ -19,7 +20,7 @@ router.get(
     "/listUser",
     (_, res) => {
         User.list().subscribe(
-            (player) => res.status(200).send({player}),
+            (player) => res.status(200).send({ player }),
             errorHandler(res),
         );
     },
@@ -76,5 +77,15 @@ router.delete(
     validateRequest,
     (req, res) => {
         User.deleteUser(req.body.email).subscribe(completionHandler(res));
+    },
+);
+
+router.delete(
+    "/waitingList/:token",
+    param("token").isString(),
+    validateRequest,
+    (req, res) => {
+        WaitingRoomSocket.getInstance().removePlayerWithToken(req.params.token);
+        res.sendStatus(200);
     },
 );

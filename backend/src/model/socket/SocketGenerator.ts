@@ -1,5 +1,6 @@
 import { Server } from "http";
 import url from "url";
+import { VerifyClientCallbackAsync, VerifyClientCallbackSync } from "ws";
 import { SocketHandler } from "./SocketHandler";
 import { SocketHandlerArray } from "./SocketHandlerArray";
 
@@ -26,8 +27,8 @@ export class SocketGenerator {
         });
     }
 
-    public createSocket(path: string) {
-        const socket = new SocketHandler(path);
+    public createSocket(path: string, verifyClient?: VerifyClientCallbackSync | VerifyClientCallbackAsync) {
+        const socket = new SocketHandler(path, verifyClient);
         this.sockets.push(socket);
         return socket;
     }

@@ -3,6 +3,8 @@ import WebSocket from "ws";
 
 export class Socket<Send, Receive> {
 
+    private isSocketAlive = true;
+
     constructor(private socket: WebSocket) { }
 
     public data(): Observable<Receive> {
@@ -15,9 +17,11 @@ export class Socket<Send, Receive> {
                 }
             });
             this.socket.on("close", (_) => {
+                this.isSocketAlive = false;
                 observer.complete();
             });
             this.socket.on("error", (_: WebSocket, error: Error) => {
+                this.isSocketAlive = false;
                 observer.error(error);
             });
         });
@@ -29,6 +33,10 @@ export class Socket<Send, Receive> {
 
     public close(code?: number, data?: string) {
         this.socket.close(code, data);
+    }
+
+    public isAlive(): boolean {
+        return this.isSocketAlive;
     }
 
 }

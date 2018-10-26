@@ -1,10 +1,10 @@
-import { Observable } from "rxjs";
-import { flatMap } from "rxjs/operators";
+import { IncomingMessage } from "http";
+import url from "url";
 import WebSocket from "ws";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
-import { IWaitingRoomUserMessage, WaitingRoomMessage, WaitingRoomType } from "../../model/waitingRoom/WaitingRoomMessage";
 import { WaitingRoomSocket as Socket } from "../../model/waitingRoom/WaitingRoomSocket";
 import { WaitingRoomSocketArray } from "../../model/waitingRoom/WaitingRoomSocketArray";
+import { User } from "../../repositories/User";
 
 export class WaitingRoomSocket {
 
@@ -17,50 +17,63 @@ export class WaitingRoomSocket {
 
     private static instance: WaitingRoomSocket;
 
-    private webSocketServer = SocketGenerator.getInstance().createSocket("/waitingRoom");
-    private sockets = new WaitingRoomSocketArray();
+    private socketArray = new WaitingRoomSocketArray();
+
+    private webSocketServer = SocketGenerator.getInstance().createSocket("/waitingRoom", (info, cb) => {
+        const { query: { token } } = url.parse(info.req.url, true);
+        if (token) {
+            User.findUser(token as string).subscribe(
+                (player) => {
+                    if (player === null) {
+                        cb(false);
+                    } else {
+                        cb(true);
+                    }
+                },
+                () => cb(false),
+            );
+        } else {
+            cb(false);
+        }
+    });
+
+    private webSocketServerListener = SocketGenerator.getInstance().createSocket("/waitingRoomListener");
 
     private constructor() { }
 
     public init() {
-        this.webSocketServer.on("connection", (socket: WebSocket) => {
-            const observableSocket = new Socket(socket);
-            this.listen(observableSocket);
-            this.sockets.pushSocket(observableSocket);
+        this.webSocketServer.on("connection", (socket: WebSocket, req: IncomingMessage) => {
+            const { query: { token } } = url.parse(req.url, true);
+            const observableSocket = new Socket(socket, token as string);
+            this.socketArray.push(observableSocket);
+            observableSocket.data().subscribe(
+                // tslint:disable-next-line:no-empty
+                () => { },
+                (error) => {
+                    this.updatePlayer();
+                },
+                () => {
+                    this.updatePlayer();
+                },
+            );
+            this.updatePlayer();
+        });
+        this.webSocketServerListener.on("connection", (socket: WebSocket) => {
+            this.updatePlayer();
         });
     }
 
-    public listen(socket: Socket) {
-        socket.data().pipe(
-            flatMap((message) => {
-                message = new WaitingRoomMessage(message.type, message.value);
-                if (message.type !== WaitingRoomType.register.toString() && message.type !== WaitingRoomType.play.toString()) {
-                    throw new Error("Wrong waitingRoom message type");
-                }
-                if (message.type === WaitingRoomType.register) {
-                    socket.registerWith(message.getToken());
-                }
-                return this.sockets.broadcastRegisterUser();
-            }),
-        ).subscribe(
-            // tslint:disable-next-line:no-empty
-            () => { },
-            (error) => {
-                this.sockets.delete(socket);
+    public updatePlayer() {
+        this.socketArray.listUser().subscribe(
+            (player) => {
+                this.webSocketServer.clients.forEach((client) => client.send(JSON.stringify(player)));
+                this.webSocketServerListener.clients.forEach((client) => client.send(JSON.stringify(player)));
             },
-            () => this.sockets.delete(socket),
         );
     }
 
-    public remove(token: string) {
-        this.sockets.deleteUserWith(token);
-    }
-
-    public listActiveSocket(): Observable<IWaitingRoomUserMessage[]> {
-        return this.sockets.listRegisteredUser();
-    }
-
-    public addUpdateHook(hook: (message: WaitingRoomMessage) => void) {
-        this.sockets.addUpdateHook(hook);
+    public removePlayerWithToken(token: string) {
+        this.socketArray.removeUserWithToken(token);
+        this.updatePlayer();
     }
 }
