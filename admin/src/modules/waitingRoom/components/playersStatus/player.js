@@ -1,53 +1,55 @@
 import React from 'react'
 
-class Player2 extends React.Component {
+class Player extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state={
+        this.state = {
             turn: true
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
     }
 
     handleChange(event) {
-        
     }
 
     handleSubmit(event) {
         event.preventDefault();
-        
     }
-    sentMove(move){
+    sentMove(move) {
         // Axios({
         //     method: 'post',
         //     url: '/token',
         //     data: move
         // }).then((response) => {
-            console.log(move)
+        console.log(move)
         // });
     }
-   
+
+
     render() {
         return (
             <div>
                 <div className="card">
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb">
-                            <li className="breadcrumb-item active" aria-current="page">User 2</li>
+                            <li className="breadcrumb-item active" aria-current="page">User </li>
                         </ol>
                     </nav>
                     <div className="card-body">
                     </div>
                 </div>
-                {this.state.turn? (<div><button type="submit" className="btn btn-primary m-3 " onClick = {this.sentMove.bind(this,'up')} >up</button>
-        <button type="submit" className="btn btn-primary m-3" onClick = {this.sentMove.bind(this,'down')}>down</button>
-        <button type="submit" className="btn btn-primary m-3" onClick = {this.sentMove.bind(this,'left')}>left</button>
-        <button type="submit" className="btn btn-primary m-3" onClick = {this.sentMove.bind(this,'right')}>right</button></div>
-                 ) : (<div></div>)}
+                {this.state.turn ? (<div><button type="submit" className="btn btn-outline-info m-3 " onClick={this.sentMove.bind(this, 'up')} >up</button>
+                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sentMove.bind(this, 'down')}>down</button>
+                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sentMove.bind(this, 'left')}>left</button>
+                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sentMove.bind(this, 'right')}>right</button></div>
+                ) : (<div></div>)}
             </div>
         );
     }
 }
-export default Player2;
+
+
+export default Player;

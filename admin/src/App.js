@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 const Home = () => <WaitingRoom/>
 const Manage = () => <EditUser/>
+const Game = ()=> <GamePlay/>
 class App extends Component {
   render() {
     return (
