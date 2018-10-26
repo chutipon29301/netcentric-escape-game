@@ -4,6 +4,9 @@ class Player2 extends React.Component {
 
     constructor(props) {
         super(props);
+        this.state={
+            turn: true
+        }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -16,7 +19,16 @@ class Player2 extends React.Component {
         event.preventDefault();
         
     }
-
+    sentMove(move){
+        // Axios({
+        //     method: 'post',
+        //     url: '/token',
+        //     data: move
+        // }).then((response) => {
+            console.log(move)
+        // });
+    }
+   
     render() {
         return (
             <div>
@@ -29,9 +41,13 @@ class Player2 extends React.Component {
                     <div className="card-body">
                     </div>
                 </div>
+                {this.state.turn? (<div><button type="submit" className="btn btn-primary m-3 " onClick = {this.sentMove.bind(this,'up')} >up</button>
+        <button type="submit" className="btn btn-primary m-3" onClick = {this.sentMove.bind(this,'down')}>down</button>
+        <button type="submit" className="btn btn-primary m-3" onClick = {this.sentMove.bind(this,'left')}>left</button>
+        <button type="submit" className="btn btn-primary m-3" onClick = {this.sentMove.bind(this,'right')}>right</button></div>
+                 ) : (<div></div>)}
             </div>
         );
     }
 }
-
 export default Player2;

@@ -22,24 +22,20 @@ class WaitingUser extends React.Component {
         }).then((response) => { });
     }
 
+    chooseUser(user) {
+
+    }
+
     handleSubmit(event) {
         event.preventDefault();
     }
 
     componentDidMount() {
-        let socket = new WebSocket(`${BASE_URL}/waitingRoom`);
+        let socket = new WebSocket(`${BASE_URL}/waitingRoomListener`);
         socket.addEventListener("message", (event) => {
-            let tableData = [];
             try {
-                const { type, value } = JSON.parse(event.data);
-                if (type === "update") {
-                    tableData.push(value)
-
-                    console.log(tableData)
-                    this.setState({ tableData });
-                }
-            } catch (error) {
-            }
+                this.setState({ tableData: JSON.parse(event.data) });
+            } catch (error) { }
         });
         socket.addEventListener('error', function (error) {
             alert(error.toString());
@@ -69,20 +65,21 @@ class WaitingUser extends React.Component {
                         {
                             this.state.tableData.map(function (row, index) {
                                 return <tr key={index} >
-                                        <td className="form-check-input" type="checkbox" value="" id="defaultCheck1"/>
-                                        <td>{index + 1}</td>
-                                        <td>{row.name}</td>
-                                        <td><button name="delete" onClick={this.deletePost.bind(this, row)} className="btn btn-outline-danger btn-sm remove">Kick</button></td>
+                                    <td>{index + 1}</td>
+                                    <td><input className="form-check-input" type="checkbox" value="" id="defaultCheck1" /></td>
+                                    <td>{row.name}</td>
+                                    <td><button name="delete" onClick={this.deletePost.bind(this, row)} className="btn btn-outline-danger btn-sm remove">Kick</button></td>
                                 </tr>
-                                    }.bind(this))
-                                }
+                            }.bind(this))
+                        }
                     </tbody>
                 </table>
+                <button type="submit" className="btn btn-primary" onChange={this.handleChange}>Start game</button>
+
             </div>
-                    );
-                }
-            }
-            
-            export default WaitingUser;
-            
-            
+        );
+    }
+}
+export default WaitingUser;
+
+
