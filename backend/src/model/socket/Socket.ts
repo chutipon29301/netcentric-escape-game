@@ -28,7 +28,9 @@ export class Socket<Send, Receive> {
     }
 
     public send(data: Send) {
-        this.socket.send(JSON.stringify(data));
+        if (this.isOpen()) {
+            this.socket.send(JSON.stringify(data));
+        }
     }
 
     public close(code?: number, data?: string) {
@@ -37,6 +39,10 @@ export class Socket<Send, Receive> {
 
     public isAlive(): boolean {
         return this.isSocketAlive;
+    }
+
+    public isOpen(): boolean {
+        return this.socket.readyState === WebSocket.OPEN;
     }
 
 }
