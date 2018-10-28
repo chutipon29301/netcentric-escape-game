@@ -51,6 +51,14 @@ export class JWTAuth {
         };
     }
 
+    public static equal(firstToken: string, secondToken: string): boolean {
+        try {
+            return this.decodeToken(firstToken) === this.decodeToken(secondToken);
+        } catch (error) {
+            return false;
+        }
+    }
+
     private static encode(payload: string | object, expiresIn = "7d"): string {
         return sign(payload, process.env.JWT_SECRET, { expiresIn });
     }
