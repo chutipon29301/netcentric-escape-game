@@ -3,6 +3,7 @@ import './App.css';
 import { Route } from 'react-router-dom'
 import WaitingRoom from './modules/waitingRoom'
 import EditUser from './modules/editUser'
+import GamePlay from './modules/gamePlay'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 const Home = () => <WaitingRoom/>
@@ -24,11 +25,15 @@ class App extends Component {
               <li className="nav-item active">
                 <a className="nav-link" href="/manage">ManageUser<span className="sr-only">(current)</span></a>
               </li>
+              <li className="nav-item active">
+                <a className="nav-link" href="/gamecenter">Game Center<span className="sr-only">(current)</span></a>
+              </li>
             </ul>
           </div>
         </nav>
         <Route exact path="/" component={Home} />
         <Route exact path="/manage" component={Manage} />
+        <Route exact path="/gamecenter" component={Game} />
 
       </div>
     );
