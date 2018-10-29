@@ -1,23 +1,39 @@
-import { observable, action } from 'mobx';
+import { observable, action } from "mobx";
 
-class StartStore {
-	@observable
-	coolVariable = 420;
+class GameStore {
+  @observable
+  tableField = [];
 
-	@action.bound
-	hello() {
-		this.coolVariable += 1;
+  @observable
+  tableDimension = 5;
+
+  @observable
+  player = {
+    type: 'prisoner',
+    x: 0,
+    y: 0
+  }
+  
+
+  @action.bound
+  createTable(row, col) {
+	const table = [];
+	for (let i = 0; i < row; i++) {
+	  const temp = [];
+	  for (let j = 0; j < col; j++) {
+		temp.push("");
+	  }
+	  table.push(temp);
 	}
+	this.tableField=table;
+	return this.tableField;
+  }
 
-	@action.bound
-	reset() {
-		this.coolVariable = 420;
-	}
+  @action.bound
+  walkUp(x,y){
+    
+  }
 
-	@action.bound
-	set(value) {
-		this.coolVariable = value;
-	}
 }
 
-export default new StartStore();
+export default new GameStore();

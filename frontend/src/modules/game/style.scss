@@ -1,15 +1,30 @@
 .game {
-  width: 100wh;
   min-height: 100vh;
+  padding: 20px;
   color: #fff;
-  background: linear-gradient(266deg, #00b083, #000399);
-  background-size: 400% 400%;
+  background: url("https://i.pinimg.com/originals/4f/6d/05/4f6d052bb1b26150115888ea06d4c106.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  // background: #2F4F4F;
+  // background-size: 400% 400%;
+  // -webkit-animation: Gradient 5s ease infinite;
+  // -moz-animation: Gradient 5s ease infinite;
+  // animation: Gradient 5s ease infinite;
 
-  -webkit-animation: Gradient 5s ease infinite;
-  -moz-animation: Gradient 5s ease infinite;
-  animation: Gradient 5s ease infinite;
+  .game-panel {
+    // margin: 10px;
+    
+  }
 
-  display: flex;
+
+  .control-panel {
+    background-color: blanchedalmond;
+    color: black;
+    opacity: 0.7;
+    border-radius: 5px;
+    padding: 10px;
+  }
 }
 
 @-webkit-keyframes Gradient {
@@ -45,4 +60,3 @@
     background-position: 0% 50%;
   }
 }
-
