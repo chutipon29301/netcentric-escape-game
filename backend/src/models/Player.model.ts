@@ -1,4 +1,4 @@
-import { from, Observable, of } from "rxjs";
+import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { AllowNull, Column, Default, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { IPlayerMessage } from "../model/player/PlayerMessage";
@@ -26,10 +26,10 @@ export default class Player extends Model<Player> {
             if (email) {
                 return from(Player.findOne({ where: { email } }));
             } else {
-                return of(null);
+                throw new Error("Player not found");
             }
         } catch (error) {
-            return of(null);
+            throw error;
         }
     }
 

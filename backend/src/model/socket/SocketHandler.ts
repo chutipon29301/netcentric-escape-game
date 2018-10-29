@@ -1,11 +1,11 @@
 import { IncomingMessage } from "http";
 import { Socket } from "net";
-import WebSocket from "ws";
+import WebSocket, { VerifyClientCallbackAsync, VerifyClientCallbackSync } from "ws";
 
 export class SocketHandler extends WebSocket.Server {
 
-    constructor(private handlerPath: string) {
-        super({ noServer: true });
+    constructor(private handlerPath: string, verifyClient?: VerifyClientCallbackSync | VerifyClientCallbackAsync) {
+        super({ noServer: true, verifyClient });
     }
 
     public getPath(): string {
