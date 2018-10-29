@@ -19,7 +19,7 @@ class Register extends Component {
               <div className="card card-signin my-5">
                 <div className="card-body center">
                   <img
-                    src="http://breakout.gamemiles.com/content/images/thumbs/0161767_580.jpeg"
+                    src="https://uppic.cc/d/YxX"
                     alt=""
                   />
                   <h5 className="card-title text-center">Register</h5>
