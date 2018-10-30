@@ -103,3 +103,13 @@ router.delete(
         res.sendStatus(200);
     },
 );
+
+router.delete(
+    "/deleteRoom/:token",
+    param("token").isString(),
+    validateRequest,
+    (req, res) => {
+        RoomArray.getInstance().remove(req.params.token);
+        res.sendStatus(200);
+    },
+);
