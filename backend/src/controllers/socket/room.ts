@@ -37,8 +37,8 @@ export class RoomSocket {
 
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket, req: IncomingMessage) => {
-            const { query: { player } } = url.parse(req.url, true);
-            const room = RoomArray.getInstance().findRoomWithToken(player as string);
+            const { query: { token, player } } = url.parse(req.url, true);
+            const room = RoomArray.getInstance().findRoomWithToken(token as string);
             const observableSocket = new Socket(socket, player as string);
             room.pushPlayer(observableSocket);
             room.addHook((message: IRoomMessage) => {

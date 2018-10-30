@@ -28,6 +28,13 @@ router.get(
     },
 );
 
+router.get(
+    "/listRoom",
+    (_, res) => {
+        res.status(200).send(RoomArray.getInstance().list());
+    },
+);
+
 router.post(
     "/register",
     body("nickname").isString(),
