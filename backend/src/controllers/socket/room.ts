@@ -45,6 +45,11 @@ export class RoomSocket {
                 observableSocket.send(message);
             });
             room.update();
+            observableSocket.data().subscribe(
+                (data) => observableSocket.setReady(data.isReady),
+                (error) => room.removePlayer(player as string),
+                () => room.removePlayer(player as string),
+            );
         });
         RoomArray.getInstance().addHook((message: IRoomArrayMessage[]) => {
             this.webSocketServerListener.clients.forEach((o) => {

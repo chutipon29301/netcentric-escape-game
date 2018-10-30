@@ -30,6 +30,11 @@ export class Room {
         return roomSocket;
     }
 
+    public removePlayer(token: string) {
+        this.sockets.removeAtIndex(this.sockets.findIndex((o) => o.getToken() === token));
+        this.update();
+    }
+
     public getToken(): string {
         return this.token;
     }

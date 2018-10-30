@@ -3,9 +3,9 @@ import { map } from "rxjs/operators";
 import WebSocket from "ws";
 import Player from "../../models/Player.model";
 import { Socket } from "../socket/Socket";
-import { IRoomSocketMessage } from "./RoomMessage";
+import { IRoomMessage, IRoomSocketMessage } from "./RoomMessage";
 
-export class RoomSocket extends Socket<{}, {}> {
+export class RoomSocket extends Socket<IRoomMessage, { isReady: boolean }> {
 
     constructor(socket: WebSocket, private token: string, private isReady = false) {
         super(socket);
@@ -19,6 +19,14 @@ export class RoomSocket extends Socket<{}, {}> {
                 token: this.token,
             })),
         );
+    }
+
+    public setReady(isReady: boolean) {
+        this.isReady = isReady;
+    }
+
+    public getToken(): string {
+        return this.token;
     }
 
 }
