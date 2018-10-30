@@ -7,7 +7,9 @@ import { withRouter } from "react-router-dom";
 @withRouter
 @observer
 class Register extends Component {
-  
+  handleSubmit() {
+    this.props.routing.push("/login");
+  }
   render() {
     return (
       <div className="register">
@@ -17,7 +19,7 @@ class Register extends Component {
               <div className="card card-signin my-5">
                 <div className="card-body center">
                   <img
-                    src="http://breakout.gamemiles.com/content/images/thumbs/0161767_580.jpeg"
+                    src="https://uppic.cc/d/YxX"
                     alt=""
                   />
                   <h5 className="card-title text-center">Register</h5>
@@ -49,8 +51,9 @@ class Register extends Component {
                       />
                     </div>
                     <button
-                      className="btn btn-lg btn-primary btn-block text-uppercase"
+                      className="btn btn-lg btn-warning btn-block text-uppercase"
                       type="submit"
+                      onClick={()=>this.handleSubmit()}
                     >
                       SUBMIT
                     </button>
