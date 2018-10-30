@@ -4,6 +4,8 @@ import WebSocket from "ws";
 import { OnlinePlayer as Socket } from "../../model/onlinePlayer/OnlinePlayer";
 import { OnlinePlayerArray } from "../../model/onlinePlayer/OnlinePlayerArray";
 import { IOnlinePlayerTeam } from "../../model/onlinePlayer/OnlinePlayerTeam";
+import { RoomArray } from "../../model/room/RoomArray";
+import { IRoomArrayMessage } from "../../model/room/RoomMessage";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import { User } from "../../repositories/User";
 
@@ -48,6 +50,13 @@ export class OnlinePlayerSocket {
                 (error) => this.socketArray.popPlayer(token as string),
                 () => this.socketArray.popPlayer(token as string),
             );
+        });
+        RoomArray.getInstance().addHook((message: IRoomArrayMessage[]) => {
+            this.webSocketServer.clients.forEach((o) => {
+                if (o.readyState === WebSocket.OPEN) {
+                    o.send(JSON.stringify(message));
+                }
+            });
         });
 
         this.webSocketServerListener.on("connection", (socket: WebSocket) => {
