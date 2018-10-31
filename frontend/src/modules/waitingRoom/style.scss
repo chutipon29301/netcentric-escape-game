@@ -40,6 +40,7 @@
     background: #dee2e6;
     opacity: 0.9;
     color: black;
+    text-align: center;
   }
 
   h1 {
@@ -69,4 +70,9 @@
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.col-centered {
+  float: none;
+  margin: auto;
 }
