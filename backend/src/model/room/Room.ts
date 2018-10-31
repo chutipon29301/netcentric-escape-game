@@ -56,6 +56,10 @@ export class Room {
         );
     }
 
+    public closePlayerSocket() {
+        this.sockets.forEach((o) => o.close());
+    }
+
     public update() {
         this.getRoomDetail().subscribe(
             (message) => this.hooks.forEach((hook) => hook(message)),

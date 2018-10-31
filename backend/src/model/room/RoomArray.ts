@@ -22,6 +22,8 @@ export class RoomArray extends Array<Room> {
     }
 
     public remove(roomToken: string) {
+        const index = this.findIndex((o) => o.getToken() === roomToken);
+        this[index].closePlayerSocket();
         _.remove(this, (o) => o.getToken() === roomToken);
         this.updateValue();
     }
