@@ -1,0 +1,121 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2.0
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/repo
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - backend-dependencies-v1.0-{{ .Branch }}-{{ checksum "backend/package.json" }}
+          # fallback to using the latess cache if no exact match is found
+            - backend-dependencies-v1.0-{{ .Branch }}
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - frontend-dependencies-v1.0-{{ .Branch }}-{{ checksum "frontend/package.json" }}
+          # fallback to using the latess cache if no exact match is found
+            - frontend-dependencies-v1.0-{{ .Branch }}
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - admin-dependencies-v1.0-{{ .Branch }}-{{ checksum "admin/package.json" }}
+          # fallback to using the latess cache if no exact match is found
+            - admin-dependencies-v1.0-{{ .Branch }}
+      
+      - run:
+          name: Install Backend Dependencies
+          command: cd backend && yarn install
+
+      - run:
+          name: Lint Backend
+          command: cd backend && yarn tslint
+
+      - run:
+          name: Build Frontend
+          command: bash build-frontend.sh
+
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - public
+
+      - save_cache:
+          paths:
+            - backend/node_modules
+          key: backend-dependencies-v1.0-{{ .Branch }}-{{ checksum "backend/package.json" }}
+
+      - save_cache:
+          paths:
+            - frontend/node_modules
+          key: frontend-dependencies-v1.0-{{ .Branch }}-{{ checksum "frontend/package.json" }}
+
+      - save_cache:
+          paths:
+            - admin/node_modules
+          key: admin-dependencies-v1.0-{{ .Branch }}-{{ checksum "admin/package.json" }}
+
+  deploy: 
+    machine: true
+    working_directory: ~/repo
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "19:73:37:6a:c9:cb:b3:f7:50:53:c4:be:53:6c:3b:5a"
+
+      - attach_workspace:
+          at: ~/repo
+      
+      - run:
+          name: Checkout Code for Deployment
+          command: |
+            ssh $SSH_USER@$SSH_HOST '\
+            if mkdir netcentric-escape-game; \
+            then git clone https://github.com/WhatTheFar/netcentric-escape-game netcentric-escape-game; \
+            else cd netcentric-escape-game; git pull origin master; \
+            fi;'
+
+      - run:
+          name: Send public files over SSH
+          command: scp -r public $SSH_USER@$SSH_HOST:netcentric-escape-game/public
+
+      - run:
+          name: Create and Send .env Over SSH
+          command: |
+            cat > .env << EOF1
+            AES_SECRET=$AES_SECRET
+            JWT_SECRET=$JWT_SECRET
+
+            NGINX_VIRTUAL_HOST=$NGINX_VIRTUAL_HOST
+            LETSENCRYPT_EMAIL=$LETSENCRYPT_EMAIL
+
+            EOF1
+            scp .env $SSH_USER@$SSH_HOST:netcentric-escape-game
+
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh $SSH_USER@$SSH_HOST "cd netcentric-escape-game && \
+            bash build-backend-container-optimized.sh && \
+            bash run-prod-container-optimized.sh"
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master

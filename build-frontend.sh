@@ -7,7 +7,6 @@ cd ../admin
 yarn
 cd ..
 # Build production
-# docker-compose -f docker-compose.yml -f docker-compose.prod.yml build --force-rm
 cd frontend
 yarn build
 cd ../admin

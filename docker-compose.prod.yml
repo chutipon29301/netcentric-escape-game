@@ -28,8 +28,7 @@ services:
     build: 
       context: ./backend
       dockerfile: build.Dockerfile
-    environment: 
-      NODE_ENV: production
+    command: sh -c "sleep 10 && yarn serve"
   nginx:
     volumes: 
       - ./config/sites-enabled/server.prod.conf:/etc/nginx/sites-enabled/server.conf
