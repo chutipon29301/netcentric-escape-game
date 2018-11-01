@@ -1,5 +1,57 @@
 .controller-container {
-  
+  @import url("https://fonts.googleapis.com/css?family=Fredoka+One");
+  font-size: 20pt;
+  font-family: "Fredoka One", cursive;
+  color: white;
+  .start-btn {
+    text-align: center;
+    display: inline-block;
+    margin: 5px;
+    font-weight: bold;
+    padding: 10px 10px 10px 10px;
+    background-color: lightgray;
+    text-shadow: -1px -1px black, 1px 1px white;
+    color: #ff9933;
+    -webkit-border-radius: 7px;
+    -moz-border-radius: 7px;
+    -o-border-radius: 7px;
+    border-radius: 7px;
+    box-shadow: 0 0.2em gray;
+    cursor: pointer;
+  }
 
-  
+  .start-btn:active {
+    box-shadow: none;
+    position: relative;
+    top: 0.2em;
+  }
+
+  .button {
+    // display: flex;
+    margin: 10px;
+    justify-content: center;
+    width: 40%;
+  }
+
+  .row {
+    display: inline-grid;
+    grid-column-gap: 0;
+    align-self: end;
+  }
+
+  .keyboard_key_up {
+    grid-column-start: 2;
+  }
+
+  .keyboard_key_left {
+    grid-column-start: 1;
+  }
+
+  .keyboard_key_right {
+    grid-column-start: 3;
+  }
+
+  .timer-container {
+    width: 20%;
+  }
 }

@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import "./style.scss";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link} from "react-router-dom";
 
 @inject("routing")
 @withRouter
 @observer
 class Start extends Component {
-  handleStart() {
-    this.props.routing.push("/login");
-  } 
 //  source =>  https://startbootstrap.com/template-overviews/new-age/
   render() {
     return (
@@ -27,12 +24,12 @@ class Start extends Component {
                   sub-genre of adventures and puzzles, usually created as a free
                   online game.
                 </p>
-                <a
+                <Link
                   className="btn btn-outline btn-xl js-scroll-trigger"
-                  onClick={() => this.handleStart()}
+                  to='/login'
                 >
                   Start Now
-                </a>
+                </Link>
               </div>
             </div>
             <div className="col-lg-5 my-auto">

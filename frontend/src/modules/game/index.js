@@ -16,18 +16,19 @@ class Game extends Component {
   render() {
     return (
       <div>
-        <NavBar />
+        <NavBar key={NavBar.toString()}/>
         <div className="game">
           <div className="container">
             <div className="row">
-              <div className="col-lg-6 col-md-8 game-panel">
+              <div className="col-lg-6 col-md-7 game-panel">
                 <div className="field">
-                  <Field />
+                  <Field key={Field.toString()}/>
                 </div>
               </div>
-              <div className="col-lg-6 col-md-4 control-panel">
-                <h3><b>Controller</b></h3>
-                <Controller></Controller>
+              <div className="col-lg-6 col-md-5 control-panel">
+                <div>
+                  <Controller />
+                </div>
               </div>
             </div>
           </div>
