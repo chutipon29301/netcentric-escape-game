@@ -27,8 +27,10 @@
   }
 
   .button {
-    display: flex;
+    // display: flex;
+    margin: 10px;
     justify-content: center;
+    width: 40%;
   }
 
   .row {
@@ -47,5 +49,9 @@
 
   .keyboard_key_right {
     grid-column-start: 3;
+  }
+
+  .timer-container {
+    width: 20%;
   }
 }
