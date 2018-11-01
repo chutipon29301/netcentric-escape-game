@@ -1,5 +1,6 @@
 export interface IRoomMessage {
     name: string;
+    owner: string;
     player: IRoomSocketMessage[];
 }
 
