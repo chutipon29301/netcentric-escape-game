@@ -8,7 +8,7 @@ class TokenStore{
     @action.bound
     setToken(token) {
         this.token = token;
-        SocketStore.emitSocket(token);
+        SocketStore.emitOnlineUserSocket(token);
     }
    
 }

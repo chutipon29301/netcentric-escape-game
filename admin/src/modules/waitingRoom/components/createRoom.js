@@ -5,36 +5,38 @@ import Axios from '../../axiosConfig'
 
 import {observable,action} from 'mobx'
 import RoomStore from '../stores/roomStore'
-
 class CreateRoom extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             roomName: '',
+            roomMaster:'',
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     
-
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value });
     }
 
     handleSubmit(event) {
         event.preventDefault();
-        // let socket = new WebSocket(`${BASE_URL}/room?${this.roomMaster.token}&${this.state.roomName}`);
-        // socket.addEventListener("message", (event) => {
-        //     try {
-        //         this.setState({ tableData: JSON.parse(event.data) });
-        //     } catch (error) { }
-        // });
-        RoomStore.addRoom(this.state.roomName);
+        
         this.setState({
             roomName: '',
         })
-        
+
+        Axios({
+            method: 'post',
+            url: '/createRoom',
+            data: {name: this.state.roomName,
+                   owner: RoomStore.roomMaster.name}
+        }).then((response) => {
+            console.log('res'+response.data)
+            RoomStore.setToken(response.data.token)
+        });
         console.log('create!')
     }
 

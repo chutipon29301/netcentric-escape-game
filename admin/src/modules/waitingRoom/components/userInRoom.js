@@ -13,8 +13,6 @@ class UserInRoom extends React.Component {
         this.deletePost = this.deletePost.bind(this);
     }
 
-    @observable roomMasters = [];
-
     deletePost(user) {
         Axios({
             method: 'delete',
@@ -27,19 +25,8 @@ class UserInRoom extends React.Component {
     }
 
     componentDidMount() {
-        let socket = new WebSocket(`${BASE_URL}/onlinePlayerListener`);
-        socket.addEventListener("message", (event) => {
-            try {
-                this.setState({ tableData: JSON.parse(event.data) });
-            } catch (error) { }
-        });
-        socket.addEventListener('error', function (error) {
-            alert(error.toString());
-            console.log(error)
-        });
-        socket.addEventListener('close', function () {
-            console.log("Closed");
-        });
+        
+        
 
     }
     roomMaster(socket) {
@@ -56,21 +43,28 @@ class UserInRoom extends React.Component {
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Nickname</th>
+
+                            <th scope="col">Ready?</th>
                             <th scope="col">Kick</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            this.state.tableData.map(function (row, index) {
+                            this.props.users.map(function (row, index) {
+                                
                                 return <tr key={index} >
                                     <td>{index + 1}</td>
                                     <td>{row.name}</td>
+                                    <td>{row.isReady.toString()}</td>
                                     <td><button name="delete" onClick={this.deletePost.bind(this, row)} className="btn btn-outline-danger btn-sm remove">Kick</button></td>
                                 </tr>
                             }.bind(this))
                         }
                     </tbody>
                 </table>
+                
+                    
+                
             </div>
         );
     }

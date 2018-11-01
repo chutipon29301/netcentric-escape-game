@@ -1,23 +1,25 @@
 import { observable,action } from 'mobx';
-
+import SocketStore from './socketStore'
 
 class RoomStore {
-    @observable roomMaster;
     @observable rooms=[];
+    @observable room;
+    @observable roomMaster;
     
     @action.bound
-    setRoomMaster(socket) {
-        this.roomMaster = socket;
+    addRoom(rooms) {
+        this.rooms =rooms;
     }
-    
+
     @action.bound
-    addRoom(roomName){
-        console.log("master:"+this.roomMaster.name)
-        this.rooms.push({
-            roomMaster: this.roomMaster,    
-            room: roomName,
-        });
-        console.log(roomName)
+    setToken(res) {
+        this.room = res;
+        SocketStore.emitRoomSocket(res,this.roomMaster);
+    }
+
+    @action.bound
+    setRoomMaster(socket){
+        this.roomMaster = socket;
     }
 
 }
