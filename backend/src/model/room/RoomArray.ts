@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { BehaviorSubject } from "rxjs";
 import { Room } from "./Room";
 import { IRoomArrayMessage } from "./RoomMessage";
 
@@ -14,6 +15,7 @@ export class RoomArray extends Array<Room> {
     private static instance: RoomArray;
 
     private hooks: Array<(message: IRoomArrayMessage[]) => void> = [];
+    private behaviorSubject: BehaviorSubject<IRoomArrayMessage[]> = new BehaviorSubject([]);
 
     public push(room: Room) {
         const index = super.push(room);
@@ -40,8 +42,13 @@ export class RoomArray extends Array<Room> {
         this.hooks.push(hook);
     }
 
+    public getSubject(): BehaviorSubject<IRoomArrayMessage[]> {
+        return this.behaviorSubject;
+    }
+
     public updateValue() {
         const message = this.list();
+        this.behaviorSubject.next(message);
         this.hooks.forEach((hook) => hook(message));
     }
 
