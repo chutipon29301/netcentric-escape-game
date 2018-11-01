@@ -5,7 +5,7 @@ import Home from '../modules/home';
 class AppRouter extends React.Component {
 	render() {
 		return (
-			<BrowserRouter history={this.props.history}>
+			<BrowserRouter basename='/admin' history={this.props.history}>
 				<Switch>
 					<Route path="/" component={Home} />
 				</Switch>
