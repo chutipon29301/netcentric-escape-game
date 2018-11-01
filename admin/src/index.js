@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import { configure } from 'mobx';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import createBrowserHistory from 'history/createBrowserHistory';
-import home from 'modules/home/store';
 import TokenStore from 'modules/waitingRoom/stores/tokenStore'
 
 import SocketStore from 'modules/waitingRoom/stores/socketStore'
@@ -18,7 +17,6 @@ export const routingStore = new RouterStore();
 const history = syncHistoryWithStore(browserHistory, routingStore);
 const stores = {
 	TokenStore,
-	home,
 	routing: routingStore
 };
 
