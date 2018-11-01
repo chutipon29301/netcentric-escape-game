@@ -1,29 +1,24 @@
 .game {
   min-height: 100vh;
   padding: 20px;
-  color: #fff;
+  color: #000;
   background: url("https://i.pinimg.com/originals/4f/6d/05/4f6d052bb1b26150115888ea06d4c106.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  // background: #2F4F4F;
-  // background-size: 400% 400%;
-  // -webkit-animation: Gradient 5s ease infinite;
-  // -moz-animation: Gradient 5s ease infinite;
-  // animation: Gradient 5s ease infinite;
-
-  .game-panel {
-    // margin: 10px;
-    
-  }
 
 
   .control-panel {
-    background-color: blanchedalmond;
+    background-color: rgba(255, 255, 255, 0.3);
     color: black;
-    opacity: 0.7;
+    // opacity: 0.7;
     border-radius: 5px;
     padding: 10px;
+  }
+
+  .control-panel > div {
+    // background-color: #FFF;
+    opacity: 1;
   }
 }
 
