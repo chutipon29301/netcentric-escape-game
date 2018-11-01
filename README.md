@@ -32,7 +32,12 @@ docker-compose -f docker-compose.dev.yml up
 
 ## Deployment
 
-    To be implement
+```sh
+# Build
+bash build.sh
+# Deploy
+bash deploy.sh
+```
 
 ## Authors
 
