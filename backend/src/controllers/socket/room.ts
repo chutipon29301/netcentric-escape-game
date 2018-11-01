@@ -4,8 +4,10 @@ import WebSocket from "ws";
 import { RoomArray } from "../../model/room/RoomArray";
 import { IRoomArrayMessage, IRoomMessage } from "../../model/room/RoomMessage";
 import { RoomSocket as Socket } from "../../model/room/RoomSocket";
+import { Socket as ObservableSocket } from "../../model/socket/Socket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import { JWTAuth } from "../../repositories/JWTAuth";
+import { OnlinePlayerSocket } from "./onlinePlayer";
 
 export class RoomSocket {
 
@@ -22,16 +24,17 @@ export class RoomSocket {
             const { query: { token, player } } = url.parse(info.req.url, true);
             try {
                 JWTAuth.decodeToken(player as string);
-                if (token) {
-                    return RoomArray.getInstance().checkValidToken(token as string);
-                } else {
-                    return false;
-                }
+                return RoomArray.getInstance().checkValidToken(token as string);
             } catch (_) {
                 return false;
             }
         });
     private webSocketServerListener = SocketGenerator.getInstance().createSocket("/roomListener");
+    private webSocketServerDetailListener = SocketGenerator.getInstance().createSocket("/roomDetailListener",
+        (info: { origin: string; secure: boolean; req: IncomingMessage }) => {
+            const { query: { token } } = url.parse(info.req.url, true);
+            return RoomArray.getInstance().checkValidToken(token as string);
+        });
 
     private constructor() { }
 
@@ -39,6 +42,7 @@ export class RoomSocket {
         this.webSocketServer.on("connection", (socket: WebSocket, req: IncomingMessage) => {
             const { query: { token, player } } = url.parse(req.url, true);
             const room = RoomArray.getInstance().findRoomWithToken(token as string);
+            OnlinePlayerSocket.getInstance().removeUserWithToken(token as string);
             const observableSocket = new Socket(socket, player as string);
             room.pushPlayer(observableSocket);
             room.addHook((message: IRoomMessage) => {
@@ -51,15 +55,23 @@ export class RoomSocket {
                 () => room.removePlayer(player as string),
             );
         });
-        RoomArray.getInstance().addHook((message: IRoomArrayMessage[]) => {
-            this.webSocketServerListener.clients.forEach((o) => {
-                if (o.readyState === WebSocket.OPEN) {
-                    o.send(JSON.stringify(message));
+
+        this.webSocketServerListener.on("connection", (socket: WebSocket) => {
+            const observableSocket = new ObservableSocket<IRoomArrayMessage[], {}>(socket);
+            RoomArray.getInstance().getSubject().subscribe(
+                (message) => observableSocket.send(message),
+            );
+        });
+
+        this.webSocketServerDetailListener.on("connection", (socket: WebSocket, req: IncomingMessage) => {
+            const { query: { token } } = url.parse(req.url, true);
+            const room = RoomArray.getInstance().findRoomWithToken(token as string);
+            room.addHook((message) => {
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify(message));
                 }
             });
-        });
-        this.webSocketServerListener.on("connection", (socket: WebSocket) => {
-            RoomArray.getInstance().updateValue();
+            room.update();
         });
     }
 
