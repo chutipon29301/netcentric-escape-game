@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { body, param } from "express-validator/check";
+import { Room } from "../../model/room/Room";
+import { RoomArray } from "../../model/room/RoomArray";
 import { JWTAuth } from "../../repositories/JWTAuth";
 import { User } from "../../repositories/User";
 import { OnlinePlayerSocket } from "../socket/onlinePlayer";
@@ -23,6 +25,13 @@ router.get(
             (player) => res.status(200).send({ player }),
             errorHandler(res),
         );
+    },
+);
+
+router.get(
+    "/listRoom",
+    (_, res) => {
+        res.status(200).send(RoomArray.getInstance().list());
     },
 );
 
@@ -72,11 +81,14 @@ router.post(
 );
 
 router.post(
-    "/play",
-    body("players").isArray(),
+    "/createRoom",
+    body("name").isString(),
+    body("owner").isString(),
     validateRequest,
     (req, res) => {
-        res.sendStatus(200);
+        const room = new Room(req.body.name, req.body.owner);
+        RoomArray.getInstance().push(room);
+        res.status(200).send({ token: room.getRoomInfo() });
     },
 );
 
@@ -95,6 +107,16 @@ router.delete(
     validateRequest,
     (req, res) => {
         OnlinePlayerSocket.getInstance().removeUserWithToken(req.params.token);
+        res.sendStatus(200);
+    },
+);
+
+router.delete(
+    "/deleteRoom/:token",
+    param("token").isString(),
+    validateRequest,
+    (req, res) => {
+        RoomArray.getInstance().remove(req.params.token);
         res.sendStatus(200);
     },
 );

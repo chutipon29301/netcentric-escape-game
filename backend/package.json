@@ -37,6 +37,7 @@
     "rxjs": "^6.2.1",
     "sequelize": "^4.38.1",
     "sequelize-typescript": "^0.6.6",
+    "uuid": "^3.3.2",
     "winston": "^3.0.0",
     "ws": "^5.2.1"
   },
@@ -50,6 +51,7 @@
     "@types/jsonwebtoken": "^7.2.8",
     "@types/lodash": "^4.14.116",
     "@types/morgan": "^1.7.35",
+    "@types/uuid": "^3.4.4",
     "@types/ws": "^5.1.2",
     "concurrently": "^3.6.0",
     "nodemon": "^1.17.5",

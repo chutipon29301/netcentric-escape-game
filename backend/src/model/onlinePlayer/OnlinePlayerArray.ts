@@ -37,9 +37,6 @@ export class OnlinePlayerArray extends SocketArray<OnlinePlayer> {
         this.clearInactive();
         message.subscribe(
             (players) => {
-                this.forEach((socket) => {
-                    socket.send(players);
-                });
                 this.hooks.forEach((hook) => hook(players));
             },
         );

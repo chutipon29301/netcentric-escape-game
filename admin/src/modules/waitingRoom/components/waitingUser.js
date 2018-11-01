@@ -1,7 +1,7 @@
 import React from 'react'
 import Axios from '../../axiosConfig'
 import { BASE_URL } from '../../../env'
-import { observable } from 'mobx'
+import { observable,action } from 'mobx'
 import RoomStore from '../stores/roomStore'
 import CreateRoom from './createRoom'
 import JoinRoom from './joinRoom'
@@ -13,12 +13,11 @@ class WaitingUser extends React.Component {
         this.state = {
             tableData: [],
             rooms: [],
+            player:'',
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.deletePost = this.deletePost.bind(this);
     }
-
-    @observable roomMasters = [];
 
     deletePost(user) {
         Axios({
@@ -47,13 +46,21 @@ class WaitingUser extends React.Component {
         });
 
     }
-    roomMaster(socket) {
-        this.roomMasters.push(socket.token)
-        RoomStore.setRoomMaster(socket);
-    }
 
     joinRoom(socket){
+        Axios({
+            method: 'get',
+            url: '/listRoom',
+        }).then((response) => {
+            this.setState({rooms:response.data})
+            console.log(response.data)
+        });
+this.state.player=socket;
+    }
 
+    setRoomMaster(socket){
+        console.log(socket.name)
+        RoomStore.setRoomMaster(socket);
     }
 
     render() {
@@ -76,9 +83,8 @@ class WaitingUser extends React.Component {
                                 return <tr key={index} >
                                     <td>{index + 1}</td>
                                     <td>{row.name}</td>
-                                    <td><button type="button" data-toggle="modal" data-target="#inputRoomName" onClick={this.roomMaster.bind(this, row)} className="btn btn-sm btn-outline-success">Create</button></td>
+                                    <td><button type="button" data-toggle="modal" data-target="#inputRoomName" onClick={this.setRoomMaster.bind(this,row)} className="btn btn-sm btn-outline-success">Create</button></td>
                                     <td><button type="button" data-toggle="modal" data-target="#joinRoom" onClick={this.joinRoom.bind(this, row)} className="btn btn-sm btn-outline-warning">Join</button></td>
-                                    
                                     <td><button name="delete" onClick={this.deletePost.bind(this, row)} className="btn btn-outline-danger btn-sm remove">Kick</button></td>
                                 </tr>
                             }.bind(this))
@@ -87,7 +93,7 @@ class WaitingUser extends React.Component {
                 </table>
                 {/* <button type="submit" className="btn btn-outline-success" onChange={this.handleChange}>Start game</button> */}
                 <CreateRoom />
-                <JoinRoom/>
+                <JoinRoom rooms={this.state.rooms} player={this.state.player}/>
             </div>
         );
     }
