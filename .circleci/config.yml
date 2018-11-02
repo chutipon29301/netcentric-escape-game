@@ -81,7 +81,7 @@ jobs:
             ssh $SSH_USER@$SSH_HOST '\
             if mkdir netcentric-escape-game; \
             then git clone https://github.com/WhatTheFar/netcentric-escape-game netcentric-escape-game; \
-            else cd netcentric-escape-game; git pull origin master; \
+            else cd netcentric-escape-game; git fetch --all; git reset --hard origin/master; \
             fi;'
 
       - run:
