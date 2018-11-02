@@ -10,6 +10,8 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import start from 'modules/start/store';
 import login from 'modules/login/store';
 import register from 'modules/register/store';
+import { lobbyStore, roomStore } from 'modules/waitingRoom/store';
+import game from 'modules/game/store';
 
 
 const browserHistory = createBrowserHistory();
@@ -19,6 +21,9 @@ const stores = {
 	start,
 	login,
 	register,
+	lobbyStore,
+	roomStore,
+	game,
 	routing: routingStore
 };
 

@@ -1,4 +1,4 @@
-import { forkJoin, Observable, of } from "rxjs";
+import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { JWTAuth } from "../../repositories/JWTAuth";
 import { SocketArray } from "../socket/SocketArray";
 import { OnlinePlayer } from "./OnlinePlayer";
@@ -6,7 +6,7 @@ import { IOnlinePlayerTeam } from "./OnlinePlayerTeam";
 
 export class OnlinePlayerArray extends SocketArray<OnlinePlayer> {
 
-    private hooks: Array<(message: IOnlinePlayerTeam[]) => void> = [];
+    private behaviorSubject: BehaviorSubject<IOnlinePlayerTeam[]> = new BehaviorSubject([]);
 
     public popPlayer(token: string): OnlinePlayer {
         const index = this.findTokenIndex(token);
@@ -25,10 +25,6 @@ export class OnlinePlayerArray extends SocketArray<OnlinePlayer> {
         this.updatePlayerList();
     }
 
-    public addHook(hook: (message: IOnlinePlayerTeam[]) => void) {
-        this.hooks.push(hook);
-    }
-
     public updatePlayerList() {
         this.broadcast(this.getOnlinePlayerMessage());
     }
@@ -36,13 +32,12 @@ export class OnlinePlayerArray extends SocketArray<OnlinePlayer> {
     public broadcast(message: Observable<IOnlinePlayerTeam[]>) {
         this.clearInactive();
         message.subscribe(
-            (players) => {
-                this.forEach((socket) => {
-                    socket.send(players);
-                });
-                this.hooks.forEach((hook) => hook(players));
-            },
+            (players) => this.behaviorSubject.next(players),
         );
+    }
+
+    public getSubject(): BehaviorSubject<IOnlinePlayerTeam[]> {
+        return this.behaviorSubject;
     }
 
     private findTokenIndex(token: string): number {

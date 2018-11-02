@@ -5,6 +5,7 @@ import { SocketHandler } from "./SocketHandler";
 import { SocketHandlerArray } from "./SocketHandlerArray";
 
 export class SocketGenerator {
+
     public static getInstance(): SocketGenerator {
         if (!this.instance) {
             this.instance = new SocketGenerator();
