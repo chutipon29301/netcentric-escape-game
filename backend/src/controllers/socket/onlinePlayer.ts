@@ -5,6 +5,7 @@ import { OnlinePlayer as Socket } from "../../model/onlinePlayer/OnlinePlayer";
 import { OnlinePlayerArray } from "../../model/onlinePlayer/OnlinePlayerArray";
 import { IOnlinePlayerTeam } from "../../model/onlinePlayer/OnlinePlayerTeam";
 import { RoomArray } from "../../model/room/RoomArray";
+import { Socket as ObservableSocket } from "../../model/socket/Socket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import { User } from "../../repositories/User";
 
@@ -24,13 +25,7 @@ export class OnlinePlayerSocket {
         const { query: { token } } = url.parse(info.req.url, true);
         if (token) {
             User.findUser(token as string).subscribe(
-                (player) => {
-                    if (player === null) {
-                        cb(false);
-                    } else {
-                        cb(true);
-                    }
-                },
+                (player) => cb(player !== null),
                 () => cb(false),
             );
         } else {
@@ -53,23 +48,12 @@ export class OnlinePlayerSocket {
                 (message) => observableSocket.send(message),
             );
         });
-        // RoomArray.getInstance().addHook((message: IRoomArrayMessage[]) => {
-        //     this.webSocketServer.clients.forEach((o) => {
-        //         if (o.readyState === WebSocket.OPEN) {
-        //             o.send(JSON.stringify(message));
-        //         }
-        //     });
-        // });
 
         this.webSocketServerListener.on("connection", (socket: WebSocket) => {
-            this.socketArray.updatePlayerList();
-        });
-        this.socketArray.addHook((message: IOnlinePlayerTeam[]) => {
-            this.webSocketServerListener.clients.forEach((o) => {
-                if (o.readyState === WebSocket.OPEN) {
-                    o.send(JSON.stringify(message));
-                }
-            });
+            const observableSocket = new ObservableSocket<IOnlinePlayerTeam[], {}>(socket);
+            this.socketArray.getSubject().subscribe(
+                (message) => observableSocket.send(message),
+            );
         });
     }
 

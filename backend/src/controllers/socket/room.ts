@@ -45,10 +45,9 @@ export class RoomSocket {
             OnlinePlayerSocket.getInstance().removeUserWithToken(token as string);
             const observableSocket = new Socket(socket, player as string);
             room.pushPlayer(observableSocket);
-            room.addHook((message: IRoomMessage) => {
-                observableSocket.send(message);
-            });
-            room.update();
+            room.getSubject().subscribe(
+                (message) => observableSocket.send(message),
+            );
             observableSocket.data().subscribe(
                 (data) => observableSocket.setReady(data.isReady),
                 (error) => room.removePlayer(player as string),
@@ -66,12 +65,10 @@ export class RoomSocket {
         this.webSocketServerDetailListener.on("connection", (socket: WebSocket, req: IncomingMessage) => {
             const { query: { token } } = url.parse(req.url, true);
             const room = RoomArray.getInstance().findRoomWithToken(token as string);
-            room.addHook((message) => {
-                if (socket.readyState === WebSocket.OPEN) {
-                    socket.send(JSON.stringify(message));
-                }
-            });
-            room.update();
+            const observableSocket = new ObservableSocket<IRoomMessage, {}>(socket);
+            room.getSubject().subscribe(
+                (message) => observableSocket.send(message),
+            );
         });
     }
 
