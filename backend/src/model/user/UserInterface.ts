@@ -1,4 +1,4 @@
-export interface IPlayerMessage {
+export interface IUserInfo {
     email: string;
     nickname: string;
     win: number;

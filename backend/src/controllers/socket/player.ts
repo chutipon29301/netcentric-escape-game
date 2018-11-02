@@ -1,10 +1,7 @@
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import WebSocket from "ws";
-import { IPlayerMessage } from "../../model/player/PlayerMessage";
-import { PlayerSocket as Socket } from "../../model/player/PlayerSocket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
-import Player from "../../models/Player.model";
+import { User } from "../../model/user/User";
+import { UserSocket as Socket } from "../../model/user/UserSocket";
 
 export class PlayerSocket {
     public static getInstance(): PlayerSocket {
@@ -21,16 +18,8 @@ export class PlayerSocket {
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket) => {
             const observableSocket = new Socket(socket);
-            Player.listPlayers().subscribe(
-                (players) => observableSocket.send(players),
-            );
+            User.getUserList().subscribe((players) => observableSocket.send(players));
         });
-    }
-
-    public updatePlayer(users: Observable<IPlayerMessage[]>): Observable<void> {
-        return users.pipe(
-            map((players) => this.webSocketServer.clients.forEach((client) => new Socket(client).send(players))),
-        );
     }
 
 }
