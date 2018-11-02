@@ -10,7 +10,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import start from 'modules/start/store';
 import login from 'modules/login/store';
 import register from 'modules/register/store';
-import waitingRoom from 'modules/waitingRoom/store';
+import { roomStore } from 'modules/waitingRoom/store';
 import game from 'modules/game/store';
 
 
