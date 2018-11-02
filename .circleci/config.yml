@@ -86,7 +86,9 @@ jobs:
 
       - run:
           name: Send public files over SSH
-          command: scp -r public $SSH_USER@$SSH_HOST:netcentric-escape-game/public
+          command: |
+            ssh $SSH_USER@$SSH_HOST "rm -rf netcentric-escape-game/public"
+            scp -r public $SSH_USER@$SSH_HOST:netcentric-escape-game/public
 
       - run:
           name: Create and Send .env Over SSH
@@ -105,6 +107,7 @@ jobs:
           name: Deploy Over SSH
           command: |
             ssh $SSH_USER@$SSH_HOST "cd netcentric-escape-game && \
+            bash clear-container.sh && \
             bash build-backend-container-optimized.sh && \
             bash run-prod-container-optimized.sh"
 
