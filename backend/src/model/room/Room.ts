@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { v1 } from "uuid";
 import { IRoomArrayMessage, IRoomMessage } from "./RoomMessage";
@@ -9,14 +9,14 @@ export class Room {
 
     private sockets = new RoomSocketArray();
     private token: string;
-    private hooks: Array<(message: IRoomMessage) => void> = [];
+    private behaviorSubject: BehaviorSubject<IRoomMessage> = new BehaviorSubject({
+        name: this.name,
+        owner: this.owner,
+        player: [],
+    });
 
     constructor(private name: string, private owner: string) {
         this.token = v1();
-    }
-
-    public addHook(hook: (message: IRoomMessage) => void) {
-        this.hooks.push(hook);
     }
 
     public pushPlayer(socket: RoomSocket) {
@@ -35,6 +35,10 @@ export class Room {
         this.update();
     }
 
+    public getSubject(): BehaviorSubject<IRoomMessage> {
+        return this.behaviorSubject;
+    }
+
     public getToken(): string {
         return this.token;
     }
@@ -51,6 +55,7 @@ export class Room {
         return this.sockets.getInfo().pipe(
             map((player) => ({
                 name: this.name,
+                owner: this.owner,
                 player,
             })),
         );
@@ -62,7 +67,7 @@ export class Room {
 
     public update() {
         this.getRoomDetail().subscribe(
-            (message) => this.hooks.forEach((hook) => hook(message)),
+            (message) => this.behaviorSubject.next(message),
         );
     }
 }

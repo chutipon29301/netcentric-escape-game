@@ -14,7 +14,6 @@ export class RoomArray extends Array<Room> {
 
     private static instance: RoomArray;
 
-    private hooks: Array<(message: IRoomArrayMessage[]) => void> = [];
     private behaviorSubject: BehaviorSubject<IRoomArrayMessage[]> = new BehaviorSubject([]);
 
     public push(room: Room) {
@@ -38,18 +37,12 @@ export class RoomArray extends Array<Room> {
         return this.findIndex((o) => o.getToken() === token) !== -1;
     }
 
-    public addHook(hook: (message: IRoomArrayMessage[]) => void) {
-        this.hooks.push(hook);
-    }
-
     public getSubject(): BehaviorSubject<IRoomArrayMessage[]> {
         return this.behaviorSubject;
     }
 
     public updateValue() {
-        const message = this.list();
-        this.behaviorSubject.next(message);
-        this.hooks.forEach((hook) => hook(message));
+        this.behaviorSubject.next(this.list());
     }
 
     public findRoomWithToken(token: string): Room {
