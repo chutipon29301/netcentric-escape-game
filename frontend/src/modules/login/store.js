@@ -1,23 +1,28 @@
-import { observable, action } from 'mobx';
+import { observable, action } from "mobx";
+import Axios from "../../axiosConfig";
+import { BASE_URL } from "../../env";
 
-class StartStore {
-	@observable
-	coolVariable = 420;
+class loginStore {
+  // @observable onlineUserSocketCollection = [];
+  @observable
+  token = "";
+  @observable
+  room;
 
-	@action.bound
-	hello() {
-		this.coolVariable += 1;
-	}
+  setToken(token) {
+    this.token = token;
+    this.emitOnlineUserSocket(this.token);
+  }
 
-	@action.bound
-	reset() {
-		this.coolVariable = 420;
-	}
-
-	@action.bound
-	set(value) {
-		this.coolVariable = value;
-	}
+  emitOnlineUserSocket(token) {
+    console.log("this is token >>>>>>", token);
+    let socket = new WebSocket(`${BASE_URL}/onlinePlayer?token=${token}`);
+    // this.onlineUserSocketCollection.push(socket);
+    socket.addEventListener("message", ({ data }) => {
+      console.log(JSON.parse(data));
+      this.room = JSON.parse(data);
+    });
+  }
 }
 
-export default new StartStore();
+export default new loginStore();
