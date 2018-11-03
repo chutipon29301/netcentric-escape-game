@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
 import { v1 } from "uuid";
 import { JWTAuth } from "../../repositories/JWTAuth";
@@ -28,13 +28,21 @@ export class Room {
     }
 
     public getRoomDetail(): Observable<IRoomDetail> {
-        return this.sockets.getInfo().pipe(
-            map((player) => ({
+        if (this.sockets.length === 0) {
+            return of({
                 name: this.name,
                 owner: this.owner,
-                player,
-            })),
-        );
+                player: [],
+            });
+        } else {
+            return this.sockets.getInfo().pipe(
+                map((player) => ({
+                    name: this.name,
+                    owner: this.owner,
+                    player,
+                })),
+            );
+        }
     }
 
     public getRoomInfo(): Observable<IRoomInfo> {
