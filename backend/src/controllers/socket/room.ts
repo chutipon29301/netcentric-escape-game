@@ -2,7 +2,7 @@ import { IncomingMessage } from "http";
 import url from "url";
 import WebSocket from "ws";
 import { RoomArray } from "../../model/room/RoomArray";
-import { IRoomArrayMessage, IRoomMessage } from "../../model/room/RoomMessage";
+import { IRoomDetail, IRoomInfo } from "../../model/room/RoomInterface";
 import { RoomSocket as Socket } from "../../model/room/RoomSocket";
 import { Socket as ObservableSocket } from "../../model/socket/Socket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
@@ -42,22 +42,20 @@ export class RoomSocket {
         this.webSocketServer.on("connection", (socket: WebSocket, req: IncomingMessage) => {
             const { query: { token, player } } = url.parse(req.url, true);
             const room = RoomArray.getInstance().findRoomWithToken(token as string);
-            OnlinePlayerSocket.getInstance().removeUserWithToken(token as string);
+            OnlinePlayerSocket.getInstance().removeUserWithToken(player as string);
             const observableSocket = new Socket(socket, player as string);
-            room.pushPlayer(observableSocket);
-            room.getSubject().subscribe(
-                (message) => observableSocket.send(message),
-            );
+            room.addPlayer(observableSocket);
+            room.getRoomDetail().subscribe((message) => observableSocket.send(message));
             observableSocket.data().subscribe(
                 (data) => observableSocket.setReady(data.isReady),
-                (error) => room.removePlayer(player as string),
+                (_) => room.removePlayer(player as string),
                 () => room.removePlayer(player as string),
             );
         });
 
         this.webSocketServerListener.on("connection", (socket: WebSocket) => {
-            const observableSocket = new ObservableSocket<IRoomArrayMessage[], {}>(socket);
-            RoomArray.getInstance().getSubject().subscribe(
+            const observableSocket = new ObservableSocket<IRoomInfo[], {}>(socket);
+            RoomArray.getInstance().getRoomsInfo().subscribe(
                 (message) => observableSocket.send(message),
             );
         });
@@ -65,8 +63,8 @@ export class RoomSocket {
         this.webSocketServerDetailListener.on("connection", (socket: WebSocket, req: IncomingMessage) => {
             const { query: { token } } = url.parse(req.url, true);
             const room = RoomArray.getInstance().findRoomWithToken(token as string);
-            const observableSocket = new ObservableSocket<IRoomMessage, {}>(socket);
-            room.getSubject().subscribe(
+            const observableSocket = new ObservableSocket<IRoomDetail, {}>(socket);
+            room.getRoomDetail().subscribe(
                 (message) => observableSocket.send(message),
             );
         });

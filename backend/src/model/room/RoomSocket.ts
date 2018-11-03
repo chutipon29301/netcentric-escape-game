@@ -1,20 +1,23 @@
-import { Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import WebSocket from "ws";
 import Player from "../../models/Player.model";
 import { Socket } from "../socket/Socket";
-import { IRoomMessage, IRoomSocketMessage } from "./RoomMessage";
+import { IRoomDetail, IRoomSocketInfo } from "./RoomInterface";
 
-export class RoomSocket extends Socket<IRoomMessage, { isReady: boolean }> {
+export class RoomSocket extends Socket<IRoomDetail, { isReady: boolean }> {
 
-    constructor(socket: WebSocket, private token: string, private isReady = false) {
+    private isReadySubject: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+    constructor(socket: WebSocket, private token: string, isReady = false) {
         super(socket);
+        this.isReadySubject.next(isReady);
     }
 
-    public getPlayerInfo(): Observable<IRoomSocketMessage> {
-        return Player.findWithToken(this.token).pipe(
-            map((player) => ({
-                isReady: this.isReady,
+    public getInfo(): Observable<IRoomSocketInfo> {
+        return combineLatest(this.isReadySubject, Player.findWithToken(this.token)).pipe(
+            map(([isReady, player]) => ({
+                isReady,
                 name: player.nickname,
                 token: this.token,
             })),
@@ -22,7 +25,7 @@ export class RoomSocket extends Socket<IRoomMessage, { isReady: boolean }> {
     }
 
     public setReady(isReady: boolean) {
-        this.isReady = isReady;
+        this.isReadySubject.next(isReady);
     }
 
     public getToken(): string {

@@ -1,4 +1,4 @@
-export interface IOnlinePlayerTeam {
+export interface IOnlinePlayerInfo {
     name: string;
     token: string;
 }

@@ -1,8 +1,8 @@
 import WebSocket from "ws";
 import { Socket } from "../socket/Socket";
-import { IPlayerMessage } from "./PlayerMessage";
+import { IUserInfo } from "./UserInterface";
 
-export class PlayerSocket extends Socket<IPlayerMessage[], {}> {
+export class UserSocket extends Socket<IUserInfo[], {}> {
 
     constructor(socket: WebSocket) {
         super(socket);
