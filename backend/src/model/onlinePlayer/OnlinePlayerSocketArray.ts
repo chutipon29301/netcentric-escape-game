@@ -33,9 +33,7 @@ export class OnlinePlayerSocketArray extends SocketArray<OnlinePlayerSocket> {
 
     private update() {
         combineLatest(this.map((o) => o.getInfo())).subscribe(
-            (value) => {
-                this.onlinePlayerInfo.next(value);
-            },
+            (value) => this.onlinePlayerInfo.next(value),
         );
     }
 }
