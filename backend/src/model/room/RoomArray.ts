@@ -23,15 +23,10 @@ export class RoomArray extends Array<Room> {
     }
 
     public remove(roomToken: string) {
-        console.log(roomToken);
         const index = this.findIndex((o) => o.getToken() === roomToken);
-        console.log(index);
         if (index > -1) {
             this[index].closePlayerSocket();
-            console.log(this.length);
-            // this.splice(index, 1);
             _.remove(this, (o) => o.getToken() === roomToken);
-            console.log(this.length);
             this.update();
         }
     }
@@ -53,12 +48,8 @@ export class RoomArray extends Array<Room> {
     }
 
     private update() {
-        console.log(this.length);
         combineLatest(this.map((o) => o.getRoomInfo())).subscribe(
-            (value) => {
-                console.log(value);
-                this.roomsInfo.next(value);
-            },
+            (value) => this.roomsInfo.next(value),
         );
     }
 }

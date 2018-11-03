@@ -56,10 +56,7 @@ export class RoomSocket {
         this.webSocketServerListener.on("connection", (socket: WebSocket) => {
             const observableSocket = new ObservableSocket<IRoomInfo[], {}>(socket);
             RoomArray.getInstance().getRoomsInfo().subscribe(
-                (message) => {
-                    console.log(message);
-                    observableSocket.send(message);
-                },
+                (message) => observableSocket.send(message),
             );
         });
 
