@@ -64,9 +64,7 @@ export class RoomSocket {
             const { query: { token } } = url.parse(req.url, true);
             const room = RoomArray.getInstance().findRoomWithToken(token as string);
             const observableSocket = new ObservableSocket<IRoomDetail, {}>(socket);
-            room.getRoomDetail().subscribe(
-                (message) => observableSocket.send(message),
-            );
+            room.getRoomDetail().subscribe((message) => observableSocket.send(message));
         });
     }
 
