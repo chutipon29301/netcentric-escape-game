@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { body, param } from "express-validator/check";
+import { take } from "rxjs/operators";
 import { Room } from "../../model/room/Room";
 import { RoomArray } from "../../model/room/RoomArray";
 import { User } from "../../model/user/User";
@@ -21,7 +22,12 @@ router.get(
 router.get(
     "/listRoom",
     (_, res) => {
-        res.status(200).send(RoomArray.getInstance().list());
+        RoomArray.getInstance().list().subscribe(
+            (value) => {
+                return res.status(200).send(value);
+            },
+            errorHandler(res),
+        );
     },
 );
 
@@ -50,7 +56,9 @@ router.post(
             req.body.email,
             req.body.password,
         ).subscribe(
-            (token) => res.status(200).send(token),
+            (token) => {
+                return res.status(200).send(token);
+            },
             errorHandler(res),
         );
     },
@@ -78,7 +86,16 @@ router.post(
     (req, res) => {
         const room = new Room(req.body.name, req.body.owner);
         RoomArray.getInstance().push(room);
-        res.status(200).send({ token: room.getRoomInfo() });
+        room.getRoomInfo().pipe(
+            take(1),
+        ).subscribe(
+            (info) => {
+                return res.status(200).send({info});
+            },
+            errorHandler(res),
+        );
+    },
+);
     },
 );
 

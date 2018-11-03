@@ -1,13 +1,13 @@
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { AllowNull, Column, Default, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { IPlayerMessage } from "../model/player/PlayerMessage";
+import { IUserInfo } from "../model/user/UserInterface";
 import { JWTAuth } from "../repositories/JWTAuth";
 
 @Table
 export default class Player extends Model<Player> {
 
-    public static listPlayers(): Observable<IPlayerMessage[]> {
+    public static listPlayers(): Observable<IUserInfo[]> {
         return from(this.findAll()).pipe(
             map((players) =>
                 players.map((player) => ({

@@ -21,13 +21,19 @@ export function completionHandler(
     return SubjectSubscriber.create(
         // tslint:disable-next-line:no-empty
         () => { },
-        (error) => res.status(500).send({ error: error.toString() }),
-        () => res.sendStatus(200),
+        (error) => {
+            return res.status(500).send({ error: error.toString() });
+        },
+        () => {
+            return res.sendStatus(200);
+        },
     );
 }
 
 export function errorHandler(
     res: Response,
 ): (error: any) => void {
-    return (error) => res.status(500).send({ error: error.toString() });
+    return (error) => {
+        return res.status(500).send({ error: error.toString() });
+    };
 }
