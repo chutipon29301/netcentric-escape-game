@@ -2,8 +2,8 @@ import { Router } from "express";
 import { body, param } from "express-validator/check";
 import { Room } from "../../model/room/Room";
 import { RoomArray } from "../../model/room/RoomArray";
+import { User } from "../../model/user/User";
 import { JWTAuth } from "../../repositories/JWTAuth";
-import { User } from "../../repositories/User";
 import { OnlinePlayerSocket } from "../socket/onlinePlayer";
 import { completionHandler, errorHandler, validateRequest } from "../util/requestHandler";
 
@@ -15,16 +15,6 @@ router.get(
         res.json({
             msg: "pong",
         });
-    },
-);
-
-router.get(
-    "/listUser",
-    (_, res) => {
-        User.list().subscribe(
-            (player) => res.status(200).send({ player }),
-            errorHandler(res),
-        );
     },
 );
 
