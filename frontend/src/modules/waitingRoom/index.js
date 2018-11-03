@@ -36,7 +36,7 @@ class WaitingRoom extends Component {
       console.log(error);
     });
     socket.addEventListener("close", function() {
-      console.log("Closed");
+      
     });
   }
 
