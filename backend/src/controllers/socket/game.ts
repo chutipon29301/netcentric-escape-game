@@ -36,6 +36,8 @@ export class GameSocket {
             return GameArray.getInstance().checkGameExist(token as string);
         });
 
+    private constructor() { }
+
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket, req: IncomingMessage) => {
             const { query: { token, player } } = url.parse(req.url, true);

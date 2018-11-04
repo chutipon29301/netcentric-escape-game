@@ -33,6 +33,8 @@ export class OnlinePlayerSocket {
         }
     });
 
+    private constructor() { }
+
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket, req: IncomingMessage) => {
             const { query: { token } } = url.parse(req.url, true);

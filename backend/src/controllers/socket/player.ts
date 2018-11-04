@@ -15,6 +15,8 @@ export class PlayerSocket {
 
     private webSocketServer = SocketGenerator.getInstance().createSocket("/player");
 
+    private constructor() { }
+
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket) => {
             const observableSocket = new Socket(socket);

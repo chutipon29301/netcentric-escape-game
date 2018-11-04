@@ -19,6 +19,7 @@ export class RoomSocket {
     }
 
     private static instance: RoomSocket;
+
     private webSocketServer = SocketGenerator.getInstance().createSocket("/room",
         (info: { origin: string; secure: boolean; req: IncomingMessage }) => {
             const { query: { token, player } } = url.parse(info.req.url, true);
