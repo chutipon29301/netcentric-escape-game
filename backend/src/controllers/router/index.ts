@@ -118,7 +118,28 @@ router.post(
     validateRequest,
     (req, res) => {
         const game = GameArray.getInstance().getGameWithToken(req.body.token);
+        if (game === null) {
+            return res.status(500).send({
+                err: "Invalid token",
+            });
+        }
         game.resetGame();
+        res.sendStatus(200);
+    },
+);
+
+router.post(
+    "/startGame",
+    body("token").isString(),
+    validateRequest,
+    (req, res) => {
+        const game = GameArray.getInstance().getGameWithToken(req.body.token);
+        if (game === null) {
+            return res.status(500).send({
+                err: "Invalid token",
+            });
+        }
+        game.startGame();
         res.sendStatus(200);
     },
 );

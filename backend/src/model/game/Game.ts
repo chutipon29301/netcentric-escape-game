@@ -47,6 +47,7 @@ export class Game {
 
     public regenerateMap() {
         this.info.getValue().map.generateMap();
+        this.update({});
     }
 
     public getToken(): string {
@@ -77,8 +78,8 @@ export class Game {
         );
     }
 
-    private startGame() {
-        if (this.info.getValue().isGameRunning) {
+    public startGame() {
+        if (this.info.getValue().isGameRunning && this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
             this.resetTimer();
             this.info.getValue().player.shuffle();
             this.update({

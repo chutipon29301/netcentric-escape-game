@@ -28,8 +28,9 @@ export class GameArray {
         return this.findGameIndex(token) !== -1;
     }
 
-    public getGameWithToken(token: string): Game {
-        return this.array.getValue()[this.findGameIndex(token)];
+    public getGameWithToken(token: string): Game | null {
+        const index = this.findGameIndex(token);
+        return (index === -1) ? null : this.array.getValue()[index];
     }
 
     public getGameSummary(): Observable<IGameSummary[]> {
