@@ -29,7 +29,9 @@ class Login extends Component {
       url: "/token",
       data: this.state
     }).then(res => {
-        this.props.login.setToken(res.data.token);
+        localStorage.setItem("playerToken",res.data.token);
+        console.log("playerToKennnnnnn",localStorage.getItem("playerToken"))
+        // this.props.login.setToken(res.data.token);
         this.props.routing.push("/waiting");
       })
       .catch(error => {
