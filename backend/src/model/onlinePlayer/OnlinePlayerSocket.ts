@@ -1,4 +1,5 @@
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
+import { flatMap, map } from "rxjs/operators";
 import WebSocket from "ws";
 import Player from "../../models/Player.model";
 import { Socket } from "../socket/Socket";
@@ -6,28 +7,26 @@ import { IOnlinePlayerInfo } from "./OnlinePlayerInterface";
 
 export class OnlinePlayerSocket extends Socket<IOnlinePlayerInfo[], {}> {
 
-    private info: BehaviorSubject<IOnlinePlayerInfo> = new BehaviorSubject({
-        name: "",
-        token: this.token,
-    });
+    private token: BehaviorSubject<string> = new BehaviorSubject("");
 
-    constructor(socket: WebSocket, private token: string) {
+    constructor(socket: WebSocket, token: string) {
         super(socket);
-        Player.findWithToken(token).subscribe(
-            (player) => {
-                this.info.next({
-                    name: player.nickname,
-                    token,
-                });
-            },
-        );
+        this.token.next(token);
     }
 
     public getInfo(): Observable<IOnlinePlayerInfo> {
-        return this.info;
+        return this.token.pipe(
+            flatMap((token) => combineLatest(of(token), Player.findWithToken(token))),
+            map(([token, player]) => {
+                return {
+                    name: player.nickname,
+                    token,
+                };
+            }),
+        );
     }
 
     public getToken(): string {
-        return this.token;
+        return this.token.getValue();
     }
 }

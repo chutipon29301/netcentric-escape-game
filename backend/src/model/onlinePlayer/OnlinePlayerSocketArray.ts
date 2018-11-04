@@ -1,43 +1,38 @@
 import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
+import { flatMap } from "rxjs/operators";
 import { JWTAuth } from "../../repositories/JWTAuth";
-import { SocketArray } from "../socket/SocketArray";
 import { IOnlinePlayerInfo } from "./OnlinePlayerInterface";
 import { OnlinePlayerSocket } from "./OnlinePlayerSocket";
 
-export class OnlinePlayerSocketArray extends SocketArray<OnlinePlayerSocket> {
+export class OnlinePlayerSocketArray {
 
-    private onlinePlayerInfo: BehaviorSubject<IOnlinePlayerInfo[]> = new BehaviorSubject([]);
+    private array: BehaviorSubject<OnlinePlayerSocket[]> = new BehaviorSubject([]);
 
     public addPlayer(player: OnlinePlayerSocket) {
         const index = this.findTokenIndex(player.getToken());
-        if (index >= 0) {
-            return;
-        }
-        this.push(player);
-        this.update();
+        this.removeAtIndex(index);
+        this.array.next([...this.array.getValue(), player]);
     }
 
     public removePlayer(token: string) {
         const index = this.findTokenIndex(token);
         this.removeAtIndex(index);
-        this.update();
     }
 
     public getOnlinePlayerInfo(): Observable<IOnlinePlayerInfo[]> {
-        return this.onlinePlayerInfo;
+        return this.array.pipe(
+            flatMap((elements) => (elements.length === 0) ? of([]) : combineLatest((elements.map((o) => o.getInfo())))),
+        );
     }
 
     private findTokenIndex(token: string): number {
-        return this.findIndex((o) => JWTAuth.equal(o.getToken(), token));
+        return this.array.getValue().findIndex((o) => JWTAuth.equal(o.getToken(), token));
     }
 
-    private update() {
-        if (this.length === 0) {
-            this.onlinePlayerInfo.next([]);
-        } else {
-            combineLatest(this.map((o) => o.getInfo())).subscribe(
-                (value) => this.onlinePlayerInfo.next(value),
-            );
+    private removeAtIndex(index: number) {
+        if (index !== -1) {
+            this.array.getValue().splice(index, 1);
+            this.array.next([...this.array.getValue()]);
         }
     }
 }
