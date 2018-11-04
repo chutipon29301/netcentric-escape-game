@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { flatMap, map } from "rxjs/operators";
-import { IPlayerInfo } from "./GameInterface";
+import { IGamePlayerSummary, IPlayerInfo } from "./GameInterface";
 import { GameSocket } from "./GameSocket";
 
 export class GameSocketArray {
@@ -38,6 +38,12 @@ export class GameSocketArray {
 
     public shuffle() {
         this.array.next(_.shuffle(this.array.getValue()));
+    }
+
+    public getPlayerSummary(): Observable<IGamePlayerSummary[]> {
+        return this.array.pipe(
+            flatMap((elements) => combineLatest(elements.map((o) => o.getPlayerSummary()))),
+        );
     }
 
 }

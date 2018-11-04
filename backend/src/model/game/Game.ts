@@ -1,8 +1,8 @@
-import { BehaviorSubject, combineLatest, Observable, timer } from "rxjs";
-import { map } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, Observable, of, timer } from "rxjs";
+import { flatMap, map } from "rxjs/operators";
 import { PlayerType } from "../../type/playerType";
 import { Map } from "./component/Map";
-import { IGameInfo, IGameUpdate } from "./GameInterface";
+import { IGameInfo, IGameSummary, IGameUpdate } from "./GameInterface";
 import { GameSocket } from "./GameSocket";
 import { GameSocketArray } from "./GameSocketArray";
 
@@ -20,7 +20,6 @@ export class Game {
             player: new GameSocketArray(),
             playerIndex: 0,
             roomToken,
-            turn: "",
         });
     }
 
@@ -31,6 +30,7 @@ export class Game {
             });
             if (this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
                 setTimeout(() => {
+                    this.shufflePlayer();
                     this.startGame();
                 }, 2000);
             }
@@ -64,6 +64,19 @@ export class Game {
         );
     }
 
+    public getGameSummary(): Observable<IGameSummary> {
+        return this.info.pipe(
+            flatMap((info) => combineLatest(of(info), info.player.getPlayerSummary())),
+            map(([info, player]) => ({
+                isGameRunning: info.isGameRunning,
+                maxPlayer: info.numberOfPlayer,
+                player,
+                playerIndex: info.playerIndex,
+                roomToken: info.roomToken,
+            })),
+        );
+    }
+
     private startGame() {
         if (this.info.getValue().isGameRunning) {
             this.resetTimer();
@@ -91,7 +104,6 @@ export class Game {
             player: value.player || this.info.getValue().player,
             playerIndex: value.playerIndex || this.info.getValue().playerIndex,
             roomToken: value.roomToken || this.info.getValue().roomToken,
-            turn: value.turn || this.info.getValue().turn,
         });
     }
 

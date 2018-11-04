@@ -1,10 +1,11 @@
 import { BehaviorSubject, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 import WebSocket from "ws";
 import Player from "../../models/Player.model";
 import { PlayerType } from "../../type/playerType";
 import { Socket } from "../socket/Socket";
 import { Coordinate } from "./component/Coordinate";
-import { IGameResponse, IGameUpdate, IPlayerInfo } from "./GameInterface";
+import { IGamePlayerSummary, IGameResponse, IGameUpdate, IPlayerInfo } from "./GameInterface";
 
 export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
 
@@ -53,6 +54,12 @@ export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
             playerType,
             token: this.info.getValue().token,
         });
+    }
+
+    public getPlayerSummary(): Observable<IGamePlayerSummary> {
+        return this.info.pipe(
+            map(({ name, token }) => ({ name, token })),
+        );
     }
 
 }

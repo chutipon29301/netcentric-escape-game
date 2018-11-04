@@ -2,7 +2,7 @@ import { IncomingMessage } from "http";
 import url from "url";
 import WebSocket from "ws";
 import { GameArray } from "../../model/game/GameArray";
-import { IGameUpdate } from "../../model/game/GameInterface";
+import { IGameSummary, IGameUpdate } from "../../model/game/GameInterface";
 import { GameSocket as Socket } from "../../model/game/GameSocket";
 import { Socket as ObservableSocket } from "../../model/socket/Socket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
@@ -46,7 +46,10 @@ export class GameSocket {
         });
 
         this.webSocketServerListener.on("connection", (socket: WebSocket) => {
-            const observableSocket = new ObservableSocket<{}, {}>(socket);
+            const observableSocket = new ObservableSocket<IGameSummary[], {}>(socket);
+            GameArray.getInstance().getGameSummary().subscribe(
+                (message) => observableSocket.send(message),
+            );
         });
 
         this.webSocketServerDetailListener.on("connection", (socket: WebSocket, req: IncomingMessage) => {

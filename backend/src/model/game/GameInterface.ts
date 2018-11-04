@@ -24,9 +24,21 @@ export interface IGameInfo {
     map: Map;
     backupMap: Map;
     isGameRunning: boolean;
-    turn: string;
     roomToken: string;
     numberOfPlayer: number;
     player: GameSocketArray;
     playerIndex: number;
+}
+
+export interface IGameSummary {
+    isGameRunning: boolean;
+    roomToken: string;
+    player: IGamePlayerSummary[];
+    playerIndex: number;
+    maxPlayer: number;
+}
+
+export interface IGamePlayerSummary {
+    name: string;
+    token: string;
 }

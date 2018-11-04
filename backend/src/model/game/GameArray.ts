@@ -1,6 +1,7 @@
-import _ from "lodash";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { flatMap } from "rxjs/operators";
 import { Game } from "./Game";
+import { IGameSummary } from "./GameInterface";
 
 export class GameArray {
 
@@ -29,6 +30,12 @@ export class GameArray {
 
     public getGameWithToken(token: string): Game {
         return this.array.getValue()[this.findGameIndex(token)];
+    }
+
+    public getGameSummary(): Observable<IGameSummary[]> {
+        return this.array.pipe(
+            flatMap((elements) => combineLatest(elements.map((o) => o.getGameSummary()))),
+        );
     }
 
     private findGameIndex(token: string): number {
