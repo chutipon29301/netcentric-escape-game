@@ -1,4 +1,5 @@
 import { IncomingMessage } from "http";
+import { take } from "rxjs/operators";
 import url from "url";
 import WebSocket from "ws";
 import { IOnlinePlayerInfo } from "../../model/onlinePlayer/OnlinePlayerInterface";
@@ -24,7 +25,9 @@ export class OnlinePlayerSocket {
     private webSocketServer = SocketGenerator.getInstance().createSocket("/onlinePlayer", (info, cb) => {
         const { query: { token } } = url.parse(info.req.url, true);
         if (token) {
-            Player.findWithToken(token as string).subscribe(
+            Player.findWithToken(token as string).pipe(
+                take(1),
+            ).subscribe(
                 (player) => cb(player !== null),
                 () => cb(false),
             );
