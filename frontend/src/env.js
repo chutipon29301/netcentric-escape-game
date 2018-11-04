@@ -1,1 +1,1 @@
-export const BASE_URL = "ws://localhost:8000/api";
+export const BASE_URL = "ws://172.20.10.6:8000/api";
