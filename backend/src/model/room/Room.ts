@@ -37,25 +37,28 @@ export class Room {
     }
 
     public addPlayer(socket: RoomSocket) {
-        this.room.next({
-            name: this.room.getValue().name,
-            owner: this.room.getValue().owner,
+        this.update({
             player: this.room.getValue().player.push(socket),
-            token: this.room.getValue().token,
         });
     }
 
     public removePlayer(token: string) {
-        this.room.next({
-            name: this.room.getValue().name,
-            owner: this.room.getValue().owner,
+        this.update({
             player: this.room.getValue().player.remove(token),
-            token: this.room.getValue().token,
         });
     }
 
     public closePlayerSocket() {
         this.room.getValue().player.closeSocket();
+    }
+
+    private update(value: Partial<IRoom>) {
+        this.room.next({
+            name: value.name || this.room.getValue().name,
+            owner: value.owner || this.room.getValue().owner,
+            player: value.player || this.room.getValue().player,
+            token: value.token || this.room.getValue().token,
+        });
     }
 
 }
