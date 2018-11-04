@@ -1,5 +1,5 @@
-import { BehaviorSubject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
+import { flatMap, map } from "rxjs/operators";
 import WebSocket from "ws";
 import Player from "../../models/Player.model";
 import { PlayerType } from "../../type/playerType";
@@ -9,29 +9,22 @@ import { IGamePlayerSummary, IGameResponse, IGameUpdate, IPlayerInfo } from "./G
 
 export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
 
-    private info: BehaviorSubject<IPlayerInfo> = new BehaviorSubject({
-        coordinate: null,
-        name: "",
-        playerType: null,
-        token: "",
-    });
+    private info: BehaviorSubject<IPlayerInfo>;
 
     constructor(socket: WebSocket, token: string) {
         super(socket);
-        Player.findWithToken(token).subscribe(
-            (player) => {
-                this.info.next({
-                    coordinate: this.info.getValue().coordinate,
-                    name: player.nickname,
-                    playerType: this.info.getValue().playerType,
-                    token,
-                });
-            },
-        );
+        this.info = new BehaviorSubject({
+            coordinate: null,
+            playerType: null,
+            token,
+        });
     }
 
-    public getInfo(): Observable<IPlayerInfo> {
-        return this.info;
+    public getInfo(): Observable<IPlayerInfo & { name: string }> {
+        return this.info.pipe(
+            flatMap((info) => combineLatest(of(info), Player.findWithToken(info.token))),
+            map(([info, {nickname}]) => ({ ...info, name: nickname })),
+        );
     }
 
     public getToken(): string {
@@ -39,30 +32,29 @@ export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
     }
 
     public setCoordinate(coordinate: Coordinate) {
-        this.info.next({
-            coordinate,
-            name: this.info.getValue().name,
-            playerType: this.info.getValue().playerType,
-            token: this.info.getValue().token,
-        });
+        this.update({ coordinate });
     }
 
     public setPlayerType(playerType: PlayerType) {
-        this.info.next({
-            coordinate: this.info.getValue().coordinate,
-            name: this.info.getValue().name,
-            playerType,
-            token: this.info.getValue().token,
-        });
+        this.update({ playerType });
     }
 
     public getPlayerSummary(): Observable<IGamePlayerSummary> {
         return this.info.pipe(
-            map(({ name, token }) => ({ name, token })),
+            flatMap((info) => combineLatest(of(info.token), Player.findWithToken(info.token))),
+            map(([token, {nickname}]) => ({ name: nickname, token })),
         );
     }
 
     public getPLayerAction(): Observable<IGameResponse> {
         return this.data();
+    }
+
+    private update(value: Partial<IPlayerInfo>) {
+        this.info.next({
+            coordinate: value.coordinate || this.info.getValue().coordinate,
+            playerType: value.playerType || this.info.getValue().playerType,
+            token: value.token || this.info.getValue().token,
+        });
     }
 }

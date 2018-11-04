@@ -18,7 +18,6 @@ export interface IPlayerInfo {
     coordinate: Coordinate;
     playerType: PlayerType;
     token: string;
-    name: string;
 }
 
 export interface IGameInfo {
