@@ -89,6 +89,13 @@ export class Game {
         }
     }
 
+    public nextPlayer() {
+        this.resetTimer();
+        this.update({
+            playerIndex: this.info.getValue().playerIndex + 1 % this.info.getValue().player.staticLength(),
+        });
+    }
+
     private shufflePlayer() {
         this.info.getValue().player.shuffle();
         for (const [index, value] of this.info.getValue().player.getStaticArray().entries()) {
@@ -110,12 +117,13 @@ export class Game {
 
     private resetTimer() {
         this.timer = timer(1000, 1000);
-    }
-
-    private nextPlayer() {
-        this.update({
-            playerIndex: this.info.getValue().playerIndex + 1 % this.info.getValue().player.staticLength(),
-        });
+        this.timer.subscribe(
+            (value) => {
+                if (value > 10) {
+                    this.nextPlayer();
+                }
+            },
+        );
     }
 
 }
