@@ -6,38 +6,52 @@ import WaitingModal from "./components/WaitingModal";
 import { BASE_URL } from "../../env";
 import Axios from "../../axiosConfig";
 
-@inject("routing","roomStore","login")
+@inject("routing", "roomStore", "login")
 @withRouter
 @observer
 class WaitingRoom extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       showWaitingModal: false,
-      tableData: [{ name: "-", playerCount: "-", token:"" }],
-      createdRoomName: ""
+      tableData: [{ name: "-", playerCount: "-", token: "" }],
+      createdRoomName: "",
+      clickedRoomToken: "",
+      playerToken: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleCreateRoom = this.handleCreateRoom.bind(this);
+    this.emitOnlineUserSocket = this.emitOnlineUserSocket.bind(this);
+    this.setClickedRoomToken = this.setClickedRoomToken.bind(this);
+  }
+
+  emitOnlineUserSocket() {
+    // console.log("this is token >>>>>>", this.state.playerToken);
+    let socket = new WebSocket(
+      `${BASE_URL}/onlinePlayer?token=${localStorage.getItem("playerToken")}`
+    );
+    // this.onlineUserSocketCollection.push(socket);
+    socket.addEventListener("message", ({ data }) => {
+      // console.log(JSON.parse(data));
+      this.setState({ tableData: JSON.parse(data) });
+      // console.log(localStorage.getItem("plyerToken"));
+    });
+    socket.addEventListener("error", event => {
+      if (event.code === 1006) {
+        this.emitOnlineUserSocket();
+      }
+    });
   }
 
   componentDidMount() {
-    let socket = new WebSocket(`${BASE_URL}/roomListener`);
-    // console.log("hellooooo",this.props.login.token)
-    socket.addEventListener("message", event => {
-      try {
-        this.setState({ tableData: JSON.parse(event.data) });
-        console.log(this.state.tableData);
-      } catch (error) {}
-    });
-    socket.addEventListener("error", function(error) {
-      alert(error.toString());
-      console.log(error);
-    });
-    socket.addEventListener("close", function() {
-      
-    });
+    // console.log(">>>>>>>>>>>>>>>>>",localStorage.getItem("playerToken"));
+    this.setState({ playerToken: localStorage.getItem("playerToken") });
+    // console.log(this.state.playerToken);
+    this.emitOnlineUserSocket();
+  }
+
+  setClickedRoomToken(token) {
+    this.setState({ clickedRoomToken: token });
   }
 
   handleChange(event) {
@@ -46,20 +60,34 @@ class WaitingRoom extends Component {
 
   handleCreateRoom(event) {
     // event.preventDefault();
+    // console.log(localStorage.getItem("playerToken"))
     Axios({
       method: "post",
       url: "/createRoom",
       data: {
         name: this.state.createdRoomName,
-        owner: this.props.login.token
+        owner: localStorage.getItem("playerToken")
       }
     })
       .then(res => {
-        this.props.roomStore.name=(res.name);
+        console.log("res token:", res.data.info.token);
+        this.props.roomStore.joinRoom(
+          localStorage.getItem("playerToken"),
+          res.data.info.token
+        );
+        this.props.roomStore.setRoomToken(res.data.info.token);
       })
       .catch(error => {
-        console.log(error.response);
-      })
+        console.log("error:",error.response);
+      });
+  }
+
+  handleJoinRoom() {
+    let ownerToken = this.state.playerToken;
+    let roomToken = this.state.clickedRoomToken;
+    console.log("ownerToken", ownerToken);
+    console.log("roomToken", roomToken);
+    this.props.roomStore.joinRoom(ownerToken, roomToken);
   }
 
   render() {
@@ -91,11 +119,12 @@ class WaitingRoom extends Component {
                         <button
                           type="button"
                           className="btn btn-light"
-                          disabled={this.state.createdRoomName==""}
+                          disabled={this.state.createdRoomName == ""}
                           onClick={() => {
                             // Show waiting room of newly created room
                             this.setState({ showWaitingModal: true });
                             this.handleCreateRoom();
+                            this.setState({ createdRoomName: "" });
                           }}
                         >
                           Create
@@ -122,11 +151,13 @@ class WaitingRoom extends Component {
                         </tr>
                       </thead>
                       <tbody>
+                        {/* {console.log("table dataaaaaa", this.state.tableData)} */}
                         {this.state.tableData.map((e, i) => (
                           <tr
                             key={i}
                             onClick={() => {
-                              // Show waiting room of this room
+                              this.setClickedRoomToken(e.token);
+                              this.handleJoinRoom();
                               this.setState({ showWaitingModal: true });
                             }}
                           >

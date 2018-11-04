@@ -1,47 +1,60 @@
 import { observable, action } from "mobx";
+import { BASE_URL } from "../../env";
 
 class RoomStore {
+
+  @observable
+  roomToken=""
+
+  @action.bound
+  setRoomToken(token){
+    this.roomToken = token;
+  }
+
   @observable
   room = {
-    roomToken: "0",
-    name: "Room",
-    players: [
-      { playerToken: "9999", name: "Player0", isReady: false },
-      { playerToken: "4534", name: "Player1", isReady: true },
-      { playerToken: "7659", name: "Player2", isReady: false }
-    ]
+    name: "",
+    owner: "",
+    player: []
   };
 
   @action.bound
-  setRoom(room) {
-    this.room = room;
+  joinRoom(ownerToken, roomToken) {
+    let socket = new WebSocket(
+      `${BASE_URL}/room?token=${roomToken}&player=${ownerToken}`
+    );
+    // this.onlineUserSocketCollection.push(socket);
+    socket.addEventListener("message", ({ data }) => {
+      console.log("room:)", JSON.parse(data));
+      this.setRoom(JSON.parse(data));
+      console.log("room observable:)", this.room);
+    });
+    socket.addEventListener('close', (event)=>{
+      if(event.code===1006){
+          console.log("reconnect joinroom")
+          // window.setTimeout(this.joinRoom(ownerToken,roomToken), 1000);
+      }
+  })
   }
 
   @action.bound
-  getEveryoneReady() {
-    for (var player in this.room.players) {
+  setRoom(data){
+    this.room.name = data.name;
+    this.room.owner = data.owner;
+    this.room.player = data.player;
+
+  }
+
+  @action.bound
+  isAllPlayerReady() {
+    for (let player of this.room.player) {
       if (!player.isReady) {
         return false;
       }
     }
-
     return true;
   }
 
-  @action.bound
-  getMyReady() {
-    return this.room.players.find(e => e.playerToken === "9999").isReady;
-  }
-
-  // When ready is clicked, playerToken and isReady is sent to server,
-  // and server sends back room info again
-  @action.bound
-  setMyReady(myReady) {
-    const newRoom = { ...this.room };
-    newRoom.players.find(e => e.playerToken === "9999").isReady = myReady;
-    this.room = newRoom;
-  }
 }
 
 export const roomStore = new RoomStore();
-
