@@ -1,75 +1,61 @@
-import { BehaviorSubject, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
+import { flatMap, map } from "rxjs/operators";
 import { v1 } from "uuid";
-import { JWTAuth } from "../../repositories/JWTAuth";
-import { IRoomDetail, IRoomInfo } from "./RoomInterface";
+import { IRoom, IRoomDetail, IRoomInfo } from "./RoomInterface";
 import { RoomSocket } from "./RoomSocket";
 import { RoomSocketArray } from "./RoomSocketArray";
 
 export class Room {
 
-    private sockets = new RoomSocketArray();
-    private token = v1();
-    private roomInfo: BehaviorSubject<IRoomInfo> = new BehaviorSubject({
-        name: this.name,
-        playerCount: this.sockets.length,
-        token: this.token,
-    });
-    private roomDetail: BehaviorSubject<IRoomDetail> = new BehaviorSubject({
-        name: this.name,
-        owner: this.owner,
-        player: [],
-    });
+    private room: BehaviorSubject<IRoom>;
 
-    constructor(private name: string, private owner: string) { }
+    constructor(name: string, owner: string) {
+        this.room.next({
+            name,
+            owner,
+            player: new RoomSocketArray(),
+            token: v1(),
+        });
+    }
 
     public getToken(): string {
-        return this.token;
+        return this.room.getValue().token;
     }
 
     public getRoomDetail(): Observable<IRoomDetail> {
-        if (this.sockets.length === 0) {
-            return of({
-                name: this.name,
-                owner: this.owner,
-                player: [],
-            });
-        } else {
-            return this.sockets.getInfo().pipe(
-                map((player) => ({
-                    name: this.name,
-                    owner: this.owner,
-                    player,
-                })),
-            );
-        }
+        return this.room.pipe(
+            flatMap((info) => combineLatest(of(info.name), of(info.owner), info.player.getInfo())),
+            map(([name, owner, player]) => ({ name, owner, player })),
+        );
     }
 
     public getRoomInfo(): Observable<IRoomInfo> {
-        return this.roomInfo;
+        return this.room.pipe(
+            flatMap((info) => combineLatest(of(info.name), of(info.token), info.player.length())),
+            map(([name, token, playerCount]) => ({ name, token, playerCount })),
+        );
     }
 
     public addPlayer(socket: RoomSocket) {
-        this.sockets.push(socket);
-        this.update();
+        this.room.next({
+            name: this.room.getValue().name,
+            owner: this.room.getValue().owner,
+            player: this.room.getValue().player.push(socket),
+            token: this.room.getValue().token,
+        });
     }
 
     public removePlayer(token: string) {
-        this.sockets.removeAtIndex(this.sockets.findIndex((o) => JWTAuth.equal(o.getToken(), token)));
-        this.update();
+        this.room.next({
+            name: this.room.getValue().name,
+            owner: this.room.getValue().owner,
+            player: this.room.getValue().player.remove(token),
+            token: this.room.getValue().token,
+        });
     }
 
     public closePlayerSocket() {
-        this.sockets.forEach((o) => o.close());
-    }
-
-    private update() {
-        this.roomInfo.next({
-            name: this.name,
-            playerCount: this.sockets.length,
-            token: this.token,
-        });
-        this.getRoomDetail().subscribe((message) => this.roomDetail.next(message));
+        this.room.getValue().player.closeSocket();
     }
 
 }

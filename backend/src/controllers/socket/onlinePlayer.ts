@@ -38,7 +38,7 @@ export class OnlinePlayerSocket {
             const { query: { token } } = url.parse(req.url, true);
             const observableSocket = new Socket(socket, token as string);
             this.socketArray.addPlayer(observableSocket);
-            RoomArray.getInstance().getRoomsInfo().subscribe(
+            RoomArray.getInstance().list().subscribe(
                 (message) => observableSocket.send(message),
             );
             observableSocket.data().subscribe(

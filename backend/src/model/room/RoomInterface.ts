@@ -1,3 +1,5 @@
+import { RoomSocketArray } from "./RoomSocketArray";
+
 export interface IRoomSocketInfo {
     name: string;
     token: string;
@@ -14,4 +16,11 @@ export interface IRoomInfo {
     name: string;
     token: string;
     playerCount: number;
+}
+
+export interface IRoom {
+    name: string;
+    owner: string;
+    player: RoomSocketArray;
+    token: string;
 }
