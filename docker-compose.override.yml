@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  api:
+    volumes: 
+      - ./backend:/backend
+  nginx:
+    ports: 
+      - 80:80
+      - 443:443
+    volumes: 
+      - ./config/sites-enabled/server.conf:/etc/nginx/sites-enabled/server.conf
