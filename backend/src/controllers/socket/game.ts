@@ -53,7 +53,7 @@ export class GameSocket {
         });
 
         this.webSocketServerDetailListener.on("connection", (socket: WebSocket, req: IncomingMessage) => {
-            const { query: { token, player } } = url.parse(req.url, true);
+            const { query: { token } } = url.parse(req.url, true);
             const game = GameArray.getInstance().getGameWithToken(token as string);
             const observableSocket = new ObservableSocket<IGameUpdate, {}>(socket);
             game.getGameInfo().subscribe((message) => observableSocket.send(message));

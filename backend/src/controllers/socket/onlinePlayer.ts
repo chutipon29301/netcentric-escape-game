@@ -38,13 +38,11 @@ export class OnlinePlayerSocket {
             const { query: { token } } = url.parse(req.url, true);
             const observableSocket = new Socket(socket, token as string);
             this.socketArray.addPlayer(observableSocket);
-            RoomArray.getInstance().list().subscribe(
-                (message) => observableSocket.send(message),
-            );
+            RoomArray.getInstance().list().subscribe((message) => observableSocket.send(message));
             observableSocket.data().subscribe(
                 // tslint:disable-next-line:no-empty
                 () => { },
-                (_) => this.socketArray.removePlayer(token as string),
+                () => this.socketArray.removePlayer(token as string),
                 () => this.socketArray.removePlayer(token as string),
             );
         });
