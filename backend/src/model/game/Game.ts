@@ -49,19 +49,19 @@ export class Game {
         this.info.getValue().map.generateMap();
     }
 
-    public getUpdateInfo(): Observable<IGameUpdate> {
-        return combineLatest(this.timer, this.info).pipe(
-            map(([time, info]) => {
+    public getToken(): string {
+        return this.info.getValue().roomToken;
+    }
+
+    public getGameInfo(): Observable<IGameUpdate> {
+        return combineLatest(this.timer, this.info.getValue().player.getInfo()).pipe(
+            map(([time, playersInfo]) => {
                 return {
+                    playersInfo,
                     time,
-                    turn: info.turn,
                 };
             }),
         );
-    }
-
-    public getToken(): string {
-        return this.info.getValue().roomToken;
     }
 
     private startGame() {

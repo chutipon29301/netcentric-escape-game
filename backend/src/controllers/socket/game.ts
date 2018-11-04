@@ -2,6 +2,7 @@ import { IncomingMessage } from "http";
 import url from "url";
 import WebSocket from "ws";
 import { GameArray } from "../../model/game/GameArray";
+import { IGameUpdate } from "../../model/game/GameInterface";
 import { GameSocket as Socket } from "../../model/game/GameSocket";
 import { Socket as ObservableSocket } from "../../model/socket/Socket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
@@ -29,16 +30,30 @@ export class GameSocket {
             }
         });
     private webSocketServerListener = SocketGenerator.getInstance().createSocket("/gameListener");
+    private webSocketServerDetailListener = SocketGenerator.getInstance().createSocket("/gameDetail",
+        (info: { origin: string; secure: boolean; req: IncomingMessage }) => {
+            const { query: { token } } = url.parse(info.req.url, true);
+            return GameArray.getInstance().checkGameExist(token as string);
+        });
 
     public init() {
         this.webSocketServer.on("connection", (socket: WebSocket, req: IncomingMessage) => {
             const { query: { token, player } } = url.parse(req.url, true);
             const game = GameArray.getInstance().getGameWithToken(token as string);
             const observableSocket = new Socket(socket, player as string);
+            game.addPlayer(observableSocket);
+            game.getGameInfo().subscribe((message) => observableSocket.send(message));
         });
 
         this.webSocketServerListener.on("connection", (socket: WebSocket) => {
             const observableSocket = new ObservableSocket<{}, {}>(socket);
+        });
+
+        this.webSocketServerDetailListener.on("connection", (socket: WebSocket, req: IncomingMessage) => {
+            const { query: { token, player } } = url.parse(req.url, true);
+            const game = GameArray.getInstance().getGameWithToken(token as string);
+            const observableSocket = new ObservableSocket<IGameUpdate, {}>(socket);
+            game.getGameInfo().subscribe((message) => observableSocket.send(message));
         });
     }
 }

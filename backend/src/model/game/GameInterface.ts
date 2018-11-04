@@ -6,7 +6,7 @@ import { GameSocketArray } from "./GameSocketArray";
 
 export interface IGameUpdate {
     time: number;
-    turn: string;
+    playersInfo: IPlayerInfo[];
 }
 
 export interface IGameResponse {
