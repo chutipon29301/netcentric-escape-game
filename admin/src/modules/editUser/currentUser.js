@@ -17,7 +17,8 @@ class CurrentUser extends React.Component {
             method: 'delete',
             url: '/user',
             data: user
-        }).then((response) => {});
+        }).then((response) => {})
+        .catch((err) => console.log(err));
     }
 
     handleSubmit(event) {
@@ -25,6 +26,10 @@ class CurrentUser extends React.Component {
     }
 
     componentDidMount() {
+        this.connectSocket();
+    }
+
+    connectSocket(){
         let socket = new WebSocket(`${BASE_URL}/player`);
 
         socket.addEventListener("message", (event) => {
@@ -32,13 +37,19 @@ class CurrentUser extends React.Component {
             try{
                 tableData = JSON.parse(event.data);
                 this.setState({ tableData  });
+                console.log(tableData)
             }catch(error){
 
             }
         });
-
         socket.addEventListener("error",(error) => {
             alert(error);
+        });
+        socket.addEventListener("close",(event) => {
+            if(event.code === 1006){
+                console.log("reconnect")
+                this.connectSocket();
+            }
         });
     }
 

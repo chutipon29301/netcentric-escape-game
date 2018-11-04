@@ -31,20 +31,29 @@ class WaitingUser extends React.Component {
 	}
 
 	componentDidMount() {
-		let socket = new WebSocket(`${BASE_URL}/onlinePlayerListener`);
-		socket.addEventListener('message', event => {
-			try {
-				this.setState({ tableData: JSON.parse(event.data) });
-			} catch (error) {}
-		});
-		socket.addEventListener('error', function(error) {
-			alert(error.toString());
-			console.log(error);
-		});
-		socket.addEventListener('close', function() {
-			console.log('Closed');
-		});
-	}
+        this.connectSocket();
+    }
+    connectSocket(){
+        let socket = new WebSocket(`${BASE_URL}/onlinePlayerListener`);
+        socket.addEventListener('message', event => {
+            try {
+                this.setState({ tableData: JSON.parse(event.data) });
+                console.log(this.state.tableData)
+            } catch (error) {}
+        });
+        socket.addEventListener('error', function(error) {
+            alert(error.toString());
+            console.log(error);
+        });
+        socket.addEventListener('close', (event)=> {
+            
+            if(event.code===1006){
+                console.log("reconnect onlineplayerlist socket")
+                // window.setTimeout(this.connectSocket(), 1000);
+            }
+        });
+
+    }
 
 	joinRoom(socket) {
 		Axios({
@@ -128,8 +137,7 @@ class WaitingUser extends React.Component {
 						)}
 					</tbody>
 				</table>
-				{/* <button type="submit" className="btn btn-outline-success" onChange={this.handleChange}>Start game</button> */}
-				<CreateRoom />
+                <CreateRoom />
 				<JoinRoom rooms={this.state.rooms} player={this.state.player} />
 			</div>
 		);

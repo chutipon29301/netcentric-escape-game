@@ -39,7 +39,7 @@ class GameList extends React.Component {
             console.log(error)
         });
         socket.addEventListener('close', function () {
-            console.log("Closed");
+            
         });
 
     }
@@ -79,7 +79,8 @@ class GameList extends React.Component {
             console.log(error)
         });
         listener.socket.addEventListener('close', function () {
-            console.log("Closed");
+            
+            
         });
     }
 
