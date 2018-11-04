@@ -1,7 +1,7 @@
 import _ from "lodash";
-import { BehaviorSubject, combineLatest, Observable } from "rxjs";
-import { flatMap, map } from "rxjs/operators";
-import { IGamePlayerSummary, IPlayerInfo } from "./GameInterface";
+import { BehaviorSubject, combineLatest, merge, Observable, of } from "rxjs";
+import { flatMap, map, mergeMap } from "rxjs/operators";
+import { IGamePlayerSummary, IGameResponseDetail, IPlayerInfo } from "./GameInterface";
 import { GameSocket } from "./GameSocket";
 
 export class GameSocketArray {
@@ -46,4 +46,16 @@ export class GameSocketArray {
         );
     }
 
+    public getPlayerAction(): Observable<IGameResponseDetail> {
+        return this.array.pipe(
+            flatMap((elements) => merge(elements.map((o) => combineLatest(of(o), o.getPLayerAction())))),
+            flatMap((value) => value),
+            map(([player, response]) => {
+                return {
+                    direction: response.direction,
+                    player,
+                };
+            }),
+        );
+    }
 }

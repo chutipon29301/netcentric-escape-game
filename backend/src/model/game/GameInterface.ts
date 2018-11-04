@@ -2,6 +2,7 @@ import { Direction } from "../../type/direction";
 import { PlayerType } from "../../type/playerType";
 import { Coordinate } from "./component/Coordinate";
 import { Map } from "./component/Map";
+import { GameSocket } from "./GameSocket";
 import { GameSocketArray } from "./GameSocketArray";
 
 export interface IGameUpdate {
@@ -41,4 +42,8 @@ export interface IGameSummary {
 export interface IGamePlayerSummary {
     name: string;
     token: string;
+}
+
+export interface IGameResponseDetail extends IGameResponse {
+    player: GameSocket;
 }

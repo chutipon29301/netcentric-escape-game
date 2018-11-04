@@ -86,6 +86,13 @@ export class Game {
                 backupMap: this.info.getValue().map.clone(),
                 isGameRunning: true,
             });
+            const playerAction = this.info.pipe(
+                flatMap((info) => info.player.getPlayerAction()),
+            ).subscribe(
+                (responses) => {
+                    // responses.
+                },
+            );
         }
     }
 

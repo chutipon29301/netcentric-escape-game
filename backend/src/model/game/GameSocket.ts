@@ -62,4 +62,7 @@ export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
         );
     }
 
+    public getPLayerAction(): Observable<IGameResponse> {
+        return this.data();
+    }
 }
