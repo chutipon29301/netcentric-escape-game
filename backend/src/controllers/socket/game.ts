@@ -1,8 +1,8 @@
 import { IncomingMessage } from "http";
 import url from "url";
 import WebSocket from "ws";
-import { GameArray } from "../../model/game/old/GameArray";
-import { GamePlayerSocket as Socket } from "../../model/game/old/GamePlayerSocket";
+import { GameArray } from "../../model/game/GameArray";
+import { GameSocket as Socket } from "../../model/game/GameSocket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import { JWTAuth } from "../../repositories/JWTAuth";
 
