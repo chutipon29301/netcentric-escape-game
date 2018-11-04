@@ -17,12 +17,7 @@ export class OnlinePlayerSocket extends Socket<IOnlinePlayerInfo[], {}> {
     public getInfo(): Observable<IOnlinePlayerInfo> {
         return this.token.pipe(
             flatMap((token) => combineLatest(of(token), Player.findWithToken(token))),
-            map(([token, player]) => {
-                return {
-                    name: player.nickname,
-                    token,
-                };
-            }),
+            map(([token, { nickname }]) => ({ name: nickname, token })),
         );
     }
 
