@@ -45,7 +45,7 @@ class UserInRoom extends React.Component {
 						</tr>
 					</thead>
 					<tbody>
-						{this.props.users.map(
+						{this.props.users.player.map(
 							function(row, index) {
 								return (
 									<tr key={index}>

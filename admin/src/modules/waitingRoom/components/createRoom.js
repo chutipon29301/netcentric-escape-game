@@ -32,10 +32,10 @@ class CreateRoom extends React.Component {
             method: 'post',
             url: '/createRoom',
             data: {name: this.state.roomName,
-                   owner: RoomStore.roomMaster.name}
+                   owner: RoomStore.roomMaster.token}
         }).then((response) => {
-            console.log('res'+response.data)
-            RoomStore.setToken(response.data.token)
+            
+            RoomStore.setToken(response.data.info)
         });
         console.log('create!')
     }
@@ -57,7 +57,7 @@ class CreateRoom extends React.Component {
                                 <input type="text" name="roomName" className="form-control" placeholder="Input room name" onChange={this.handleChange} value = {this.state.roomName} />
                             </div>
                             <div className="modal-footer ">
-                                <button type="submit" className="btn btn-primary" onClick={this.handleSubmit} data-dismiss="modal">Create Room!</button>
+                                <button type="button" className="btn btn-primary" onClick={this.handleSubmit}  data-dismiss="modal">Create Room!</button>
                             </div>
                         </div>
                     </div>

@@ -20,14 +20,21 @@ class JoinRoom extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        this.connectSocket();
+        console.log('JOIN!')
+    }
+    connectSocket(){
         let socket = new WebSocket(`${BASE_URL}/room?token=${this.state.roomToken}&&player=${this.props.player.token}`);
         socket.addEventListener('message', ({data}) => {
             console.log(data);
         })
-        
-        console.log('JOIN!')
+        socket.addEventListener('close', (event)=>{
+            if(event.code===1006){
+                console.log("reconnect joinroom")
+                // window.setTimeout(this.connectSocket(), 1000);
+            }
+        })
     }
-
     handleChange(event) {
         this.setState({roomToken: event.target.value});
     }
