@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
 import { JWTAuth } from "../../repositories/JWTAuth";
 import { SocketArray } from "../socket/SocketArray";
 import { IOnlinePlayerInfo } from "./OnlinePlayerInterface";
@@ -32,8 +32,12 @@ export class OnlinePlayerSocketArray extends SocketArray<OnlinePlayerSocket> {
     }
 
     private update() {
-        combineLatest(this.map((o) => o.getInfo())).subscribe(
-            (value) => this.onlinePlayerInfo.next(value),
-        );
+        if (this.length === 0) {
+            this.onlinePlayerInfo.next([]);
+        } else {
+            combineLatest(this.map((o) => o.getInfo())).subscribe(
+                (value) => this.onlinePlayerInfo.next(value),
+            );
+        }
     }
 }

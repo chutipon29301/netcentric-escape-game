@@ -27,8 +27,8 @@ export class RoomArray extends Array<Room> {
         if (index > -1) {
             this[index].closePlayerSocket();
             _.remove(this, (o) => o.getToken() === roomToken);
-            this.update();
         }
+        this.update();
     }
 
     public getRoomsInfo(): Observable<IRoomInfo[]> {
@@ -48,8 +48,12 @@ export class RoomArray extends Array<Room> {
     }
 
     private update() {
-        combineLatest(this.map((o) => o.getRoomInfo())).subscribe(
-            (value) => this.roomsInfo.next(value),
-        );
+        if (this.length === 0) {
+            this.roomsInfo.next([]);
+        } else {
+            combineLatest(this.map((o) => o.getRoomInfo())).subscribe(
+                (value) => this.roomsInfo.next(value),
+            );
+        }
     }
 }

@@ -4,6 +4,7 @@ import WebSocket from "ws";
 import { IOnlinePlayerInfo } from "../../model/onlinePlayer/OnlinePlayerInterface";
 import { OnlinePlayerSocket as Socket } from "../../model/onlinePlayer/OnlinePlayerSocket";
 import { OnlinePlayerSocketArray } from "../../model/onlinePlayer/OnlinePlayerSocketArray";
+import { RoomArray } from "../../model/room/RoomArray";
 import { Socket as ObservableSocket } from "../../model/socket/Socket";
 import { SocketGenerator } from "../../model/socket/SocketGenerator";
 import Player from "../../models/Player.model";
@@ -37,7 +38,7 @@ export class OnlinePlayerSocket {
             const { query: { token } } = url.parse(req.url, true);
             const observableSocket = new Socket(socket, token as string);
             this.socketArray.addPlayer(observableSocket);
-            this.socketArray.getOnlinePlayerInfo().subscribe(
+            RoomArray.getInstance().getRoomsInfo().subscribe(
                 (message) => observableSocket.send(message),
             );
             observableSocket.data().subscribe(
