@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from "rxjs";
 import { flatMap, map } from "rxjs/operators";
 import { v1 } from "uuid";
 import { IRoom, IRoomDetail, IRoomInfo } from "./RoomInterface";

@@ -1,4 +1,5 @@
 import { IncomingMessage } from "http";
+import { Subscription } from "rxjs";
 import url from "url";
 import WebSocket from "ws";
 import { RoomArray } from "../../model/room/RoomArray";
@@ -46,11 +47,11 @@ export class RoomSocket {
             OnlinePlayerSocket.getInstance().removeUserWithToken(player as string);
             const observableSocket = new Socket(socket, player as string);
             room.addPlayer(observableSocket);
-            room.getRoomDetail().subscribe((message) => observableSocket.send(message));
+            room.getRoomDetail().subscribe(
+                (message) => observableSocket.send(message),
+            );
             observableSocket.data().subscribe(
                 (data) => observableSocket.setReady(data.isReady),
-                (_) => room.removePlayer(player as string),
-                () => room.removePlayer(player as string),
             );
         });
 
@@ -65,7 +66,9 @@ export class RoomSocket {
             const { query: { token } } = url.parse(req.url, true);
             const room = RoomArray.getInstance().findRoomWithToken(token as string);
             const observableSocket = new ObservableSocket<IRoomDetail, {}>(socket);
-            room.getRoomDetail().subscribe((message) => observableSocket.send(message));
+            room.getRoomDetail().subscribe(
+                (message) => observableSocket.send(message),
+            );
         });
     }
 
