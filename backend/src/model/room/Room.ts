@@ -10,7 +10,7 @@ export class Room {
     private room: BehaviorSubject<IRoom>;
 
     constructor(name: string, owner: string) {
-        this.room.next({
+        this.room = new BehaviorSubject({
             name,
             owner,
             player: new RoomSocketArray(),
