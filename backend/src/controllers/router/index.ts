@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { body, param } from "express-validator/check";
 import { take } from "rxjs/operators";
+import { Game } from "../../model/game/Game";
+import { GameArray } from "../../model/game/GameArray";
 import { Room } from "../../model/room/Room";
 import { RoomArray } from "../../model/room/RoomArray";
 import { User } from "../../model/user/User";
@@ -94,6 +96,30 @@ router.post(
         );
     },
 );
+
+router.post(
+    "/createGame",
+    body("token").isString(),
+    body("numberOfPlayer").isInt({ min: 0 }),
+    body("dimensionX").isInt({ min: 3, max: 8 }).isInt().optional(),
+    body("dimensionY").isInt({ min: 3, max: 8 }).isInt().optional(),
+    body("obstaclePercent").isFloat({ min: 0, max: 1 }).optional(),
+    validateRequest,
+    (req, res) => {
+        const game = new Game(req.body.token, req.body.numberOfPlayer, req.body.dimensionX, req.body.dimensionY, req.body.obstaclePercent);
+        GameArray.getInstance().push(game);
+        res.sendStatus(200);
+    },
+);
+
+router.post(
+    "/resetGame",
+    body("token").isString(),
+    validateRequest,
+    (req, res) => {
+        const game = GameArray.getInstance().getGameWithToken(req.body.token);
+        game.resetGame();
+        res.sendStatus(200);
     },
 );
 
