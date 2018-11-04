@@ -22,10 +22,10 @@ router.get(
 router.get(
     "/listRoom",
     (_, res) => {
-        RoomArray.getInstance().list().subscribe(
-            (value) => {
-                return res.status(200).send(value);
-            },
+        RoomArray.getInstance().list().pipe(
+            take(1),
+        ).subscribe(
+            (value) => res.status(200).send(value),
             errorHandler(res),
         );
     },
@@ -55,10 +55,10 @@ router.post(
         User.login(
             req.body.email,
             req.body.password,
+        ).pipe(
+            take(1),
         ).subscribe(
-            (token) => {
-                return res.status(200).send(token);
-            },
+            (token) => res.status(200).send(token),
             errorHandler(res),
         );
     },
@@ -89,9 +89,7 @@ router.post(
         room.getRoomInfo().pipe(
             take(1),
         ).subscribe(
-            (info) => {
-                return res.status(200).send({info});
-            },
+            (info) => res.status(200).send({ info }),
             errorHandler(res),
         );
     },
