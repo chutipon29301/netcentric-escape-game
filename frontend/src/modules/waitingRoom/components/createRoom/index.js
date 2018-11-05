@@ -1,9 +1,15 @@
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 import React, { Component } from "react";
 import "./style.scss";
 
+@inject("waitingRoomStore")
 @observer
 export default class CreateRoom extends Component {
+
+    handleChange = (event) => {
+        this.props.waitingRoomStore.onChange(event.target.name, event.target.value);
+    }
+
     render() {
         return (
             <div className="panel panel-default">
@@ -19,8 +25,8 @@ export default class CreateRoom extends Component {
                                     id="room-name"
                                     className="form-control"
                                     placeholder="Room name"
-                                    // name="createdRoomName"
-                                    // onChange={this.handleChange}
+                                    name="roomName"
+                                    onChange={this.handleChange}
                                 />
                             </div>
                         </div>
@@ -29,11 +35,7 @@ export default class CreateRoom extends Component {
                                 <button
                                     type="button"
                                     className="btn btn-light"
-                                    // onClick={() => {
-                                    // // Show waiting room of newly created room
-                                    // this.setState({ showWaitingModal: true });
-                                    // this.handleCreateRoom();
-                                    // }}
+                                    onClick={() => this.props.waitingRoomStore.createRoom}
                                 >
                                     Create
                                 </button>
@@ -44,4 +46,5 @@ export default class CreateRoom extends Component {
             </div>
         );
     }
+
 }

@@ -20,6 +20,9 @@ class WaitingRoomStore {
     @observable
     selectedRoomToken;
 
+    @observable
+    roomName = "";
+
     onlinePlayerSocket;
     roomSocket;
     disposer;
@@ -104,9 +107,19 @@ class WaitingRoomStore {
     }
 
     @action.bound
+    createRoom() {
+        
+    }
+
+    @action.bound
     joinRoomWithToken(token) {
         this.selectedRoomToken = token;
         this.showWaitingModal();
+    }
+
+    @action.bound
+    onChange(key, value) {
+        this[key] = value;
     }
 }
 

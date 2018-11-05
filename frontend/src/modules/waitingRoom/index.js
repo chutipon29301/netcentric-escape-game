@@ -11,9 +11,26 @@ import WaitingModal from "./components/waitingModal";
 @observer
 export default class WaitingRoom extends Component {
 
-
-
-
+//   handleCreateRoom(event) {
+//     // event.preventDefault();
+//     Axios({
+//       method: "post",
+//       url: "/createRoom",
+//       data: {
+//         name: this.state.createdRoomName,
+//         owner: localStorage.getItem("playerToken")
+//       }
+//     })
+//       .then(res => {
+//         this.props.roomStore.joinRoom(
+//           localStorage.getItem("playerToken"),
+//           res.data.info.token
+//         );
+//         this.props.roomStore.setRoomToken(res.data.info.token);
+//       })
+//       .catch(error => {
+//       });
+//   }
 
 
     componentDidMount() {
