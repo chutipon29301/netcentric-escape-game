@@ -1,23 +1,34 @@
-import { observable, action } from 'mobx';
+import { observable, action } from "mobx";
+import registerService from "../../services/register-service";
 
-class StartStore {
-	@observable
-	coolVariable = 420;
+class RegisterStore {
 
-	@action.bound
-	hello() {
-		this.coolVariable += 1;
-	}
+    @observable
+    name = "";
 
-	@action.bound
-	reset() {
-		this.coolVariable = 420;
-	}
+    @observable
+    email = "";
 
-	@action.bound
-	set(value) {
-		this.coolVariable = value;
-	}
+    @observable
+    password = "";
+
+    @action.bound
+    onChange(key, value) {
+        this[key] = value;
+    }
+
+    @action.bound
+    async register() {
+        const value = await registerService.register(this.name, this.email, this.password);
+        return value;
+    }
+
+    @action.bound
+    clear() {
+        this.name = "";
+        this.email = "";
+        this.password = "";
+    }
 }
 
-export default new StartStore();
+export default new RegisterStore();
