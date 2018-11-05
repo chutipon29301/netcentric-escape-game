@@ -1,4 +1,4 @@
-import { observable, action, computed } from "mobx";
+import { observable, action } from "mobx";
 import loginService from "../../services/login-service";
 
 class LoginStore {
@@ -10,21 +10,13 @@ class LoginStore {
     password = "";
 
     @action.bound
-    login(event) {  
-        event.preventDefault();
-        loginService.login(this.email,this.password);
+    async login(event) {  
+        return await loginService.login(this.email,this.password);
     }
 
     @action.bound
-    onChange(name, value) {
-        switch(name) {
-            case "email":
-                this.email = value;
-                break;
-            case "password":
-                this.password = value;
-                break;
-        }
+    onChange(key, value) {
+        this[key] = value;
     }
 
 }

@@ -7,7 +7,7 @@ class LoginService {
     token = "";
 
     @observable
-    isSuccess = false;
+    isSuccess = true;
 
     @action.bound
     setToken(token) {
@@ -26,8 +26,11 @@ class LoginService {
             });
             this.setToken(token)
             this.isSuccess= true;
+            return token;
         } catch(error) {
+            this.isSuccess= false;
             console.log(error);
+            return null;
         }
     }
 

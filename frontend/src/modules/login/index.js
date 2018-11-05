@@ -1,4 +1,3 @@
-import { autorun } from "mobx";
 import { inject, observer } from "mobx-react";
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
@@ -14,13 +13,11 @@ class Login extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount() {
-        autorun(() => {
-            const {token} = this.props.loginService;
-            if (token !== "") {
-                this.props.routing.push("/");
-            }
-        });
+    handleSignIn = async () => {
+        const token = await this.props.loginStore.login();
+        if (token) {
+            this.props.routing.push("/");
+        }
     }
 
     handleChange(event) {
@@ -41,7 +38,7 @@ class Login extends Component {
                         <div className="card-body center">
                         <img src="https://uppic.cc/d/YxX" alt="" />
                         <h5 className="card-title text-center">Sign In</h5>
-                        <form className="form-signin">
+                        <div className="form-signin">
                             <div className="form-label-group">
                             <input
                                 type="email"
@@ -53,7 +50,6 @@ class Login extends Component {
                                 value={this.props.loginStore.email}
                             />
                             </div>
-        
                             <div className="form-label-group">
                             <input
                                 type="password"
@@ -67,21 +63,17 @@ class Login extends Component {
                             </div>
                             <button
                             className="btn btn-lg btn-warning btn-block text-uppercase"
-                            type="submit"
-                            onClick={this.props.loginStore.login}
+                            onClick={this.handleSignIn}
                             >
                             Sign in
                             </button>
-        
                             <button
                             className="btn btn-lg btn-warning btn-block text-uppercase fade"
-                            type="submit"
                             // onClick={() => this.handleRegister()}
-                            // onChange={this.handleChange}
                             >
                             Register
                             </button>
-                        </form>
+                        </div>
                         </div>
                     </div>
                     </div>
