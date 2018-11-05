@@ -30,7 +30,7 @@ export class GameSocket {
             }
         });
     private webSocketServerListener = SocketGenerator.getInstance().createSocket("/gameListener");
-    private webSocketServerDetailListener = SocketGenerator.getInstance().createSocket("/gameDetail",
+    private webSocketServerDetailListener = SocketGenerator.getInstance().createSocket("/gameDetailListener",
         (info: { origin: string; secure: boolean; req: IncomingMessage }) => {
             const { query: { token } } = url.parse(info.req.url, true);
             return GameArray.getInstance().checkGameExist(token as string);
