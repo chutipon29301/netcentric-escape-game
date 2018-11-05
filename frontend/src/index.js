@@ -7,12 +7,16 @@ import Router from "./common/routes";
 import * as registerServiceWorker from "./registerServiceWorker";
 import { RouterStore, syncHistoryWithStore } from "mobx-react-router";
 import createBrowserHistory from "history/createBrowserHistory";
+import loginService from "./services/login-service";
+import loginStore from "./modules/login/store";
 
 
 const browserHistory = createBrowserHistory();
 export const routingStore = new RouterStore();
 const history = syncHistoryWithStore(browserHistory, routingStore);
 const stores = {
+  loginService,
+  loginStore,
   routing: routingStore
 };
 
