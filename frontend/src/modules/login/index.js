@@ -15,7 +15,7 @@ class Login extends Component {
     handleSignIn = async () => {
         const token = await this.props.loginStore.login();
         if (token) {
-            this.props.routing.push("/");
+            this.props.routing.push("/waitingRoom");
         }
     }
 
