@@ -6,11 +6,18 @@ class LoginService {
     @observable
     token = "";
 
-    @observable
-    isSuccess = true;
+    constructor() {
+        this.loadToken();
+    }
+
+    @action.bound
+    loadToken() {
+        this.token = localStorage.getItem("playerToken");
+    }
 
     @action.bound
     setToken(token) {
+        localStorage.setItem("playerToken", token);
         this.token = token;
     }
 
@@ -25,10 +32,8 @@ class LoginService {
                 },
             });
             this.setToken(token)
-            this.isSuccess= true;
             return token;
         } catch(error) {
-            this.isSuccess= false;
             console.log(error);
             return null;
         }
