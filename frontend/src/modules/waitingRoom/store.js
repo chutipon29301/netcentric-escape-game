@@ -1,60 +1,113 @@
-import { observable, action } from "mobx";
-import { BASE_URL } from "../../env";
+import { action, autorun, observable, computed } from "mobx";
+import loginService from "../../services/login-service";
+import { WEBSOCKET_URL } from "../../env";
 
-class RoomStore {
+class WaitingRoomStore {
 
-  @observable
-  roomToken=""
+    @observable
+    shouldWaitingModalShow = false;
 
-  @action.bound
-  setRoomToken(token){
-    this.roomToken = token;
-  }
+    @observable
+    roomData = [];
 
-  @observable
-  room = {
-    name: "",
-    owner: "",
-    player: []
-  };
+    @observable
+    roomDetail = {
+        name: "",
+        owner: "",
+        player: [],
+    };
 
-  @action.bound
-  joinRoom(ownerToken, roomToken) {
-    let socket = new WebSocket(
-      `${BASE_URL}/room?token=${roomToken}&player=${ownerToken}`
-    );
-    // this.onlineUserSocketCollection.push(socket);
-    socket.addEventListener("message", ({ data }) => {
-      console.log("room:)", JSON.parse(data));
-      this.setRoom(JSON.parse(data));
-      console.log("room observable:)", this.room);
-    });
-    socket.addEventListener('close', (event)=>{
-      if(event.code===1006){
-          console.log("reconnect joinroom")
-          // window.setTimeout(this.joinRoom(ownerToken,roomToken), 1000);
-      }
-  })
-  }
+    @observable
+    selectedRoomToken;
 
-  @action.bound
-  setRoom(data){
-    this.room.name = data.name;
-    this.room.owner = data.owner;
-    this.room.player = data.player;
+    onlinePlayerSocket;
+    roomSocket;
+    disposer;
 
-  }
-
-  @action.bound
-  isAllPlayerReady() {
-    for (let player of this.room.player) {
-      if (!player.isReady) {
-        return false;
-      }
+    init() {
+        this.disposer = autorun(() => {
+            if(loginService.token) {
+                this.connectOnlinePlayerSocket();
+                if(this.selectedRoomToken) {
+                    this.connectRoomSocket();
+                }
+            }
+        });
     }
-    return true;
-  }
 
+    dispose() {
+        this.disposer();
+    }
+
+    connectOnlinePlayerSocket() {
+        this.onlinePlayerSocket = new WebSocket(`${WEBSOCKET_URL}/onlinePlayer?token=${loginService.token}`);
+        this.onlinePlayerSocket.addEventListener("message", ({data}) => {
+            this.setRoomData(JSON.parse(data));
+        });
+        this.onlinePlayerSocket.addEventListener("close", ({code}) => {
+            if(code === 1006) { 
+                setTimeout(() => {
+                    this.connectOnlinePlayerSocket()
+                }, 5000);    
+            }
+        });
+    }
+
+    connectRoomSocket() {
+        this.roomSocket = new WebSocket(`${WEBSOCKET_URL}/room?player=${loginService.token}&token=${this.selectedRoomToken}`);
+        this.roomSocket.addEventListener("message", ({data}) => {
+            console.log("RoomSocketMessage", JSON.parse(data));
+            this.setRoomDetail(JSON.parse(data));
+        });
+        this.roomSocket.addEventListener("close", ({code}) => {
+            if(code === 1006) { 
+                setTimeout(() => {
+                    this.connectRoomSocket()
+                }, 5000);
+            }
+        });
+    }
+
+    @computed
+    get selfName() {
+        const index = this.roomDetail.player.findIndex((o) => o.token === loginService.token)
+        if(index === -1) {
+            return "";
+        } else {
+            return this.roomDetail.player[index].name;
+        }
+    }
+
+    @computed
+    get player() {
+        return this.roomDetail.player.filter((o) => o.token !== loginService.token);
+    }
+
+    @action.bound
+    setRoomData(roomData) {
+        this.roomData = roomData;
+    }
+
+    @action.bound
+    setRoomDetail(roomDetail) {
+        this.roomDetail = roomDetail;
+    }
+
+    @action.bound
+    dismissWaitingModal() {
+        this.shouldWaitingModalShow = false;
+    }
+
+    @action.bound
+    showWaitingModal() {
+        this.shouldWaitingModalShow = true;
+    }
+
+    @action.bound
+    joinRoomWithToken(token) {
+        this.selectedRoomToken = token;
+        this.showWaitingModal();
+    }
 }
 
-export const roomStore = new RoomStore();
+export default new WaitingRoomStore();

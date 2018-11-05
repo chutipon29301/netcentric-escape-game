@@ -1,0 +1,25 @@
+.modal-background {
+    background-color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.waiting-modal {
+    text-align: center;
+
+    .avatar-wrapper {
+        background-color: #dee2e6;
+        border-radius: 40%;
+        height: 80px;
+        margin: auto;
+        margin-bottom: 15px;
+        width: 80px;
+    }
+
+    .name {
+        margin-bottom: 0;
+    }
+}

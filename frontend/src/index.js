@@ -9,8 +9,9 @@ import { RouterStore, syncHistoryWithStore } from "mobx-react-router";
 import createBrowserHistory from "history/createBrowserHistory";
 import loginService from "./services/login-service";
 import loginStore from "./modules/login/store";
-import registerStore from "./modules/register/store";
 import registerService from "./services/register-service";
+import registerStore from "./modules/register/store";
+import waitingRoomStore from "./modules/waitingRoom/store";
 
 
 const browserHistory = createBrowserHistory();
@@ -19,8 +20,9 @@ const history = syncHistoryWithStore(browserHistory, routingStore);
 const stores = {
   loginService,
   loginStore,
-  registerStore,
   registerService,
+  registerStore,
+  waitingRoomStore,
   routing: routingStore
 };
 
