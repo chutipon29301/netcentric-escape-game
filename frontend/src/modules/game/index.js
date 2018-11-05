@@ -10,9 +10,7 @@ import Controller from "./components/controller";
 @withRouter
 @observer
 class Game extends Component {
-  // handleRegister() {
-  //   this.props.routing.push("/register");
-  // }
+
   render() {
     return (
       <div>

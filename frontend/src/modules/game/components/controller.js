@@ -21,15 +21,15 @@ export default class Controller extends React.Component {
       <div className="controller-container">
         <div className="row d-flex flex-fill">
           <div className="col-lg-8 pl-4">
-            <p>You are:{" "}
+            <p>You are :{" "}
               <span style={{ color: playerType=='prisoner' ? '#ffff00' : '#000080' }}>
-                {playerType}
-              </span>!
+                {playerType} !
+              </span> 
             </p>
             <p className="description">
               {playerType == "prisoner" ?
-                "You have to escape from the warden through the tunnel!" :
-                "You have to catch the prisoners before they escape!"}
+                "You have to escape from the warden through the tunnel !" :
+                "You have to catch the prisoners before they escape !"}
             </p>
           </div>
           <div className="col-lg-4 pt-2 pr-4 d-flex align-items-end flex-column">

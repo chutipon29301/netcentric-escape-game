@@ -68,9 +68,7 @@ class NavBar extends React.Component {
                   onClick={() => this.handleWaiting()}
                   style={{ cursor: "pointer" }}
                 >
-                  {" "}
                   <button className="btn btn-danger">End Game</button>
-                  {" "}
                 </NavbarBrand>
               </NavItem>
             </NavbarNav>
