@@ -10,7 +10,6 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
     }
 
     handleSignIn = async () => {
@@ -20,12 +19,12 @@ class Login extends Component {
         }
     }
 
-    handleChange(event) {
+    handleChange = (event) => {
         this.props.loginStore.onChange(event.target.name, event.target.value);
     }
 
-    routeToRegister() {
-        this.props.routing.push("/");
+    routeToRegister = () => {
+        this.props.routing.push("/register");
     }
 
     render() {
@@ -69,7 +68,7 @@ class Login extends Component {
                             </button>
                             <button
                             className="btn btn-lg btn-warning btn-block text-uppercase fade"
-                            // onClick={() => this.handleRegister()}
+                            onClick={this.routeToRegister}
                             >
                             Register
                             </button>
