@@ -60,7 +60,6 @@ class WaitingRoomStore {
     connectRoomSocket() {
         this.roomSocket = new WebSocket(`${WEBSOCKET_URL}/room?player=${LoginService.token}&token=${this.selectedRoomToken}`);
         this.roomSocket.addEventListener("message", ({data}) => {
-            console.log("RoomSocketMessage", JSON.parse(data));
             this.setRoomDetail(JSON.parse(data));
         });
         this.roomSocket.addEventListener("close", ({code}) => {
