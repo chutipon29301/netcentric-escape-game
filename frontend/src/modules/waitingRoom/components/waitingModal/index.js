@@ -8,10 +8,9 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "mdbreact";
 export default class WaitingModal extends Component {
     constructor(props){
         super(props)
-        this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(event) {
+    handleChange = (event)=> {
         this.props.waitingRoomStore.onChange(gameDimension,event.target.value)
     }
     render(){  
@@ -74,9 +73,8 @@ export default class WaitingModal extends Component {
                                     <button 
                                         style={{ marginTop: 30, width: "100%", display: this.props.waitingRoomStore.shouldCreateGameButtonShow ? "block" : "none" }} 
                                         className="btn btn-primary"
-                                        onClick={this.props.waitingRoomStore.createGame}
-                                    >
-                                    Start Game
+                                        onClick={this.props.waitingRoomStore.createGame()}
+                                    >Start Game
                                     </button>
                                 </div>
                             </div>
