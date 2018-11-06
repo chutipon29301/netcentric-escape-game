@@ -106,8 +106,15 @@ router.post(
     body("obstaclePercent").isFloat({ min: 0, max: 1 }).optional(),
     validateRequest,
     (req, res) => {
+        const room = RoomArray.getInstance().findRoomWithToken(req.body.token);
+        if (!room) {
+            return res.status(400).send({
+                err: "Invalid token",
+            });
+        }
         const game = new Game(req.body.token, req.body.numberOfPlayer, req.body.dimensionX, req.body.dimensionY, req.body.obstaclePercent);
         GameArray.getInstance().push(game);
+        room.gameCreated();
         res.sendStatus(200);
     },
 );

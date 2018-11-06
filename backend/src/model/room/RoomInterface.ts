@@ -10,6 +10,7 @@ export interface IRoomDetail {
     name: string;
     owner: string;
     player: IRoomSocketInfo[];
+    moveToGameToken: string;
 }
 
 export interface IRoomInfo {

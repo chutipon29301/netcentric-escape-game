@@ -8,6 +8,7 @@ import { RoomSocketArray } from "./RoomSocketArray";
 export class Room {
 
     private room: BehaviorSubject<IRoom>;
+    private shouldRedirectToGame = false;
 
     constructor(name: string, owner: string) {
         this.room = new BehaviorSubject({
@@ -24,8 +25,8 @@ export class Room {
 
     public getRoomDetail(): Observable<IRoomDetail> {
         return this.room.pipe(
-            flatMap((info) => combineLatest(of(info.name), of(info.owner), info.player.getInfo())),
-            map(([name, owner, player]) => ({ name, owner, player })),
+            flatMap((info) => combineLatest(of(info), info.player.getInfo())),
+            map(([{ name, owner, token }, player]) => ({ name, owner, moveToGameToken: (this.shouldRedirectToGame) ? token : "", player })),
         );
     }
 
@@ -52,6 +53,10 @@ export class Room {
         this.room.getValue().player.closeSocket();
     }
 
+    public gameCreated() {
+        this.shouldRedirectToGame = true;
+    }
+
     private update(value: Partial<IRoom>) {
         this.room.next({
             name: value.name || this.room.getValue().name,
@@ -60,5 +65,4 @@ export class Room {
             token: value.token || this.room.getValue().token,
         });
     }
-
 }
