@@ -6,7 +6,7 @@ import CreateRoom from "./components/createRoom";
 import RoomList from "./components/roomList";
 import WaitingModal from "./components/waitingModal";
 
-@inject("routing", "waitingRoomStore")
+@inject("routing", "waitingRoomStore", "gameService")
 @withRouter
 @observer
 export default class WaitingRoom extends Component {
