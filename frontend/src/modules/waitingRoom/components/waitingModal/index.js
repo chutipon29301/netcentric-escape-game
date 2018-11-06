@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import "./style.scss";
 import { inject, observer } from "mobx-react";
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "mdbreact";
 
 @inject("waitingRoomStore")
 @observer

@@ -10,6 +10,9 @@ class WaitingRoomStore {
     shouldWaitingModalShow = false;
 
     @observable
+    shouldLoadingModalShow = false;
+
+    @observable
     shouldCreateGameButtonShow = false;
 
     @observable
@@ -176,6 +179,16 @@ class WaitingRoomStore {
     @action.bound
     showWaitingModal() {
         this.shouldWaitingModalShow = true;
+    }
+
+    @action.bound
+    dismissLoadingModal() {
+        this.shouldLoadingModalShow = false;
+    }
+
+    @action.bound
+    showLoadingModal() {
+        this.shouldLoadingModalShow = true;
     }
 
     @action.bound
