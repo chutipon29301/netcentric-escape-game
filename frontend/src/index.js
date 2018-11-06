@@ -12,6 +12,7 @@ import loginStore from "./modules/login/store";
 import registerService from "./services/register-service";
 import registerStore from "./modules/register/store";
 import waitingRoomStore from "./modules/waitingRoom/store";
+import gameService from "./services/game-service";
 
 
 const browserHistory = createBrowserHistory();
@@ -23,6 +24,7 @@ const stores = {
   registerService,
   registerStore,
   waitingRoomStore,
+  gameService,
   routing: routingStore
 };
 

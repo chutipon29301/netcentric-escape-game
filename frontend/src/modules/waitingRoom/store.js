@@ -1,6 +1,7 @@
 import { action, autorun, observable, computed } from "mobx";
 import LoginService from "../../services/login-service";
 import RoomService from "../../services/room-service";
+import GameService from "../../services/game-service";
 import { WEBSOCKET_URL } from "../../env";
 
 class WaitingRoomStore {
@@ -77,10 +78,13 @@ class WaitingRoomStore {
     connectRoomSocket() {
         this.roomSocket = new WebSocket(`${WEBSOCKET_URL}/room?player=${LoginService.token}&token=${this.selectedRoomToken}`);
         this.roomSocket.addEventListener("message", ({data}) => {
-            this.setRoomDetail(JSON.parse(data));
+            const response = JSON.parse(data);
+            this.setRoomDetail(response);
+            if(response.moveToGameToken !== "") {
+                GameService.setGameToken(response.moveToGameToken);
+            }
         });
         this.roomSocket.addEventListener("close", ({code}) => {
-            console.log(code);
             if(code === 1006) { 
                 setTimeout(() => {
                     this.connectRoomSocket()
@@ -184,7 +188,8 @@ class WaitingRoomStore {
 
     @action.bound
     async createGame() {
-
+        
+        await GameService.create(this.selectedRoomToken, this.roomDetail.player.length, this.gameDimension);
     }
 
     @action.bound

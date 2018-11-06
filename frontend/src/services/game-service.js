@@ -1,6 +1,10 @@
 import Axios from "../axiosConfig";
+import { observable, action } from "mobx";
 
 class GameService {
+
+    @observable
+    gameToken = "";
 
     async create(token, numberOfPlayer, dimension) {
         try {
@@ -21,6 +25,12 @@ class GameService {
         }
     }
 
+    @action.bound
+    setGameToken(token) {
+        if(token) {
+            this.gameToken = token;
+        }
+    }
 }
 
 export default new GameService();
