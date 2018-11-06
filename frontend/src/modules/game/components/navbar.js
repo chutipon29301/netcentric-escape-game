@@ -1,18 +1,14 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   Navbar,
   NavbarBrand,
   NavbarNav,
   NavbarToggler,
   Collapse,
-  NavItem,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
+  NavItem
 } from "mdbreact";
 import { BrowserRouter as Router } from "react-router-dom";
-import { inject, observer } from "mobx-react";
+import { inject } from "mobx-react";
 import { withRouter } from "react-router-dom";
 
 @inject("routing", "game")
@@ -29,7 +25,7 @@ class NavBar extends React.Component {
     // this.handleChangeDimension = this.handleChangeDimension.bind(this);
   }
 
-  
+
 
   handleChangeDimension(event) {
     this.setState({ dimension: event.currentTarget.value });
@@ -55,10 +51,12 @@ class NavBar extends React.Component {
           scrolling
           style={{ background: "black" }}
         >
-          <NavbarBrand href="/">
+          <NavbarBrand
+            onClick={() => this.handleWaiting()}
+            style={{ cursor: "pointer" }}>
             <img
               src="https://uppic.cc/d/YxX"
-              height="30"
+              height="40"
               className="d-inline-block align-top"
             />
           </NavbarBrand>
@@ -66,37 +64,11 @@ class NavBar extends React.Component {
           <Collapse isOpen={this.state.collapse} navbar>
             <NavbarNav right>
               <NavItem>
-                <Dropdown>
-                  <DropdownToggle nav caret style={{ marginRight: "10px" }}>
-                    Dimension
-                  </DropdownToggle>
-                  <DropdownMenu  value={this.state.dimension} onChange={()=>this.handleChangeDimension}>
-                    <DropdownItem value="5" href="#" key="5">5 x 5</DropdownItem>
-                    <DropdownItem value="6" href="#" key="6">6 x 6</DropdownItem>
-                    <DropdownItem value="7" href="#" key="7">7 x 7</DropdownItem>
-                    <DropdownItem value="8" href="#" key="8">8 x 8</DropdownItem>
-                    <DropdownItem value="9" href="#" key="9">9 x 9</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </NavItem>
-
-              {console.log(this.state.dimension)}
-              <NavItem active>
                 <NavbarBrand
                   onClick={() => this.handleWaiting()}
                   style={{ cursor: "pointer" }}
                 >
-                  {" "}
-                  <b>Home</b>{" "}
-                </NavbarBrand>
-              </NavItem>
-              <NavItem>
-                <NavbarBrand
-                  onClick={() => this.handleWaiting()}
-                  style={{ cursor: "pointer" }}
-                >
-                  {" "}
-                  End Game{" "}
+                  <button className="btn btn-danger">End Game</button>
                 </NavbarBrand>
               </NavItem>
             </NavbarNav>
