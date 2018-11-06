@@ -1,5 +1,6 @@
 import { observable, action } from "mobx";
 import LoginService from "./login-service";
+import Axios from "../axiosConfig";
 
 class RoomService {
 
@@ -26,3 +27,5 @@ class RoomService {
     }
 
 }
+
+export default new RoomService();
