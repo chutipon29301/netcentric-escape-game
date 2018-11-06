@@ -1,6 +1,7 @@
 import { action, autorun, observable, computed } from "mobx";
 import LoginService from "../../services/login-service";
 import RoomService from "../../services/room-service";
+import GameService from "../../services/game-service";
 import { WEBSOCKET_URL } from "../../env";
 
 class WaitingRoomStore {
@@ -49,6 +50,13 @@ class WaitingRoomStore {
                     this.connectRoomSocket();
                 }
             }
+            if(!this.shouldWaitingModalShow) {
+                if(this.roomSocket) {
+                    if(this.roomSocket.readyState === WebSocket.OPEN) {
+                        this.roomSocket.close(1000);
+                    }
+                }
+            }
         });
     }
 
@@ -65,7 +73,7 @@ class WaitingRoomStore {
             if(code === 1006) { 
                 setTimeout(() => {
                     this.connectOnlinePlayerSocket()
-                }, 1000);    
+                }, 5000);
             }
         });
     }
@@ -73,20 +81,34 @@ class WaitingRoomStore {
     connectRoomSocket() {
         this.roomSocket = new WebSocket(`${WEBSOCKET_URL}/room?player=${LoginService.token}&token=${this.selectedRoomToken}`);
         this.roomSocket.addEventListener("message", ({data}) => {
-            this.setRoomDetail(JSON.parse(data));
+            const response = JSON.parse(data);
+            this.setRoomDetail(response);
+            if(response.moveToGameToken !== "") {
+                GameService.setGameToken(response.moveToGameToken);
+            }
         });
         this.roomSocket.addEventListener("close", ({code}) => {
             if(code === 1006) { 
                 setTimeout(() => {
                     this.connectRoomSocket()
-                }, 1000);
+                }, 5000);
             }
         });
     }
 
+    setReadyState(isReady) {
+        if(this.roomSocket.readyState === WebSocket.OPEN) {
+            this.roomSocket.send(JSON.stringify({isReady}));
+        }
+    }
+
+    getSelfIndex() {
+        return this.roomDetail.player.findIndex((o) => o.token === LoginService.token)
+    }
+
     @computed
     get selfName() {
-        const index = this.roomDetail.player.findIndex((o) => o.token === LoginService.token)
+        const index = this.getSelfIndex();
         if(index === -1) {
             return "";
         } else {
@@ -95,10 +117,40 @@ class WaitingRoomStore {
     }
 
     @computed
+    get selfReady() {
+        const index = this.getSelfIndex();
+        if(index === -1) {
+            return false;
+        } else {
+            return this.roomDetail.player[index].isReady;
+        }
+    }
+
+    @computed
+    get selfReadyText() {
+        return this.selfReady ? "status: Ready" : "status: Not Ready";
+    }
+
+    @computed
+    get selfReadyButton() {
+        return this.selfReady ? "btn btn-success" : "btn btn-secondary";
+    }
+
+    @computed
     get player() {
         return this.roomDetail.player
             .filter((o) => o.token !== LoginService.token)
             .map((o) => ({...o, readyState: o.isReady ? "Ready!!" : "Waiting"}));
+    }
+
+    @computed
+    get waitingModalShowStyle() {
+        return this.shouldWaitingModalShow ? "block" : "none";
+    }
+
+    @computed
+    get isOwnerStyle() {
+        return (LoginService.token === this.roomDetail.owner) ? "block" : "none";
     }
 
     @action.bound
@@ -149,7 +201,8 @@ class WaitingRoomStore {
 
     @action.bound
     async createGame() {
-
+        
+        await GameService.create(this.selectedRoomToken, this.roomDetail.player.length, this.gameDimension);
     }
 
     @action.bound

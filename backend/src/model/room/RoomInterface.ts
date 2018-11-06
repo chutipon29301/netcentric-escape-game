@@ -24,4 +24,5 @@ export interface IRoom {
     owner: string;
     player: RoomSocketArray;
     token: string;
+    shouldRedirectToGame: boolean;
 }

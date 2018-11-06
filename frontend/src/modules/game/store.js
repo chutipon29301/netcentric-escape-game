@@ -115,9 +115,60 @@
 // }
 
 // export default new GameStore();
-import {observable,action,computed} from 'mobx'
-
+import {observable,action, autorun,computed} from 'mobx'
+import LoginService from "../../services/login-service";
+import RoomStore from "../waitingRoom/store"
+import { WEBSOCKET_URL } from "../../env";
 
 class GameStore {
+
+    @observable
+    gameData = [];
+
+    @observable
+    gameDetail = {};
+
+    @observable
+    fieldDimension=RoomStore.gameDimension;
+
+    gameSocket;
+    disposer;
+
+    init() {
+        this.disposer = autorun(() => {
+            if(RoomStore.selectedRoomToken&&LoginService.token) {
+                this.connectGameSocket();
+            }
+        });
+    }
+    dispose() {
+        this.disposer();
+    }
+
+    connectGameSocket() {
+        this.gameSocket = new WebSocket(`${WEBSOCKET_URL}/game?player=${LoginService.token}&token=${RoomStore.selectedRoomToken}`);
+        this.gameSocket.addEventListener("message", ({data}) => {
+            this.setGameDetail(JSON.parse(data));
+        });
+        this.gameSocket.addEventListener("close", ({code}) => {
+            if(code === 1006) { 
+                setTimeout(() => {
+                    this.connectGameSocket()
+                }, 1000);
+            }
+        });
+    }
+
+    @action.bound
+    setRoomDetail(gameDetail) {
+        this.gameDetail = gameDetail;
+    }
+    
+    @action.bound
+    onChange(key, value) {
+        this[key] = value;
+    }
   
 }
+
+export default new GameStore();

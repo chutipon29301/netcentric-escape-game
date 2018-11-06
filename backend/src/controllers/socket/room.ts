@@ -52,6 +52,8 @@ export class RoomSocket {
             );
             observableSocket.data().subscribe(
                 (data) => observableSocket.setReady(data.isReady),
+                () => room.removePlayer(player as string),
+                () => room.removePlayer(player as string),
             );
         });
 
