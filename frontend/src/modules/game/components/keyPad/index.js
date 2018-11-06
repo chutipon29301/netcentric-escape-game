@@ -6,7 +6,7 @@ import "react-circular-progressbar/dist/styles.css";
 
 @inject("game")
 @observer
-export default class Controller extends React.Component {
+export default class KeyPad extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
