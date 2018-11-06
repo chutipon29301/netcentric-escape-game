@@ -2,8 +2,6 @@
 
 import React from 'react'
 import Axios from '../../axiosConfig'
-
-import {observable,action} from 'mobx'
 import RoomStore from '../stores/roomStore'
 class CreateRoom extends React.Component {
 
@@ -23,7 +21,6 @@ class CreateRoom extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        
         this.setState({
             roomName: '',
         })
@@ -34,7 +31,6 @@ class CreateRoom extends React.Component {
             data: {name: this.state.roomName,
                    owner: RoomStore.roomMaster.token}
         }).then((response) => {
-            
             RoomStore.setToken(response.data.info)
         });
         console.log('create!')

@@ -1,7 +1,7 @@
 import React from 'react'
 import Axios from '../../axiosConfig'
-import { BASE_URL } from '../../../env'
-import { observable } from 'mobx'
+
+import { SOKCET_URL} from '../../../env';
 
 class GameList extends React.Component {
     constructor(props) {
@@ -12,77 +12,41 @@ class GameList extends React.Component {
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.resetGame = this.resetGame.bind(this);
-        this.startGame = this.startGame.bind(this);
     }
 
     resetGame(user) {
         Axios({
-            method: 'delete',
-            url: `/deleteRoom/${user.token}`
-        }).then((response) => { });
+            method: 'post',
+            url: `/resetGame/`,
+            data: user.token
+        }).then((response) => { 
+            console.log("reset")
+        });
     }
 
     handleSubmit(event) {
         event.preventDefault();
     }
 
-    @observable GameList;
     componentDidMount() {
-        let socket = new WebSocket(`${BASE_URL}/roomListener`);
-        socket.addEventListener("message", (event) => {
-            try {
-                this.setState({ tableData: JSON.parse(event.data) });
-            } catch (error) { }
-        });
-        socket.addEventListener('error', function (error) {
-            alert(error.toString());
-            console.log(error)
-        });
-        socket.addEventListener('close', function () {
-            
-        });
-
+        this.connectListenerSocket();
     }
 
-    startGame(room) {
-        
-        const { listener } = SocketListenerStore;
-        
-        if (listener && listener.socket) {
-            
-            if (listener.room !== room.token) {
-                console.log("trigger room")
-                if (listener.socket.readyState === WebSocket.OPEN) {
-                    listener.socket.close();
-                    console.log("close former socket")
-                }
-                let socket = new WebSocket(`${BASE_URL}/roomDetailListener?token=${room.token}`);
-                SocketListenerStore.setListener(socket, room.token)
-                
+    connectListenerSocket(){
+        let socket = new WebSocket(`${SOKCET_URL}/gameListener`);
+        console.log("in connect gamelist socket")
+        socket.addEventListener('message', ({data}) => {
+            this.setState({tableData:data})
+            console.log(data)
+        })
+        socket.addEventListener('close', (event)=>{
+            if(event.code===1006){
+                window.setTimeout(this.connectListenerSocket(), 1000);
+                console.log("reconnect listener socket")
             }
-        } else {
-            let socket = new WebSocket(`${BASE_URL}/roomDetailListener?token=${room.token}`);
-            SocketListenerStore.setListener(socket, room.token)
-            console.log("else")
-        }
-        console.log(`${listener.socket}+${listener.room}`)
-        listener.socket.addEventListener("message", (event) => {
-            try {
-                const roomDetail = JSON.parse(event.data)
-                this.setState({ userInRoom: roomDetail.player });
-
-            } catch (error) { }
-        });
-
-        listener.socket.addEventListener('error', function (error) {
-            alert(error.toString());
-            console.log(error)
-        });
-        listener.socket.addEventListener('close', function () {
-            
-            
-        });
+        })
     }
+
 
     render() {
         return (
@@ -101,16 +65,16 @@ class GameList extends React.Component {
                             </thead>
                             <tbody>
                                 {
-                                    this.state.tableData.map(function (row, index) {
-                                        return <tr key={index} >
-                                            <td>{index + 1}</td>
-                                            <td>{row.name}</td>
-                                            {/* <td>{row.}</td> */}
-                                            <td><button type="button" data-toggle="modal" onClick={this.startGame.bind(this, row)} className="btn btn-primary">Start!</button></td>
-                                            <td><button name="delete" onClick={this.resetGame.bind(this, row)} className="btn btn-outline-danger btn-sm remove">Reset</button></td>
+                                    // this.state.tableData.map(function (row, index) {
+                                    //     return <tr key={index} >
+                                    //         <td>{index + 1}</td>
+                                    //         <td>{row.name}</td>
+                                    //         {/* <td>{row.}</td> */}
+                                    //         <td><button type="button" data-toggle="modal" onClick={this.startGame.bind(this, row)} className="btn btn-primary">Start!</button></td>
+                                    //         <td><button name="delete" onClick={this.resetGame.bind(this, row)} className="btn btn-outline-danger btn-sm remove">Reset</button></td>
 
-                                        </tr>
-                                    }.bind(this))
+                                    //     </tr>
+                                    // }.bind(this))
                                 }
                             </tbody>
                         </table>
