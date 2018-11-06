@@ -1,5 +1,5 @@
 import { action, autorun, observable, computed } from "mobx";
-import loginService from "../../services/login-service";
+import LoginService from "../../services/login-service";
 import { WEBSOCKET_URL } from "../../env";
 
 class WaitingRoomStore {
@@ -29,7 +29,7 @@ class WaitingRoomStore {
 
     init() {
         this.disposer = autorun(() => {
-            if(loginService.token) {
+            if(LoginService.token) {
                 this.connectOnlinePlayerSocket();
                 if(this.selectedRoomToken) {
                     this.connectRoomSocket();
@@ -43,7 +43,7 @@ class WaitingRoomStore {
     }
 
     connectOnlinePlayerSocket() {
-        this.onlinePlayerSocket = new WebSocket(`${WEBSOCKET_URL}/onlinePlayer?token=${loginService.token}`);
+        this.onlinePlayerSocket = new WebSocket(`${WEBSOCKET_URL}/onlinePlayer?token=${LoginService.token}`);
         this.onlinePlayerSocket.addEventListener("message", ({data}) => {
             this.setRoomData(JSON.parse(data));
         });
@@ -51,13 +51,13 @@ class WaitingRoomStore {
             if(code === 1006) { 
                 setTimeout(() => {
                     this.connectOnlinePlayerSocket()
-                }, 5000);    
+                }, 1000);    
             }
         });
     }
 
     connectRoomSocket() {
-        this.roomSocket = new WebSocket(`${WEBSOCKET_URL}/room?player=${loginService.token}&token=${this.selectedRoomToken}`);
+        this.roomSocket = new WebSocket(`${WEBSOCKET_URL}/room?player=${LoginService.token}&token=${this.selectedRoomToken}`);
         this.roomSocket.addEventListener("message", ({data}) => {
             console.log("RoomSocketMessage", JSON.parse(data));
             this.setRoomDetail(JSON.parse(data));
@@ -66,14 +66,14 @@ class WaitingRoomStore {
             if(code === 1006) { 
                 setTimeout(() => {
                     this.connectRoomSocket()
-                }, 5000);
+                }, 1000);
             }
         });
     }
 
     @computed
     get selfName() {
-        const index = this.roomDetail.player.findIndex((o) => o.token === loginService.token)
+        const index = this.roomDetail.player.findIndex((o) => o.token === LoginService.token)
         if(index === -1) {
             return "";
         } else {
@@ -83,7 +83,9 @@ class WaitingRoomStore {
 
     @computed
     get player() {
-        return this.roomDetail.player.filter((o) => o.token !== loginService.token);
+        return this.roomDetail.player
+            .filter((o) => o.token !== LoginService.token)
+            .map((o) => ({...o, readyState: o.isReady ? "Ready!!" : "Waiting"}));
     }
 
     @action.bound

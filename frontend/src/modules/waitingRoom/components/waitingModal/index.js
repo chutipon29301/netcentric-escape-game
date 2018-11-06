@@ -32,7 +32,7 @@ export default class WaitingModal extends Component {
                                                 <td className="align-middle w-50"></td>
                                                 <td className="align-middle w-50">{this.props.waitingRoomStore.selfName}</td>
                                                 <td className="w-50">
-                                                <button className="btn btn-primary">Ready</button>
+                                                    <button className="btn btn-primary">Ready</button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -47,20 +47,10 @@ export default class WaitingModal extends Component {
                                                 this.props.waitingRoomStore.player.map((player) => (
                                                     <tr key={player.token}>
                                                         <td className="w-50">{ player.name }</td>
-                                                        <td className="w-50">{ player.isReady }</td>
+                                                        <td className="w-50">{ player.readyState     }</td>
                                                     </tr>
                                                 ))
                                             }
-                                            {/* {this.props.roomStore.room.player
-                                                .filter(e => e.token !== localStorage.getItem("playerToken"))
-                                                .map((e, i) => (
-                                                <tr key={i + 1}>
-                                                    <td className="w-50">{e.name}</td>
-                                                    <td className="w-50">
-                                                    {e.isReady ? "Ready!" : "Waiting..."}
-                                                    </td>
-                                                </tr>
-                                                ))} */}
                                         </tbody>
                                     </table>
                                 </div>
