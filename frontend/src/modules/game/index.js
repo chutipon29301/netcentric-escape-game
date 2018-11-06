@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import "./style.scss";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router-dom";
-import NavBar from "./components/navbar";
+import NavBar from "./components/navBar";
 import Field from "./components/field";
-import Controller from "./components/controller";
+import Keypad from "./components/keyPad";
 
 @inject("routing")
 @withRouter
@@ -27,7 +27,7 @@ class Game extends Component {
               </div>
               <div className="col-lg-6 col-md-5 control-panel">
                 <div>
-                  <Controller />
+                  <Keypad />
                 </div>
               </div>
             </div>
