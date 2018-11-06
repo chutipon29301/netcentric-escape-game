@@ -1,6 +1,6 @@
 import React from 'react';
 import Axios from '../../axiosConfig';
-import { BASE_URL } from '../../../env';
+import { SOKCET_URL } from '../../../env';
 import { observable,action } from 'mobx';
 
 import SocketListenerStore from '../stores/socketListenerStore';
@@ -17,7 +17,6 @@ class Rooms extends React.Component {
                 player:[],
             }
         };
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.deletePost = this.deletePost.bind(this);
         this.moreDetail = this.moreDetail.bind(this);
         this.connectRoomDetail=this.connectRoomDetail.bind(this);
@@ -30,9 +29,6 @@ class Rooms extends React.Component {
         }).then(response => { });
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
-    }
     @observable
     roomToken;
 
@@ -40,14 +36,13 @@ class Rooms extends React.Component {
     setRoomToken(token){
         this.roomToken=token;
     }
-    
 
     componentDidMount() {
         this.connectSocket();
     }
 
     connectSocket(){
-        let socket = new WebSocket(`${BASE_URL}/roomListener`);
+        let socket = new WebSocket(`${SOKCET_URL}/roomListener`);
         socket.addEventListener('message', event => {
             try {
                 this.setState({ tableData: JSON.parse(event.data) });
@@ -66,6 +61,7 @@ class Rooms extends React.Component {
 
     }
     
+
     moreDetail(room) {
         this.setRoomToken(room.token);
        this.connectRoomDetail();
@@ -88,7 +84,7 @@ class Rooms extends React.Component {
 
     reconnect(listener){
         let socket = new WebSocket(
-            `${BASE_URL}/roomDetailListener?token=${this.roomToken}`
+            `${SOKCET_URL}/roomDetailListener?token=${this.roomToken}`
         );
         SocketListenerStore.setListener(socket, this.roomToken);
 
@@ -104,6 +100,7 @@ class Rooms extends React.Component {
             console.log(error);
         });
         listener.socket.addEventListener('close', (event)=> {
+            console.log('Closed',event.code);
             if(event.code===1006){
                 this.reconnect(listener,this.roomToken)
             }

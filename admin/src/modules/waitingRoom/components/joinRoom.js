@@ -1,11 +1,8 @@
 
 
 import React from 'react'
-import Axios from '../../axiosConfig'
-import SocketStore from '../stores/socketStore'
 
-import { BASE_URL } from '../../../env'
-import { observable, action } from 'mobx'
+import { SOKCET_URL } from '../../../env'
 class JoinRoom extends React.Component {
 
     constructor(props) {
@@ -24,14 +21,14 @@ class JoinRoom extends React.Component {
         console.log('JOIN!')
     }
     connectSocket(){
-        let socket = new WebSocket(`${BASE_URL}/room?token=${this.state.roomToken}&&player=${this.props.player.token}`);
+        let socket = new WebSocket(`${SOKCET_URL}/room?token=${this.state.roomToken}&&player=${this.props.player.token}`);
         socket.addEventListener('message', ({data}) => {
             console.log(data);
         })
         socket.addEventListener('close', (event)=>{
             if(event.code===1006){
                 console.log("reconnect joinroom")
-                // window.setTimeout(this.connectSocket(), 1000);
+                window.setTimeout(this.connectSocket(), 1000);
             }
         })
     }

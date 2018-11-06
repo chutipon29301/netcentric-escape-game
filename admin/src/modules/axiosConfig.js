@@ -1,4 +1,6 @@
 import Axios from 'axios'
-Axios.defaults.baseURL = 'http://localhost:8000/api';
+
+import { BASE_URL } from '../env';
+Axios.defaults.baseURL =   `http://${BASE_URL}`;
 
 export default Axios

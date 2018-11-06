@@ -1,6 +1,6 @@
 import React from 'react';
 import Axios from '../../axiosConfig';
-import { BASE_URL } from '../../../env';
+import { SOKCET_URL } from '../../../env';
 import { observable, action } from 'mobx';
 import RoomStore from '../stores/roomStore';
 import CreateRoom from './createRoom';
@@ -34,7 +34,7 @@ class WaitingUser extends React.Component {
         this.connectSocket();
     }
     connectSocket(){
-        let socket = new WebSocket(`${BASE_URL}/onlinePlayerListener`);
+        let socket = new WebSocket(`${SOKCET_URL}/onlinePlayerListener`);
         socket.addEventListener('message', event => {
             try {
                 this.setState({ tableData: JSON.parse(event.data) });
@@ -49,7 +49,7 @@ class WaitingUser extends React.Component {
             
             if(event.code===1006){
                 console.log("reconnect onlineplayerlist socket")
-                // window.setTimeout(this.connectSocket(), 1000);
+                window.setTimeout(this.connectSocket(), 1000);
             }
         });
 

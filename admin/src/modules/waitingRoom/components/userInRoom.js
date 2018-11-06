@@ -1,7 +1,6 @@
 import React from 'react';
 import Axios from '../../axiosConfig';
-import { BASE_URL } from '../../../env';
-import { observable } from 'mobx';
+import SocketStore from '../stores/socketStore';
 
 class UserInRoom extends React.Component {
 	constructor(props) {
@@ -11,24 +10,42 @@ class UserInRoom extends React.Component {
 		};
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.deletePost = this.deletePost.bind(this);
+		this.sentReady = this.sentReady.bind(this);
 	}
 
 	deletePost(user) {
 		Axios({
 			method: 'delete',
 			url: `/waitingList/${user.token}`
-		}).then(response => {});
+		}).then(response => { });
 	}
 
 	handleSubmit(event) {
 		event.preventDefault();
+		const notReady = this.props.users.player.find(player => player.isReady === false);
+		
+		if (notReady) {
+			console.log("all users not ready yet")
+		}else{
+				Axios({
+					method: 'post',
+					url: '/createGame',
+					data: { token: this.props.users.name, numberOfPlayer: this.props.users.player.length }
+				}).then((response) => {
+					SocketStore.connectGameSocket(this.props.users.name,this.props.users.player)
+				});
+		}
 	}
 
-	componentDidMount() {}
-	roomMaster(socket) {
-		this.roomMasters.push(socket.token);
-		CreateRoom.roomMaster = socket;
-		console.log(this.roomMasters);
+	componentDidMount() { }
+
+	sentReady(readyOrNot, playerToken) {
+		console.log(SocketStore.roomSocketCollection)
+		const player = SocketStore.roomSocketCollection.find(socket => socket.playerToken === playerToken);
+		if (player) {
+			console.log("in", player)
+			player.socket.send(JSON.stringify({ isReady: readyOrNot }))
+		}
 	}
 
 	render() {
@@ -46,12 +63,20 @@ class UserInRoom extends React.Component {
 					</thead>
 					<tbody>
 						{this.props.users.player.map(
-							function(row, index) {
+							function (row, index) {
 								return (
 									<tr key={index}>
 										<td>{index + 1}</td>
 										<td>{row.name}</td>
-										<td>{row.isReady.toString()}</td>
+
+										<td>{(row.isReady) ? (
+											<button type="submit" className="btn btn-success" onClick={this.sentReady.bind(this, !row.isReady, row.token)}>{row.isReady.toString()}</button>
+
+										) : (
+												<button type="submit" className="btn btn-secondary" onClick={this.sentReady.bind(this, !row.isReady, row.token)}>{row.isReady.toString()}</button>
+											)}
+											{/* {row.isReady.toString()} */}
+										</td>
 										<td>
 											<button
 												name="delete"
@@ -70,6 +95,8 @@ class UserInRoom extends React.Component {
 						)}
 					</tbody>
 				</table>
+				<button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Start Game!</button>
+
 			</div>
 		);
 	}

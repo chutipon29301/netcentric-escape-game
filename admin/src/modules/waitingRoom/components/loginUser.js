@@ -21,6 +21,7 @@ class LoginUser extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        console.log("log in");
         Axios({
             method: 'post',
             url: '/token',
@@ -53,7 +54,7 @@ class LoginUser extends React.Component {
                                 <label htmlFor="exampleInputPassword1">Password</label>
                                 <input type="password" name="password" onChange={this.handleChange} className="form-control" id="exampleInputPassword1" placeholder="Password" value={this.state.password} />
                             </div>
-                            <button type="submit" className="btn btn-primary" onChange={this.handleChange}>Log In</button>
+                            <button type="submit" className="btn btn-primary" onChange={this.handleSubmit}>Log In</button>
                         </form>
                     </div>
                 </div>
