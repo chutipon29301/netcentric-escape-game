@@ -6,7 +6,14 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "mdbreact";
 @inject("waitingRoomStore")
 @observer
 export default class WaitingModal extends Component {
+    constructor(props){
+        super(props)
+        this.handleChange = this.handleChange.bind(this);
+    }
 
+    handleChange(event) {
+        this.props.waitingRoomStore.onChange(gameDimension,event.target.value)
+    }
     render(){  
         return (
             <div className="modal waiting-modal" style={{ display: this.props.waitingRoomStore.shouldWaitingModalShow ? "block" : "none" }}>
@@ -55,25 +62,37 @@ export default class WaitingModal extends Component {
                                     </table>
                                 </div>
                             </div>
-                            <Dropdown>
+                            <div className="input-group">
+                                <select className="custom-select" onChange={this.handleChange}>
+                                    <option defaultValue>Choose...</option>
+                                    { this.props.waitingRoomStore.availableGameDimension.map((dimension,index) =>{
+                                        return <option key={index} value={dimension}>{dimension} x {dimension}</option>
+                                    })
+                                    }
+                                </select>
+                                <div className="input-group-append">
+                                    <button 
+                                        style={{ marginTop: 30, width: "100%", display: this.props.waitingRoomStore.shouldCreateGameButtonShow ? "block" : "none" }} 
+                                        className="btn btn-primary"
+                                        onClick={this.props.waitingRoomStore.createGame}
+                                    >
+                                    Start Game
+                                    </button>
+                                </div>
+                            </div>
+                            {/* <Dropdown>
                                 <DropdownToggle nav caret style={{ marginRight: "10px" }}>
                                 Dimension
                                 </DropdownToggle>
                                 <DropdownMenu>
                                     {
                                         this.props.waitingRoomStore.availableGameDimension.map((dimension) => (
-                                            <DropdownItem>{dimension} x {dimension}</DropdownItem>
+                                            <DropdownItem >{dimension} x {dimension}</DropdownItem>
                                         ))
                                     }
                                 </DropdownMenu>
-                            </Dropdown>
-                        <button 
-                            style={{ marginTop: 30, width: "100%", display: this.props.waitingRoomStore.shouldCreateGameButtonShow ? "block" : "none" }} 
-                            className="btn btn-primary"
-                            onClick={this.props.waitingRoomStore.createGame}
-                        >
-                            Start Game
-                        </button>
+                            </Dropdown> */}
+                        
                     </div>
                 </div>
             </div>

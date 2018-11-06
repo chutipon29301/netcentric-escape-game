@@ -19,7 +19,7 @@ class WaitingRoomStore {
         name: "",
         owner: "",
         player: [],
-        moveToGameToken: "",
+        moveToGameToken: ""
     };
 
     @observable

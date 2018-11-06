@@ -1,0 +1,37 @@
+.table-field {
+    table {
+        margin: 0 auto;
+        border-collapse: collapse;
+        border: 5px solid linear-gradient(266deg, #00b083, #000399);
+        border-radius: 5px;
+        flex-wrap: wrap;
+        background: linear-gradient(266deg, #00b083, #000399);
+        background-size: 400% 400%;
+
+        -webkit-animation: Gradient 5s ease infinite;
+        -moz-animation: Gradient 5s ease infinite;
+        animation: Gradient 5s ease infinite;
+    }
+
+    td {
+        width: 80px;
+        height: 80px;
+        position: relative;
+        align-content: center;
+    }
+
+    td>img {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60%;
+        margin: auto;
+    }
+
+    tr:nth-child(odd) td:nth-child(even),
+    tr:nth-child(even) td:nth-child(odd) {
+        background: white;
+    }
+}
