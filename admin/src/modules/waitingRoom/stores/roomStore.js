@@ -14,7 +14,6 @@ class RoomStore {
     @action.bound
     setToken(res) {
         this.room = res;
-        console.log(res);
         SocketStore.emitRoomSocket(res,this.roomMaster);
     }
 

@@ -10,9 +10,7 @@ import Keypad from "./components/keyPad";
 @withRouter
 @observer
 class Game extends Component {
-  // handleRegister() {
-  //   this.props.routing.push("/register");
-  // }
+
   render() {
     return (
       <div>

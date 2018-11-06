@@ -2,7 +2,6 @@ import React from 'react';
 import WaitingUser from './components/waitingUser';
 import LoginUser from './components/loginUser';
 import Rooms from './components/rooms';
-import UserInRoom from './components/userInRoom';
 export default class WaitingRoom extends React.Component {
 	render() {
 		return (

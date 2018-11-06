@@ -1,6 +1,6 @@
 import React from 'react'
 import Axios from '../axiosConfig'
-import {BASE_URL} from '../../env'
+import {SOKCET_URL} from '../../env'
 
 class CurrentUser extends React.Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class CurrentUser extends React.Component {
     }
 
     connectSocket(){
-        let socket = new WebSocket(`${BASE_URL}/player`);
+        let socket = new WebSocket(`${SOKCET_URL}/player`);
 
         socket.addEventListener("message", (event) => {
             let tableData = [];

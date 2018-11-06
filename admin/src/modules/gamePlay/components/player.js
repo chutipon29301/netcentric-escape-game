@@ -1,34 +1,30 @@
 import React from 'react'
-
+import {observable,action} from 'mobx'
+import { SOKCET_URL} from '../../../env';
 class Player extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            turn: true
+            turn: true,
+            listGame: WebSocket,
+            gameSocket: WebSocket,
         }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-
     }
 
-    handleChange(event) {
+    @observable gameWatcher
+    @action.bound
+    setGameWatcher(text) {
+        this.gameWatcher = text
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
+    componentDidMount() {
+        // this.state.gameSocket = new WebSocket(`${SOKCET_URL}/game`);
     }
-    sentMove(move) {
-        // Axios({
-        //     method: 'post',
-        //     url: '/token',
-        //     data: move
-        // }).then((response) => {
-        console.log(move)
-        // });
+    sendMove(move) {
+        // this.state.gameSocket.send(JSON.stringify({direction:move}))
     }
-
-
+   
     render() {
         return (
             <div>
@@ -39,12 +35,13 @@ class Player extends React.Component {
                         </ol>
                     </nav>
                     <div className="card-body">
+                        <a>{this.gameWatcher}</a>
                     </div>
                 </div>
-                {this.state.turn ? (<div><button type="submit" className="btn btn-outline-info m-3 " onClick={this.sentMove.bind(this, 'up')} >up</button>
-                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sentMove.bind(this, 'down')}>down</button>
-                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sentMove.bind(this, 'left')}>left</button>
-                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sentMove.bind(this, 'right')}>right</button></div>
+                {this.state.turn ? (<div><button type="submit" className="btn btn-outline-info m-3 " onClick={this.sendMove.bind(this, 'up')} >up</button>
+                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sendMove.bind(this, 'down')}>down</button>
+                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sendMove.bind(this, 'left')}>left</button>
+                    <button type="submit" className="btn btn-outline-info m-3" onClick={this.sendMove.bind(this, 'right')}>right</button></div>
                 ) : (<div></div>)}
             </div>
         );
