@@ -10,13 +10,8 @@ export default class WaitingModal extends Component {
         super(props)
     }
 
-<<<<<<< HEAD
     handleChange(event) {
         this.props.waitingRoomStore.onChange(event.target.name,event.target.value)
-=======
-    handleChange = (event)=> {
-        this.props.waitingRoomStore.onChange(gameDimension,event.target.value)
->>>>>>> 3fe6a67407084f161b81669d960240c5863b5b72
     }
     
     render(){  
