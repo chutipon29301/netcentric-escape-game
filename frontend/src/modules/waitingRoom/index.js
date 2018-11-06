@@ -7,7 +7,7 @@ import RoomList from "./components/roomList";
 import WaitingModal from "./components/waitingModal";
 import { autorun } from "mobx";
 
-@inject("routing", "waitingRoomStore","gameService")
+@inject("routing", "waitingRoomStore", "gameService")
 @withRouter
 @observer
 export default class WaitingRoom extends Component {

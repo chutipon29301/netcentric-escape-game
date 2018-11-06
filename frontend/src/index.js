@@ -12,6 +12,7 @@ import loginStore from "./modules/login/store";
 import registerService from "./services/register-service";
 import registerStore from "./modules/register/store";
 import waitingRoomStore from "./modules/waitingRoom/store";
+import gameStore from "./modules/game/store";
 import gameService from "./services/game-service";
 
 
@@ -24,6 +25,7 @@ const stores = {
   registerService,
   registerStore,
   waitingRoomStore,
+  gameStore,
   gameService,
   routing: routingStore
 };
