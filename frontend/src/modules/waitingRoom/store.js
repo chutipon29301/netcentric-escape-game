@@ -9,6 +9,9 @@ class WaitingRoomStore {
     shouldWaitingModalShow = false;
 
     @observable
+    shouldCreateGameButtonShow = false;
+
+    @observable
     roomData = [];
 
     @observable
@@ -16,6 +19,7 @@ class WaitingRoomStore {
         name: "",
         owner: "",
         player: [],
+        moveToGameToken: "",
     };
 
     @observable
@@ -23,6 +27,12 @@ class WaitingRoomStore {
 
     @observable
     roomName = "";
+
+    @observable
+    gameDimension = 5;
+
+    @observable 
+    availableGameDimension = [5, 6, 7, 8, 9];
 
     onlinePlayerSocket;
     roomSocket;
@@ -96,6 +106,14 @@ class WaitingRoomStore {
     @action.bound
     setRoomDetail(roomDetail) {
         this.roomDetail = roomDetail;
+        if(roomDetail.owner !== LoginService.token) return;
+        for(const player of roomDetail.player) {
+            if(!player.isReady) {
+                this.shouldCreateGameButtonShow = false;
+                return;
+            }
+        }
+        this.shouldCreateGameButtonShow = true;
     }
 
     @action.bound
@@ -114,6 +132,11 @@ class WaitingRoomStore {
             const token = await RoomService.create(this.roomName);
             this.joinRoomWithToken(token);
         }
+    }
+
+    @action.bound
+    async createGame() {
+
     }
 
     @action.bound

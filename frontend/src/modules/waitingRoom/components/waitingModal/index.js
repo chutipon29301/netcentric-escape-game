@@ -18,7 +18,7 @@ export default class WaitingModal extends Component {
                                     <button type="button"
                                             className="close"
                                             aria-label="Close"
-                                            onClick={() => this.props.waitingRoomStore.dismissWaitingModal()}
+                                            onClick={this.props.waitingRoomStore.dismissWaitingModal}
                                     >
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -47,7 +47,7 @@ export default class WaitingModal extends Component {
                                                 this.props.waitingRoomStore.player.map((player) => (
                                                     <tr key={player.token}>
                                                         <td className="w-50">{ player.name }</td>
-                                                        <td className="w-50">{ player.readyState     }</td>
+                                                        <td className="w-50">{ player.readyState }</td>
                                                     </tr>
                                                 ))
                                             }
@@ -57,17 +57,21 @@ export default class WaitingModal extends Component {
                             </div>
                             <Dropdown>
                                 <DropdownToggle nav caret style={{ marginRight: "10px" }}>
-                                dimension
+                                Dimension
                                 </DropdownToggle>
                                 <DropdownMenu>
-                                    <DropdownItem value="5" key="5">5 x 5</DropdownItem>
-                                    <DropdownItem value="6" key="6">6 x 6</DropdownItem>
-                                    <DropdownItem value="7" key="7">7 x 7</DropdownItem>
-                                    <DropdownItem value="8" key="8">8 x 8</DropdownItem>
-                                    <DropdownItem value="9" key="9">9 x 9</DropdownItem>
+                                    {
+                                        this.props.waitingRoomStore.availableGameDimension.map((dimension) => (
+                                            <DropdownItem>{dimension} x {dimension}</DropdownItem>
+                                        ))
+                                    }
                                 </DropdownMenu>
                             </Dropdown>
-                        <button style={{ marginTop: 30, width: "100%" }} className="btn btn-primary">
+                        <button 
+                            style={{ marginTop: 30, width: "100%", display: this.props.waitingRoomStore.shouldCreateGameButtonShow ? "block" : "none" }} 
+                            className="btn btn-primary"
+                            onClick={this.props.waitingRoomStore.createGame}
+                        >
                             Start Game
                         </button>
                     </div>
