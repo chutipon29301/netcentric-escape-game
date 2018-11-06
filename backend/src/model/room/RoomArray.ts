@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
-import { flatMap } from "rxjs/operators";
+import { flatMap, map } from "rxjs/operators";
 import { Room } from "./Room";
 import { IRoomInfo } from "./RoomInterface";
 
@@ -22,10 +22,7 @@ export class RoomArray {
 
     public remove(roomToken: string) {
         const index = this.findIndexOfToken(roomToken);
-        if (index !== -1) {
-            this.array.getValue()[index].closePlayerSocket();
-            this.removeAtIndex(index);
-        }
+        this.removeAtIndex(index);
     }
 
     public list(): Observable<IRoomInfo[]> {

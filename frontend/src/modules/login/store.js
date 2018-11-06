@@ -1,28 +1,24 @@
 import { observable, action } from "mobx";
-import Axios from "../../axiosConfig";
-import { BASE_URL } from "../../env";
+import loginService from "../../services/login-service";
 
-class loginStore {
-  // @observable onlineUserSocketCollection = [];
-  @observable
-  token = "";
-  @observable
-  room;
+class LoginStore {
 
-  setToken(token) {
-    this.token = token;
-    // this.emitOnlineUserSocket(this.token);
-  }
+    @observable
+    email = "";
 
-  // emitOnlineUserSocket(token) {
-  //   console.log("this is token >>>>>>", token);
-  //   let socket = new WebSocket(`${BASE_URL}/onlinePlayer?token=${token}`);
-  //   // this.onlineUserSocketCollection.push(socket);
-  //   socket.addEventListener("message", ({ data }) => {
-  //     console.log(JSON.parse(data));
-  //     this.room = JSON.parse(data);
-  //   });
-  // }
+    @observable
+    password = "";
+
+    @action.bound
+    async login(event) {  
+        return await loginService.login(this.email,this.password);
+    }
+
+    @action.bound
+    onChange(key, value) {
+        this[key] = value;
+    }
+
 }
 
-export default new loginStore();
+export default new LoginStore();

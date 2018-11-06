@@ -1,3 +1,4 @@
-import Axios from 'axios';
-Axios.defaults.baseURL = 'http://172.20.10.6:8000/api';
+import Axios from "axios";
+import {BASE_URL} from "./env";
+Axios.defaults.baseURL = `http://${BASE_URL}`;
 export default Axios;

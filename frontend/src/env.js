@@ -1,1 +1,2 @@
-export const BASE_URL = "ws://172.20.10.6:8000/api";
+export const BASE_URL = "localhost:8000/api";
+export const WEBSOCKET_URL = `ws://${BASE_URL}`;

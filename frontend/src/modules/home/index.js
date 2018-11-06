@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 import "./style.scss";
-import { inject, observer } from "mobx-react";
-import { withRouter, Link} from "react-router-dom";
+import { Link} from "react-router-dom";
 
-@inject("routing")
-@withRouter
-@observer
-class Start extends Component {
-//  source =>  https://startbootstrap.com/template-overviews/new-age/
+class Home extends Component {
+
   render() {
     return (
       <div className="start">
@@ -55,4 +51,4 @@ class Start extends Component {
   }
 }
 
-export default Start;
+export default Home;
