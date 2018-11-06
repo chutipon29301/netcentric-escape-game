@@ -35,7 +35,7 @@ export default class CreateRoom extends Component {
                                 <button
                                     type="button"
                                     className="btn btn-light"
-                                    onClick={() => this.props.waitingRoomStore.createRoom}
+                                    onClick={this.props.waitingRoomStore.createRoom}
                                 >
                                     Create
                                 </button>
