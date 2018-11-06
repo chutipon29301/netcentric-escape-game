@@ -1,5 +1,6 @@
 import { action, autorun, observable, computed } from "mobx";
 import LoginService from "../../services/login-service";
+import RoomService from "../../services/room-service";
 import { WEBSOCKET_URL } from "../../env";
 
 class WaitingRoomStore {
@@ -109,8 +110,11 @@ class WaitingRoomStore {
     }
 
     @action.bound
-    createRoom() {
-        
+    async createRoom() {
+        if(this.roomName){
+            const token = await RoomService.create(this.roomName);
+            this.joinRoomWithToken(token);
+        }
     }
 
     @action.bound
