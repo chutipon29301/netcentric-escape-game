@@ -19,6 +19,10 @@ export default class WaitingRoom extends Component {
         this.props.waitingRoomStore.dispose();
     }
 
+    handleCreateGame = async () => {
+        this.props.routing.push("/game");
+    }
+
     render() {
         return (
             <div className="waiting-room">
