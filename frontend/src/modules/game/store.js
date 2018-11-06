@@ -116,10 +116,10 @@
 
 // export default new GameStore();
 import {observable,action, autorun,computed} from 'mobx'
-
 import LoginService from "../../services/login-service";
 import RoomStore from "../waitingRoom/store"
 import { WEBSOCKET_URL } from "../../env";
+
 class GameStore {
 
     @observable
@@ -170,3 +170,5 @@ class GameStore {
     }
   
 }
+
+export default new GameStore();
