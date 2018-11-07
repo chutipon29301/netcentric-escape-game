@@ -52,24 +52,6 @@ class NavBar extends React.Component {
 					/>
           		</NavbarBrand>
           {/* {!this.state.isWideEnough && <NavbarToggler onClick={this.onClick} />} */}
-          		<Collapse isOpen={false} navbar>
-            		<NavbarNav right>
-              			<NavItem active>
-                			<NavbarBrand
-                  				onClick={() => this.handleWaiting()}
-                  				style={{ cursor: "pointer" }}
-                			>{" "}<b>Home</b>{" "}
-                			</NavbarBrand>
-              			</NavItem>
-              			<NavItem>
-							<NavbarBrand
-							onClick={() => this.handleWaiting()}
-							style={{ cursor: "pointer" }}
-							>{" "}End Game{" "}
-                			</NavbarBrand>
-             			</NavItem>
-            		</NavbarNav>
-          		</Collapse>
         	</Navbar>
       </Router>
     );

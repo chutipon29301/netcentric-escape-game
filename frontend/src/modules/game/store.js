@@ -169,6 +169,7 @@ class GameStore {
             };
         }
     }
+    
 
     @computed
     get gameTable() {
@@ -202,6 +203,16 @@ class GameStore {
     get time() {
         return this.gameDetail.time;
     }
+    
+    @action.bound
+    dismissLoadingModal() {
+        this.shouldLoadingModalShow = false;
+    }
+
+    @action.bound
+    showLoadingModal() {
+        this.shouldLoadingModalShow = true;
+    }
 
     @action.bound
     setGameDetail(gameDetail) {
@@ -219,6 +230,8 @@ class GameStore {
         console.log("in",move)
         // this.state.gameSocket.send(JSON.stringify({direction:move}))
     }
+
+
   
 }
 

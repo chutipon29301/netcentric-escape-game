@@ -40,15 +40,19 @@
     align-self: end;
   }
 
-  .keyboard_key_up {
+  .keyboard-key-up {
     grid-column-start: 2;
   }
 
-  .keyboard_key_left {
-    grid-column-start: 1;
+  .keyboard-key-down {
+    grid-column-start: 2;
   }
 
-  .keyboard_key_right {
+  .keyboard-key-left {
+    grid-column-start: 1;
+  }
+  
+  .keyboard-key-right {
     grid-column-start: 3;
   }
 

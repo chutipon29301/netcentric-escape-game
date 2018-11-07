@@ -182,15 +182,7 @@ class WaitingRoomStore {
         this.shouldWaitingModalShow = true;
     }
 
-    @action.bound
-    dismissLoadingModal() {
-        this.shouldLoadingModalShow = false;
-    }
-
-    @action.bound
-    showLoadingModal() {
-        this.shouldLoadingModalShow = true;
-    }
+    
 
     @action.bound
     async createRoom() {

@@ -29,38 +29,14 @@ export default class KeyPad extends Component {
                     </div>
                     <div className="button">
                         <div className="row">
-                                {this.props.gameStore.keyPad.map((move,index)=>{
-                                     return <span
-                                     key={index}
-                                     onClick = {()=>this.props.gameStore.sendMove(move)}
-                                     className={`start-btn keyboard_key_${move}`}
-                                 >{move}
-                                 </span>
-                                })}
-                            {/* <span
-                                className="start-btn keyboard_key_up"
-                                onClick = {()=>this.props.gameStore.sendMove("up")}
-                            >
-                                Up
-                            </span>
-                            <span
-                                className="start-btn keyboard_key_left"
-                                onClick = {()=>this.props.gameStore.sendMove("left")}
-                            >
-                                Left
-                            </span>
-                            <span
-                                className="start-btn keyboard_key_down"
-                                onClick = {()=>this.props.gameStore.sendMove("down")}
-                            >
-                                Down
-                            </span>
-                            <span
-                                className="start-btn keyboard_key_right"
-                                onClick = {()=>this.props.gameStore.sendMove("right")}
-                            >
-                                Right
-                            </span> */}
+                                {this.props.gameStore.keyPad.map((move,index) =>
+                                    (<span
+                                        key={index}
+                                        onClick = {()=>this.props.gameStore.sendMove(move)}
+                                        className={`start-btn keyboard-key-${move.toLowerCase()}`}
+                                    >{move}
+                                    </span>)
+                                )}
                         </div>
                     </div>
                 </div>
