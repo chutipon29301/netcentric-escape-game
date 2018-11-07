@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import NavBar from "./components/navBar";
 import Field from "./components/field";
 import Keypad from "./components/keyPad";
+import { autorun } from "mobx";
 
 @inject("routing", "gameStore")
 @withRouter

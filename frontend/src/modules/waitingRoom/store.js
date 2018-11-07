@@ -10,6 +10,9 @@ class WaitingRoomStore {
     shouldWaitingModalShow = false;
 
     @observable
+    shouldLoadingModalShow = false;
+
+    @observable
     shouldCreateGameButtonShow = false;
 
     @observable
@@ -80,6 +83,7 @@ class WaitingRoomStore {
         this.roomSocket.addEventListener("message", ({data}) => {
             const response = JSON.parse(data);
             this.setRoomDetail(response);
+            console.log("Socket game token ",response.moveToGameToken);
             if(response.moveToGameToken !== "") {
                 GameService.setGameToken(response.moveToGameToken);
             }
@@ -179,6 +183,16 @@ class WaitingRoomStore {
     }
 
     @action.bound
+    dismissLoadingModal() {
+        this.shouldLoadingModalShow = false;
+    }
+
+    @action.bound
+    showLoadingModal() {
+        this.shouldLoadingModalShow = true;
+    }
+
+    @action.bound
     async createRoom() {
         if(this.roomName){
             const token = await RoomService.create(this.roomName);
@@ -188,7 +202,6 @@ class WaitingRoomStore {
 
     @action.bound
     async createGame() {
-        
         await GameService.create(this.selectedRoomToken, this.roomDetail.player.length, this.gameDimension);
     }
 
