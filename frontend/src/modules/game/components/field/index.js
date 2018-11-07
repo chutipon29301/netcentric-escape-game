@@ -11,12 +11,12 @@ export default class Field extends Component {
         	<table>
                 <tbody>
                   {
-                    this.props.gameStore.gameTable.map((row) => (
-                      <tr>
+                    this.props.gameStore.gameTable.map((row, index) => (
+                      <tr key={index}>
                         {
-                          row.map((data) => {
-                            return (data === "blank") ? <td /> : 
-                            (<td>
+                          row.map((data, column) => {
+                            return (data === "blank") ? <td key={`${index}-${column}`}/> : 
+                            (<td key={`${index}-${column}`} >
                               <img src={data} />
                             </td>)
                           })
@@ -24,25 +24,6 @@ export default class Field extends Component {
                       </tr>
                     ))
                   }
-                    {
-                        // this.props.game.createTable(this.props.game.player)
-                        // .map(obj => 
-                        //     {return (
-                        //         <tr key={obj.x}>
-                        //             {obj
-                        //                 .map(data =>
-                        //                     data === "blank" ? (
-                        //                 <td key={data.x} />
-                        //                 ) : (
-                        //                 <td key={data.y}>
-                        //                     <img src={data} />
-                        //                 </td>)
-                        //                 )
-                        //             }
-                        //         </tr>);
-                        //     }
-                        //     )
-                    }
                 </tbody>
         	</table>
       	</div>
