@@ -5,11 +5,8 @@ import { inject, observer } from "mobx-react";
 @inject("waitingRoomStore")
 @observer
 export default class WaitingModal extends Component {
-    constructor(props){
-        super(props)
-    }
 
-    handleChange(event) {
+    handleChange = (event) => {
         this.props.waitingRoomStore.onChange(event.target.name,event.target.value)
     }
     
@@ -34,10 +31,8 @@ export default class WaitingModal extends Component {
                                         <table className="table">
                                             <tbody>
                                                 <tr>
-                                                    <td className="align-middle w-50"></td>
                                                     <td className="align-middle w-50">{this.props.waitingRoomStore.selfName}</td>
-                                                    
-                                                    <td>
+                                                    <td className="align-middle w-50">
                                                         <button 
                                                             onClick={() => this.props.waitingRoomStore.setReadyState(!this.props.waitingRoomStore.selfReady)}
                                                             className={(this.props.waitingRoomStore.selfReadyButton)}
@@ -66,19 +61,24 @@ export default class WaitingModal extends Component {
                                     </div>
                                 </div>
                                 <div className="input-group"  style={{ display: this.props.waitingRoomStore.isOwnerStyle }} >
-                                    <select className="custom-select" onChange={this.handleChange}>
-                                        { this.props.waitingRoomStore.availableGameDimension.map((dimension,index) =>{
-                                            return <option key={index} name="gameDimension" value={dimension}>{dimension} x {dimension}</option>
-                                        })
-                                        }
-                                    </select>
+                                    <div className="row">
+                                        <div className="col-4"><span className="align-middle">Field dimension : </span></div>
+                                        <div className="col-8">
+                                            <select className="custom-select" onChange={this.handleChange}>
+                                                { this.props.waitingRoomStore.availableGameDimension.map((dimension,index) =>{
+                                                    return <option key={index} name="gameDimension" value={dimension}>{dimension} x {dimension}</option>
+                                                })
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div className="input-group-append">
                                         <button 
                                             style={{ marginTop: 30, width: "100%", display: this.props.waitingRoomStore.shouldCreateGameButtonShow ? "block" : "none" }} 
-                                            className="btn btn-primary"
+                                            className="btn btn-block btn-lg btn-info"
                                             onClick={this.props.waitingRoomStore.createGame}
                                         >
-                                        Start Game
+                                        Start Game!
                                         </button>
                                     </div>
                                 </div>
@@ -89,3 +89,5 @@ export default class WaitingModal extends Component {
         )
     }
 }
+
+//<a href="#" class="btn btn-block btn-lg btn-info">Start Game <span class="glyphicon glyphicon-arrow-right"></span></a>

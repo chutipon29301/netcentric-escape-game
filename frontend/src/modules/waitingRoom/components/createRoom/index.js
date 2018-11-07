@@ -24,7 +24,7 @@ export default class CreateRoom extends Component {
                                     type="text"
                                     id="room-name"
                                     className="form-control"
-                                    placeholder="Room name"
+                                    placeholder="Enter room name"
                                     name="roomName"
                                     onChange={this.handleChange}
                                 />
@@ -34,7 +34,7 @@ export default class CreateRoom extends Component {
                             <div className="col col-lg-12 col-centered mt-3 mt-lg-1 mb-5">
                                 <button
                                     type="button"
-                                    className="btn btn-light"
+                                    className="start-btn"
                                     onClick={this.props.waitingRoomStore.createRoom}
                                 >
                                     Create
