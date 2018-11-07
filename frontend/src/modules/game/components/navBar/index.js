@@ -53,7 +53,7 @@ class NavBar extends React.Component {
           		</NavbarBrand>
           {/* {!this.state.isWideEnough && <NavbarToggler onClick={this.onClick} />} */}
           		<Collapse isOpen={false} navbar>
-            		<NavbarNav right>
+            		{/* <NavbarNav right>
               			<NavItem active>
                 			<NavbarBrand
                   				onClick={() => this.handleWaiting()}
@@ -68,7 +68,7 @@ class NavBar extends React.Component {
 							>{" "}End Game{" "}
                 			</NavbarBrand>
              			</NavItem>
-            		</NavbarNav>
+            		</NavbarNav> */}
           		</Collapse>
         	</Navbar>
       </Router>
