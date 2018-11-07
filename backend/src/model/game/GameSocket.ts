@@ -22,7 +22,6 @@ export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
     }
 
     public getInfo(): Observable<IPlayerInfo & { name: string }> {
-        console.log("SocketInfo");
         return this.info.pipe(
             flatMap((info) => combineLatest(of(info), Player.findWithToken(info.token))),
             map(([info, {nickname}]) => ({ ...info, name: nickname })),
