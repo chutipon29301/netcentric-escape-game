@@ -56,39 +56,16 @@ export class Game {
     }
 
     public getGameInfo(): Observable<IGameUpdate> {
-        // return combineLatest(this.timer, this.info.getValue().player.getInfo(), this.info).pipe(
-        //     map(([time, playersInfo, info]) => ({
-        //         blocks: this.info.getValue().map.getBlock(),
-        //         playerIndex: info.playerIndex,
-        //         playersInfo,
-        //         time,
-        //     })),
-        // );
-        // return combineLatest(this.timer, this.info).pipe(
-        //     map(([time, info]) => ({
-        //         blocks: info.map.getBlock(),
-        //         dimension: info.map.getDimension(),
-        //         playerIndex: info.playerIndex,
-        //         playersInfo: [],
-        //         time,
-        //     })),
-        // );
         return this.timer.pipe(
             flatMap((time) => combineLatest(of(time), this.info).pipe(take(1))),
-            map(([time, info]) => ({
+            flatMap(([time, info]) => combineLatest(of({
                 blocks: info.map.getBlock(),
                 dimension: info.map.getDimension(),
                 playerIndex: info.playerIndex,
                 playersInfo: [],
                 time,
-            })),
-            // map((time) => ({
-            //     blocks: this.info.getValue().map.getBlock(),
-            //     dimension: this.info.getValue().map.getDimension(),
-            //     playerIndex: this.info.getValue().playerIndex,
-            //     playersInfo: [],
-            //     time,
-            // })),
+            }), info.player.getInfo()).pipe(take(1))),
+            map(([result, player]) => ({...result, playersInfo: player})),
         );
     }
 
