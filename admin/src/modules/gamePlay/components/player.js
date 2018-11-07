@@ -22,6 +22,7 @@ class Player extends React.Component {
         // this.state.gameSocket = new WebSocket(`${SOKCET_URL}/game`);
     }
     sendMove(move) {
+        console.log("press:",move)
         // this.state.gameSocket.send(JSON.stringify({direction:move}))
     }
    
