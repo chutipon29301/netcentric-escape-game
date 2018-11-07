@@ -20,10 +20,10 @@ export default class KeyPad extends Component {
                         </p>
                         <div className="timer-container">
                             <h5>Timer: </h5>
-                            {/* <CircularProgressbar
+                            <CircularProgressbar
                                 percentage={10}
                                 text={`4%`}
-                                className="timer"/> */}
+                                className="timer"/>
                         </div>
                     </div>
                     <div className="button">
