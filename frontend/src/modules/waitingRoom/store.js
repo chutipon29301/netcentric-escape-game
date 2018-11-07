@@ -80,6 +80,7 @@ class WaitingRoomStore {
         this.roomSocket.addEventListener("message", ({data}) => {
             const response = JSON.parse(data);
             this.setRoomDetail(response);
+            console.log("Socket game token ",response.moveToGameToken);
             if(response.moveToGameToken !== "") {
                 GameService.setGameToken(response.moveToGameToken);
             }
@@ -188,7 +189,6 @@ class WaitingRoomStore {
 
     @action.bound
     async createGame() {
-        
         await GameService.create(this.selectedRoomToken, this.roomDetail.player.length, this.gameDimension);
     }
 

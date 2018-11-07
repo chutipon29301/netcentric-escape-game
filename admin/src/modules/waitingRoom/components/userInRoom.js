@@ -75,7 +75,6 @@ class UserInRoom extends React.Component {
 										) : (
 												<button type="submit" className="btn btn-secondary" onClick={this.sentReady.bind(this, !row.isReady, row.token)}>{row.isReady.toString()}</button>
 											)}
-											{/* {row.isReady.toString()} */}
 										</td>
 										<td>
 											<button
