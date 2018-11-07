@@ -5,11 +5,25 @@ import { withRouter } from "react-router-dom";
 import NavBar from "./components/navBar";
 import Field from "./components/field";
 import Keypad from "./components/keyPad";
+import { autorun } from "mobx";
 
-@inject("routing")
+@inject("routing", "gameStore", "gameService", "loginService")
 @withRouter
 @observer
 export default class Game extends Component {
+
+    componentDidMount() {
+        autorun(() => {
+            if(this.props.gameService.gameToken === "" || this.props.loginService.token === "") {
+                this.props.routing.push("/waitingRoom");
+            }
+        });
+        this.props.gameStore.init();
+    }
+
+    // componentWillUnmount() {
+    //     this.props.gameStore.dispose();
+    // }
 
     render() {
         return (

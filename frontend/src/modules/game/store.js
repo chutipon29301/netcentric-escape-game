@@ -128,39 +128,38 @@ class GameStore {
     @observable
     gameDetail = {};
 
-    @observable
-    fieldDimension=RoomStore.gameDimension;
 
     gameSocket;
     disposer;
 
     init() {
-        this.disposer = autorun(() => {
-            if(RoomStore.selectedRoomToken&&LoginService.token) {
-                this.connectGameSocket();
-            }
-        });
-    }
-    dispose() {
-        this.disposer();
+        this.connectGameSocket();
     }
 
     connectGameSocket() {
+
         this.gameSocket = new WebSocket(`${WEBSOCKET_URL}/game?player=${LoginService.token}&token=${RoomStore.selectedRoomToken}`);
+        this.gameSocket.addEventListener("open", () => {
+            console.log("Socket open")
+        });
         this.gameSocket.addEventListener("message", ({data}) => {
             this.setGameDetail(JSON.parse(data));
+        });
+        this.gameSocket.addEventListener("error", (error) => {
+            console.log(error);
         });
         this.gameSocket.addEventListener("close", ({code}) => {
             if(code === 1006) { 
                 setTimeout(() => {
                     this.connectGameSocket()
-                }, 1000);
+                }, 10000);
             }
         });
     }
 
     @action.bound
-    setRoomDetail(gameDetail) {
+    setGameDetail(gameDetail) {
+        console.log("detail:",gameDetail);
         this.gameDetail = gameDetail;
     }
     
