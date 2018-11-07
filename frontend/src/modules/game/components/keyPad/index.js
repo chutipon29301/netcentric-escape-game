@@ -4,6 +4,7 @@ import { inject, observer } from "mobx-react";
 import CircularProgressbar from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
+@inject("gameStore")
 @observer
 export default class KeyPad extends Component {
 

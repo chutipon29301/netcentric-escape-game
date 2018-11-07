@@ -64,7 +64,7 @@ export default class WaitingModal extends Component {
                                     <div className="row">
                                         <div className="col-4"><span className="align-middle">Field dimension : </span></div>
                                         <div className="col-8">
-                                            <select className="custom-select" onChange={this.handleChange}>
+                                            <select className="custom-select" name="gameDimension" onChange={this.handleChange}>
                                                 { this.props.waitingRoomStore.availableGameDimension.map((dimension,index) =>{
                                                     return <option key={index} name="gameDimension" value={dimension}>{dimension} x {dimension}</option>
                                                 })
