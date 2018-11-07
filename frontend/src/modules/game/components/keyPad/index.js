@@ -23,11 +23,13 @@ export default class KeyPad extends Component {
                         />
                     </div>
                 </div>
-                <div className="row d-flex justify-content-center align-items-center">
+                <div className="row d-flex justify-content-center align-items-center" >
                     <div className="row">
+
                     {this.props.gameStore.keyPad.map((direction,index) =>
                             (<span
                                 key={index}
+                                style={{ display: this.props.gameStore.turn ? "block" : "none" }}
                                 onClick = {()=>this.props.gameStore.sendMove(direction.toLowerCase())}
                                 className={`start-btn keyboard-key-${direction.toLowerCase()}`}
                             >{direction}
