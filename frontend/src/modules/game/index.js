@@ -5,6 +5,7 @@ import { withRouter } from "react-router-dom";
 import NavBar from "./components/navBar";
 import Field from "./components/field";
 import Keypad from "./components/keyPad";
+import LoadingModal from "./components/loadingModal";
 import { autorun } from "mobx";
 
 @inject("routing", "gameStore")
@@ -38,6 +39,7 @@ export default class Game extends Component {
                         </div>
                     </div>
                 </div>
+                <LoadingModal />
             </div>
         );
     }

@@ -5,9 +5,6 @@ import { inject, observer } from "mobx-react";
 @inject("gameStore")
 @observer
 export default class LoadingModal extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         return (

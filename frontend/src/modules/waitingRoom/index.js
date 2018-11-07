@@ -5,7 +5,6 @@ import { withRouter } from "react-router-dom";
 import CreateRoom from "./components/createRoom";
 import RoomList from "./components/roomList";
 import WaitingModal from "./components/waitingModal";
-import LoadingModal from "./components/loadingModal";
 import { autorun } from "mobx";
 
 @inject("routing", "waitingRoomStore", "gameService", "loginService")
@@ -41,7 +40,6 @@ export default class WaitingRoom extends Component {
                     </div>
                 </div>
                 <WaitingModal />
-                <LoadingModal />
             </div>
         );
     }

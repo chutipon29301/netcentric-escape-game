@@ -13,24 +13,24 @@ export default class KeyPad extends Component {
             <div className="controller-container">
                 <div className="row d-flex flex-fill">
                     <div className="col-lg-8 pl-4">
-                        <p>You are : Warder</p>
+                        <p>You are : {this.props.gameStore.role}</p>
                     </div>
                     <div className="col-lg-4 pt-2 pr-4 d-flex align-items-end flex-column">
                         <CircularProgressbar
-                            percentage={40}
-                            text={`${40}%`}
+                            percentage={this.props.gameStore.time}
+                            text={`${this.props.gameStore.time}`}
                             className="timer"
                         />
                     </div>
                 </div>
                 <div className="row d-flex justify-content-center align-items-center">
                     <div className="row">
-                    {this.props.gameStore.keyPad.map((move,index) =>
+                    {this.props.gameStore.keyPad.map((direction,index) =>
                             (<span
                                 key={index}
-                                onClick = {()=>this.props.gameStore.sendMove(move)}
-                                className={`start-btn keyboard-key-${move.toLowerCase()}`}
-                            >{move}
+                                onClick = {()=>this.props.gameStore.sendMove(direction.toLowerCase())}
+                                className={`start-btn keyboard-key-${direction.toLowerCase()}`}
+                            >{direction}
                             </span>)
                         )}
                     </div>

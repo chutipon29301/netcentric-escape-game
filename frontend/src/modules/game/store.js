@@ -136,6 +136,9 @@ class GameStore {
         time: 0,
     };
 
+    @observable
+    shouldLoadingModalShow = false;
+
     keyPad = ['Up','Left','Down','Right']
 
     gameSocket;
@@ -143,7 +146,7 @@ class GameStore {
 
     init() {
         this.disposer = autorun(() => {
-            if(RoomStore.selectedRoomToken&&LoginService.token) {
+            if(RoomStore.selectedRoomToken && LoginService.token) {
                 this.connectGameSocket();
             }
         });
@@ -164,7 +167,7 @@ class GameStore {
                     this.gameSocket = null;
                     setTimeout(() => {
                         this.connectGameSocket()
-                    }, 5000);
+                    }, 10000);
                 }
             };
         }
@@ -178,8 +181,18 @@ class GameStore {
             const temp = [];
             for(let j = 0; j < this.gameDetail.dimension.y; j++){
                 let node;
+                let playerNode;
                 if(this.gameDetail.blocks) {
                     node = this.gameDetail.blocks.find((o) => o.coordinate.x === i && o.coordinate.y === j);
+                }
+                if(this.gameDetail.playersInfo){
+                    playerNode = this.gameDetail.playersInfo.find((o) => {
+                        if(o.coordinate) {
+                            return o.coordinate.x === i && o.coordinate.y === j
+                        } else {
+                            return false;
+                        }
+                    });
                 }
                 if(node) {
                     switch(node.blockType){
@@ -190,7 +203,16 @@ class GameStore {
                             temp.push( "https://www.img.in.th/images/ad99cc78058995b1a843f1fc01300490.png");
                             break;
                     }
-                }else {
+                } else if(playerNode) {
+                    switch(playerNode.playerType){
+                        case "PRISONER":
+                            temp.push("https://www.img.in.th/images/ba4f58903464055c58cff60f6eaeac14.png");
+                            break;
+                        case "WARDER":
+                            temp.push("https://www.img.in.th/images/d2fa8efb16948bb1fdf72860f3c50e42.png");
+                            break;
+                    }
+                } else{
                     temp.push("blank");
                 }
             }
@@ -201,23 +223,30 @@ class GameStore {
 
     @computed
     get time() {
-        return this.gameDetail.time;
+        return 10 - this.gameDetail.time;
     }
-    
+    @computed
+    get role() {
+        if (this.gameDetail.playersInfo) {
+            const player = this.gameDetail.playersInfo.find((o)=> o.token === LoginService.token);
+            
+            return player.playerType;
+        }
+        return "";
+    }
+
     @action.bound
     dismissLoadingModal() {
         this.shouldLoadingModalShow = false;
     }
 
     @action.bound
-    showLoadingModal() {
-        this.shouldLoadingModalShow = true;
-    }
-
-    @action.bound
     setGameDetail(gameDetail) {
         console.log(gameDetail);
         this.gameDetail = gameDetail;
+        if(gameDetail.playerIndex !== -1) {
+            this.shouldLoadingModalShow = false;            
+        }
     }
     
     @action.bound
@@ -226,13 +255,12 @@ class GameStore {
     }
 
     // @action.bound
-    sendMove(move) {
-        console.log("in",move)
-        // this.state.gameSocket.send(JSON.stringify({direction:move}))
+    sendMove(direction) {
+        if(this.gameSocket) {
+            this.gameSocket.send(JSON.stringify({direction}))
+        }
     }
 
-
-  
 }
 
 export default new GameStore();
