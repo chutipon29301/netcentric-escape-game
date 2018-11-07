@@ -136,6 +136,8 @@ class GameStore {
         time: 0,
     };
 
+    keyPad = ['Up','Left','Down','Right']
+
     gameSocket;
     disposer;
 
@@ -210,6 +212,12 @@ class GameStore {
     @action.bound
     onChange(key, value) {
         this[key] = value;
+    }
+
+    // @action.bound
+    sendMove(move) {
+        console.log("in",move)
+        // this.state.gameSocket.send(JSON.stringify({direction:move}))
     }
   
 }
