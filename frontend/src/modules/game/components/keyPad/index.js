@@ -22,17 +22,17 @@ export default class KeyPad extends Component {
                             className="timer"
                         />
                     </div>
-                    <div className="row d-flex justify-content-center align-items-center">
-                        <div className="row">
-                                {this.props.gameStore.keyPad.map((move,index) =>
-                                    (<span
-                                        key={index}
-                                        onClick = {()=>this.props.gameStore.sendMove(move)}
-                                        className={`start-btn keyboard-key-${move.toLowerCase()}`}
-                                    >{move}
-                                    </span>)
-                                )}
-                        </div>
+                </div>
+                <div className="row d-flex justify-content-center align-items-center">
+                    <div className="row">
+                    {this.props.gameStore.keyPad.map((move,index) =>
+                            (<span
+                                key={index}
+                                onClick = {()=>this.props.gameStore.sendMove(move)}
+                                className={`start-btn keyboard-key-${move.toLowerCase()}`}
+                            >{move}
+                            </span>)
+                        )}
                     </div>
                 </div>
             </div>
