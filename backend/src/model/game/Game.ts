@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Observable, of, timer } from "rxjs";
-import { flatMap, map } from "rxjs/operators";
+import { flatMap, map, take } from "rxjs/operators";
 import { PlayerType } from "../../type/playerType";
 import { Map } from "./component/Map";
 import { IGameInfo, IGameSummary, IGameUpdate } from "./GameInterface";
@@ -12,6 +12,7 @@ export class Game {
     private timer: Observable<number>;
 
     constructor(roomToken: string, numberOfPlayer: number, dimensionX = 5, dimensionY = 5, obstaclePercent = 0.2) {
+        this.resetTimer();
         this.info = new BehaviorSubject({
             backupMap: null,
             isGameRunning: false,
@@ -24,15 +25,15 @@ export class Game {
     }
 
     public addPlayer(player: GameSocket) {
-        if (!this.info.getValue().isGameRunning && this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
+        if (!this.info.getValue().isGameRunning && this.info.getValue().player.staticLength() < this.info.getValue().numberOfPlayer) {
             this.update({
                 player: this.info.getValue().player.push(player),
             });
             if (this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
-                setTimeout(() => {
-                    this.shufflePlayer();
-                    this.startGame();
-                }, 2000);
+                // setTimeout(() => {
+                //     this.shufflePlayer();
+                //     this.startGame();
+                // }, 2000);
             }
         }
     }
@@ -55,13 +56,39 @@ export class Game {
     }
 
     public getGameInfo(): Observable<IGameUpdate> {
-        return combineLatest(this.timer, this.info.getValue().player.getInfo()).pipe(
-            map(([time, playersInfo]) => {
-                return {
-                    playersInfo,
-                    time,
-                };
-            }),
+        // return combineLatest(this.timer, this.info.getValue().player.getInfo(), this.info).pipe(
+        //     map(([time, playersInfo, info]) => ({
+        //         blocks: this.info.getValue().map.getBlock(),
+        //         playerIndex: info.playerIndex,
+        //         playersInfo,
+        //         time,
+        //     })),
+        // );
+        // return combineLatest(this.timer, this.info).pipe(
+        //     map(([time, info]) => ({
+        //         blocks: info.map.getBlock(),
+        //         dimension: info.map.getDimension(),
+        //         playerIndex: info.playerIndex,
+        //         playersInfo: [],
+        //         time,
+        //     })),
+        // );
+        return this.timer.pipe(
+            flatMap((time) => combineLatest(of(time), this.info).pipe(take(1))),
+            map(([time, info]) => ({
+                blocks: info.map.getBlock(),
+                dimension: info.map.getDimension(),
+                playerIndex: info.playerIndex,
+                playersInfo: [],
+                time,
+            })),
+            // map((time) => ({
+            //     blocks: this.info.getValue().map.getBlock(),
+            //     dimension: this.info.getValue().map.getDimension(),
+            //     playerIndex: this.info.getValue().playerIndex,
+            //     playersInfo: [],
+            //     time,
+            // })),
         );
     }
 
@@ -79,7 +106,7 @@ export class Game {
     }
 
     public startGame() {
-        if (this.info.getValue().isGameRunning && this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
+        if (!this.info.getValue().isGameRunning && this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
             this.resetTimer();
             this.info.getValue().player.shuffle();
             this.update({

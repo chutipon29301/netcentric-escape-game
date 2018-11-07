@@ -115,7 +115,7 @@
 // }
 
 // export default new GameStore();
-import {observable,action, autorun,computed} from 'mobx'
+import { observable, action, autorun, computed } from 'mobx'
 import LoginService from "../../services/login-service";
 import RoomStore from "../waitingRoom/store"
 import { WEBSOCKET_URL } from "../../env";
@@ -126,10 +126,15 @@ class GameStore {
     gameData = [];
 
     @observable
-    gameDetail = {};
-
-    @observable
-    fieldDimension=RoomStore.gameDimension;
+    gameDetail = {
+        block: [],
+        dimension: {
+            x: 5,
+            y: 5,
+        },
+        playerIndex: -1,
+        time: 0,
+    };
 
     gameSocket;
     disposer;
@@ -141,26 +146,64 @@ class GameStore {
             }
         });
     }
+
     dispose() {
         this.disposer();
     }
 
     connectGameSocket() {
-        this.gameSocket = new WebSocket(`${WEBSOCKET_URL}/game?player=${LoginService.token}&token=${RoomStore.selectedRoomToken}`);
-        this.gameSocket.addEventListener("message", ({data}) => {
-            this.setGameDetail(JSON.parse(data));
-        });
-        this.gameSocket.addEventListener("close", ({code}) => {
-            if(code === 1006) { 
-                setTimeout(() => {
-                    this.connectGameSocket()
-                }, 1000);
+        if(!this.gameSocket)  {
+            this.gameSocket = new WebSocket(`${WEBSOCKET_URL}/game?player=${LoginService.token}&token=${RoomStore.selectedRoomToken}`);
+            this.gameSocket.onmessage = ({data}) => {
+                this.setGameDetail(JSON.parse(data));
+            };
+            this.gameSocket.onclose = ({code}) => {
+                if(code === 1006) { 
+                    this.gameSocket = null;
+                    setTimeout(() => {
+                        this.connectGameSocket()
+                    }, 5000);
+                }
+            };
+        }
+    }
+
+    @computed
+    get gameTable() {
+        const table = [];
+        for(let i = 0; i < this.gameDetail.dimension.x; i++) {
+            const temp = [];
+            for(let j = 0; j < this.gameDetail.dimension.y; j++){
+                let node;
+                if(this.gameDetail.blocks) {
+                    node = this.gameDetail.blocks.find((o) => o.coordinate.x === i && o.coordinate.y === j);
+                }
+                if(node) {
+                    switch(node.blockType){
+                        case "OBSTACLE":
+                            temp.push("https://www.img.in.th/images/5328946b24463775ee939c0b4aa7c29e.png");
+                            break;
+                        case "TUNNEL":
+                            temp.push( "https://www.img.in.th/images/ad99cc78058995b1a843f1fc01300490.png");
+                            break;
+                    }
+                }else {
+                    temp.push("blank");
+                }
             }
-        });
+            table.push(temp);
+        }
+        return table;
+    }
+
+    @computed
+    get time() {
+        return this.gameDetail.time;
     }
 
     @action.bound
-    setRoomDetail(gameDetail) {
+    setGameDetail(gameDetail) {
+        console.log(gameDetail);
         this.gameDetail = gameDetail;
     }
     

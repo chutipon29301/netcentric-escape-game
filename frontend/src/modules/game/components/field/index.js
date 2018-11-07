@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./style.scss";
 import { inject, observer } from "mobx-react";
 
+@inject("gameStore")
 @observer
 export default class Field extends Component {
   render() {
@@ -9,6 +10,20 @@ export default class Field extends Component {
       	<div className="table-field">
         	<table>
                 <tbody>
+                  {
+                    this.props.gameStore.gameTable.map((row) => (
+                      <tr>
+                        {
+                          row.map((data) => {
+                            return (data === "blank") ? <td /> : 
+                            (<td>
+                              <img src={data} />
+                            </td>)
+                          })
+                        }
+                      </tr>
+                    ))
+                  }
                     {
                         // this.props.game.createTable(this.props.game.player)
                         // .map(obj => 

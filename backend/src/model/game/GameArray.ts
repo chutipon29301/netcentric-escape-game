@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
 import { flatMap } from "rxjs/operators";
 import { Game } from "./Game";
 import { IGameSummary } from "./GameInterface";
@@ -35,7 +35,7 @@ export class GameArray {
 
     public getGameSummary(): Observable<IGameSummary[]> {
         return this.array.pipe(
-            flatMap((elements) => combineLatest(elements.map((o) => o.getGameSummary()))),
+            flatMap((elements) => (elements.length === 0) ? of([]) : combineLatest(elements.map((o) => o.getGameSummary()))),
         );
     }
 

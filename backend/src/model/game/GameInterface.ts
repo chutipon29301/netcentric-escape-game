@@ -1,6 +1,8 @@
 import { Direction } from "../../type/direction";
 import { PlayerType } from "../../type/playerType";
+import { Block } from "./component/Block";
 import { Coordinate } from "./component/Coordinate";
+import { Dimension } from "./component/Dimension";
 import { Map } from "./component/Map";
 import { GameSocket } from "./GameSocket";
 import { GameSocketArray } from "./GameSocketArray";
@@ -8,6 +10,9 @@ import { GameSocketArray } from "./GameSocketArray";
 export interface IGameUpdate {
     time: number;
     playersInfo: IPlayerInfo[];
+    playerIndex: number;
+    blocks: Block[];
+    dimension: Dimension;
 }
 
 export interface IGameResponse {
@@ -18,6 +23,7 @@ export interface IPlayerInfo {
     coordinate: Coordinate;
     playerType: PlayerType;
     token: string;
+    isWin: boolean;
 }
 
 export interface IGameInfo {

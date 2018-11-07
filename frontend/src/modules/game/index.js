@@ -6,11 +6,19 @@ import NavBar from "./components/navBar";
 import Field from "./components/field";
 import Keypad from "./components/keyPad";
 
-@inject("routing")
+@inject("routing", "gameStore")
 @withRouter
 @observer
 export default class Game extends Component {
 
+    componentDidMount() {
+        this.props.gameStore.init();
+    }
+
+    componentWillUnmount() {
+        this.props.gameStore.dispose();
+    }
+    
     render() {
         return (
             <div>
@@ -32,4 +40,5 @@ export default class Game extends Component {
             </div>
         );
     }
+    
 }

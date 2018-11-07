@@ -21,8 +21,8 @@ export default class KeyPad extends Component {
                         <div className="timer-container">
                             <h5>Timer: </h5>
                             {/* <CircularProgressbar
-                                percentage={this.state.percentage}
-                                text={`${this.state.percentage}%`}
+                                percentage={10}
+                                text={`4%`}
                                 className="timer"/> */}
                         </div>
                     </div>

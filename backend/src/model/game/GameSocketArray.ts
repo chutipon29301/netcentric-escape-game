@@ -14,8 +14,9 @@ export class GameSocketArray {
     }
 
     public getInfo(): Observable<IPlayerInfo[]> {
+        console.log("PlayerInfo");
         return this.array.pipe(
-            flatMap((elements) => combineLatest(elements.map((o) => o.getInfo()))),
+            flatMap((elements) => (elements.length === 0) ? of([]) : combineLatest(elements.map((o) => o.getInfo()))),
         );
     }
     public findPlayer(token: string): GameSocket {
