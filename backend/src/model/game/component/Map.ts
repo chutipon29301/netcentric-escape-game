@@ -49,7 +49,7 @@ export class Map {
     private insertBlockWithType(type: BlockType, numberOfBlock = 1) {
         let insertCount = 0;
         while (insertCount < numberOfBlock) {
-            const randomCoordinate = RandomGenerator.coordinate(this.dimension.getX(), this.dimension.getY());
+            const randomCoordinate = RandomGenerator.coordinate(this.dimension.getX() - 1, this.dimension.getY() - 1);
             if (!this.checkExistCoordinate(randomCoordinate)) {
                 this.block.push(new Block(type, randomCoordinate));
                 insertCount++;
