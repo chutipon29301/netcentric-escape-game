@@ -72,3 +72,4 @@ bash run-prod.sh
 * Random role multiplayer
 * Watch mode
 * Remove game
+* Each prisoner must not access to the same block of the other prisons, otherwise the warder will be the winner.
