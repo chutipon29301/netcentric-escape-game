@@ -116,7 +116,7 @@ class GameStore {
 
     @computed
     get time() {
-        return (this.gameDetail.time%10);
+        return 10-this.gameDetail.time;
     }
 
     @computed
@@ -132,10 +132,6 @@ class GameStore {
     get endGame() {
         if(this.gameDetail.playerIndex!==-1){
             return this.gameDetail.playersInfo.findIndex(o => o.isWin) !== -1;
-            // const winner = this.playersInfo.find((player)=>{
-            //     player.isWin===true;
-            // });
-            // return winner
         }else {
             return false;
         }
@@ -158,8 +154,6 @@ class GameStore {
 
     @action.bound
     setGameDetail(gameDetail) {
-
-        console.log(gameDetail);
         this.gameDetail = gameDetail;
         if(gameDetail.playerIndex !== -1) {
             this.shouldLoadingModalShow = false;            

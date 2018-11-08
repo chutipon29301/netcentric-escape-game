@@ -15,9 +15,6 @@ export default class WaitingRoom extends Component {
     componentDidMount() {
         this.props.waitingRoomStore.init();
         autorun(() => {
-
-            console.log("GameToken",this.props.gameService.gameToken)
-console.log(this.props.gameService.gameToken !== "" && this.props.loginService.token !== "" && this.props.gameStore.nextGame)
             if(this.props.gameService.gameToken !== "" && this.props.loginService.token !== "" && this.props.gameStore.nextGame){
                 this.props.routing.push("/game");
             }
