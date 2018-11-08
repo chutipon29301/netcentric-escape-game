@@ -1,6 +1,6 @@
-import Axios from 'axios'
+import Axios from 'axios';
+import { BASE_URL } from './env';
 
-import { BASE_URL } from '../env';
-Axios.defaults.baseURL =   `http://${BASE_URL}`;
+Axios.defaults.baseURL = BASE_URL;
 
-export default Axios
+export default Axios;
