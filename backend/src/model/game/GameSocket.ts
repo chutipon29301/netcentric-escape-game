@@ -1,5 +1,5 @@
 import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
-import { flatMap, map } from "rxjs/operators";
+import { flatMap, map, take } from "rxjs/operators";
 import WebSocket from "ws";
 import Player from "../../models/Player.model";
 import { PlayerType } from "../../type/playerType";
@@ -10,9 +10,13 @@ import { IGamePlayerSummary, IGameResponse, IGameUpdate, IPlayerInfo } from "./G
 export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
 
     private info: BehaviorSubject<IPlayerInfo>;
+    private name: BehaviorSubject<string> = new BehaviorSubject("");
 
     constructor(socket: WebSocket, token: string) {
         super(socket);
+        Player.findWithToken(token).subscribe(
+            (name) => this.name.next(name.nickname),
+        );
         this.info = new BehaviorSubject({
             coordinate: null,
             isWin: false,
@@ -22,10 +26,9 @@ export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
     }
 
     public getInfo(): Observable<IPlayerInfo & { name: string }> {
-        console.log("SocketInfo");
-        return this.info.pipe(
-            flatMap((info) => combineLatest(of(info), Player.findWithToken(info.token))),
-            map(([info, {nickname}]) => ({ ...info, name: nickname })),
+        return combineLatest(this.info, this.name).pipe(
+            take(1),
+            map(([info, name]) => ({ ...info, name })),
         );
     }
 
@@ -50,14 +53,25 @@ export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
     }
 
     public getPlayerSummary(): Observable<IGamePlayerSummary> {
-        return this.info.pipe(
-            flatMap((info) => combineLatest(of(info.token), Player.findWithToken(info.token))),
-            map(([token, {nickname}]) => ({ name: nickname, token })),
+        return combineLatest(this.info, this.name).pipe(
+            map(([{ token }, name]) => ({ name, token })),
         );
     }
 
     public getPLayerAction(): Observable<IGameResponse> {
         return this.data();
+    }
+
+    public getStaticName(): string {
+        return this.name.getValue();
+    }
+
+    public getStaticPlayerType(): PlayerType {
+        return this.info.getValue().playerType;
+    }
+
+    public win() {
+        this.update({ isWin: true });
     }
 
     private update(value: Partial<IPlayerInfo>) {
