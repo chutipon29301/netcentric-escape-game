@@ -77,7 +77,7 @@ class WaitingRoomStore {
             }
         });
     }
-
+    
     connectRoomSocket() {
         this.roomSocket = new WebSocket(`${WEBSOCKET_URL}/room?player=${LoginService.token}&token=${this.selectedRoomToken}`);
         this.roomSocket.addEventListener("message", ({data}) => {
@@ -208,6 +208,7 @@ class WaitingRoomStore {
     onChange(key, value) {
         this[key] = value;
     }
+
 }
 
 export default new WaitingRoomStore();

@@ -49,7 +49,7 @@ class Rooms extends React.Component {
             } catch (error) { }
         });
         socket.addEventListener('error', function (error) {
-            alert(error.toString());
+            console.log("room-error:",error.toString());
             console.log(error);
         });
         socket.addEventListener('close', (event) => {
@@ -96,7 +96,7 @@ class Rooms extends React.Component {
         });
 
         listener.socket.addEventListener('error', function (error) {
-            alert(error.toString());
+            console.log("room-error",error.toString());
             console.log(error);
         });
         listener.socket.addEventListener('close', (event)=> {

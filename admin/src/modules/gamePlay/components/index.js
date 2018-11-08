@@ -24,6 +24,13 @@ class GameList extends React.Component {
         });
     }
 
+    deleteGame(roomToken) {
+        Axios({
+            method: 'delete',
+            url: `/deleteGame/${roomToken}`
+        }).then(response => {});
+    }
+
 
 
     render() {
@@ -38,7 +45,7 @@ class GameList extends React.Component {
                                     <th scope="col">No. of player</th>
                                     <th scope="col">Whose Turn?</th>
                                     <th scope="col">Reset Game</th>
-
+                                    <th scope="col">Delete Game</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -49,7 +56,8 @@ class GameList extends React.Component {
                                              <td>{row.isGameRunning.toString()}</td>
                                              <td>{row.maxPlayer}</td>
                                              <td>{(row.playerIndex!==-1)?row.player[row.playerIndex].name:""}</td>
-                                             <td><button name="delete" onClick={()=>this.resetGame(row.roomToken)} className="btn btn-outline-danger btn-sm remove">Reset</button></td>
+                                             <td><button name="delete" onClick={()=>this.resetGame(row.roomToken)} className="btn btn-outline-info btn-sm remove">Reset</button></td>
+                                             <td><button name="delete" onClick={()=>this.deleteGame(row.roomToken)} className="btn btn-outline-danger btn-sm remove">Delete Game</button></td>
 
                                          </tr>
                                     })
