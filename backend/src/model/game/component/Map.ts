@@ -48,6 +48,10 @@ export class Map {
         return this.block.filter((o) => o.blockType === BlockType.TUNNEL)[0];
     }
 
+    public getObstaclePercent(): number {
+        return this.obstaclePercent;
+    }
+
     public walk(player: GameSocket, direction: Direction, players: GameSocketArray): boolean {
         const newCoordinate = player.getCoordinate().move(direction);
         if (this.isValidPath(newCoordinate)) {

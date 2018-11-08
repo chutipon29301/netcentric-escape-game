@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, Observable, of, Subscription, timer } from "rxjs";
+import { BehaviorSubject, combineLatest, interval, Observable, of } from "rxjs";
 import { flatMap, map, take } from "rxjs/operators";
 import { PlayerType } from "../../type/playerType";
 import { Map } from "./component/Map";
@@ -9,10 +9,23 @@ import { GameSocketArray } from "./GameSocketArray";
 export class Game {
 
     private info: BehaviorSubject<IGameInfo>;
-    private timer: Observable<number>;
-    private timerDisposer: Subscription;
+    private timer: BehaviorSubject<number> = new BehaviorSubject(0);
+    private interval = interval(1000);
+    private isFirstRun = true;
 
     constructor(roomToken: string, numberOfPlayer: number, dimensionX = 5, dimensionY = 5, obstaclePercent = 0.2) {
+        this.interval.subscribe(
+            () => {
+                if (this.timer.getValue() < 10) {
+                    this.timer.next(this.timer.getValue() + 1);
+                } else {
+                    this.timer.next(0);
+                    if (this.info.getValue().isGameRunning) {
+                        this.nextPlayer();
+                    }
+                }
+            },
+        );
         this.resetTimer();
         this.info = new BehaviorSubject({
             backupMap: null,
@@ -40,10 +53,12 @@ export class Game {
     }
 
     public resetGame() {
-        this.resetTimer();
+        const oldMap = this.info.getValue().map;
         this.update({
+            backupMap: null,
             isGameRunning: false,
-            map: this.info.getValue().backupMap,
+            map: new Map(oldMap.getDimension().getX(), oldMap.getDimension().getY(), oldMap.getObstaclePercent()),
+            playerIndex: -1,
         });
     }
 
@@ -93,15 +108,17 @@ export class Game {
             });
             this.info.getValue().player.getStaticArray()
                 .forEach((element) => this.info.getValue().map.insertPlayer(element, this.info.getValue().player));
-
-            this.info.getValue().player.getPlayerAction().subscribe(
-                (response) => {
-                    const moveSuccess = this.info.getValue().map.walk(response.player, response.direction, this.info.getValue().player);
-                    if (moveSuccess) {
-                        this.nextPlayer();
-                    }
-                },
-            );
+            if (this.isFirstRun) {
+                this.isFirstRun = false;
+                this.info.getValue().player.getPlayerAction().subscribe(
+                    (response) => {
+                        const moveSuccess = this.info.getValue().map.walk(response.player, response.direction, this.info.getValue().player);
+                        if (moveSuccess) {
+                            this.nextPlayer();
+                        }
+                    },
+                );
+            }
         }
     }
 
@@ -143,17 +160,7 @@ export class Game {
     }
 
     private resetTimer() {
-        if (this.timerDisposer) {
-            this.timerDisposer.unsubscribe();
-        }
-        this.timer = timer(1000, 1000);
-        this.timerDisposer = this.timer.subscribe(
-            (value) => {
-                if (value > 10) {
-                    this.nextPlayer();
-                }
-            },
-        );
+        this.timer.next(0);
     }
 
 }
