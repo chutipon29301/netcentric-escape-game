@@ -79,4 +79,8 @@ export class GameSocketArray {
             return false;
         }
     }
+
+    public resetCoordinate() {
+        this.array.getValue().forEach((element) => element.setCoordinate(null));
+    }
 }

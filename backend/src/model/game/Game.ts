@@ -60,6 +60,8 @@ export class Game {
             map: new Map(oldMap.getDimension().getX(), oldMap.getDimension().getY(), oldMap.getObstaclePercent()),
             playerIndex: -1,
         });
+        this.info.getValue().player.resetCoordinate();
+        this.startGame();
     }
 
     public regenerateMap() {
@@ -99,7 +101,7 @@ export class Game {
     }
 
     public startGame() {
-        if (!this.info.getValue().isGameRunning && this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
+        if (this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
             this.resetTimer();
             this.nextPlayer();
             this.update({
