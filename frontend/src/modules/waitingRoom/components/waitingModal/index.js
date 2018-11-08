@@ -76,9 +76,8 @@ export default class WaitingModal extends Component {
                                         <button 
                                             style={{ marginTop: 30, width: "100%", display: this.props.waitingRoomStore.shouldCreateGameButtonShow ? "block" : "none" }} 
                                             className="btn btn-block btn-lg btn-info"
-                                            onClick={this.props.waitingRoomStore.createGame}
-                                        >
-                                        Start Game!
+                                            onClick={this.props.waitingRoomStore.createGame }
+                                        >Start Game!
                                         </button>
                                     </div>
                                 </div>

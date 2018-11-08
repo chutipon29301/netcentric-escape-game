@@ -13,30 +13,28 @@ export default class KeyPad extends Component {
             <div className="controller-container">
                 <div className="row d-flex flex-fill">
                     <div className="col-lg-8 pl-4">
-                        <p>You are : Warder</p>
+                        <p>You are : {this.props.gameStore.role}</p>
                     </div>
                     <div className="col-lg-4 pt-2 pr-4 d-flex align-items-end flex-column">
                         <CircularProgressbar
-                            percentage={40}
-                            text={`${40}%`}
+                            percentage={this.props.gameStore.time*10}
+                            text={`${this.props.gameStore.time}`}
                             className="timer"
                         />
                     </div>
                 </div>
-                <div className="row d-flex justify-content-center align-items-center">
+                <div className="row d-flex justify-content-center align-items-center" >
                     <div className="row">
-                        <span className="start-btn keyboard_key_up">
-                            Up
-                        </span>
-                        <span className="start-btn keyboard_key_left">
-                            Left
-                        </span>
-                        <span className="start-btn keyboard_key_down">
-                            Down
-                        </span>
-                        <span className="start-btn keyboard_key_right">
-                            Right
-                        </span>
+
+                    {this.props.gameStore.keyPad.map((direction,index) =>
+                            (<span
+                                key={index}
+                                style={{ display: this.props.gameStore.turn ? "block" : "none" }}
+                                onClick = {()=>this.props.gameStore.sendMove(direction.toLowerCase())}
+                                className={`start-btn keyboard-key-${direction.toLowerCase()}`}
+                            >{direction}
+                            </span>)
+                        )}
                     </div>
                 </div>
             </div>

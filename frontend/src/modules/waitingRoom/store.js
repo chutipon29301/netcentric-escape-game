@@ -3,7 +3,7 @@ import LoginService from "../../services/login-service";
 import RoomService from "../../services/room-service";
 import GameService from "../../services/game-service";
 import { WEBSOCKET_URL } from "../../env";
-
+import gameStore from '../game/store'
 class WaitingRoomStore {
 
     @observable
@@ -182,15 +182,7 @@ class WaitingRoomStore {
         this.shouldWaitingModalShow = true;
     }
 
-    @action.bound
-    dismissLoadingModal() {
-        this.shouldLoadingModalShow = false;
-    }
-
-    @action.bound
-    showLoadingModal() {
-        this.shouldLoadingModalShow = true;
-    }
+    
 
     @action.bound
     async createRoom() {
@@ -202,6 +194,7 @@ class WaitingRoomStore {
 
     @action.bound
     async createGame() {
+        gameStore.onChange("nextGame",true);
         await GameService.create(this.selectedRoomToken, this.roomDetail.player.length, this.gameDimension);
     }
 

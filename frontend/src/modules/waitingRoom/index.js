@@ -5,10 +5,9 @@ import { withRouter } from "react-router-dom";
 import CreateRoom from "./components/createRoom";
 import RoomList from "./components/roomList";
 import WaitingModal from "./components/waitingModal";
-import LoadingModal from "./components/loadingModal";
 import { autorun } from "mobx";
 
-@inject("routing", "waitingRoomStore", "gameService", "loginService")
+@inject("routing", "waitingRoomStore", "gameService","gameStore", "loginService")
 @withRouter
 @observer
 export default class WaitingRoom extends Component {
@@ -16,7 +15,10 @@ export default class WaitingRoom extends Component {
     componentDidMount() {
         this.props.waitingRoomStore.init();
         autorun(() => {
-            if(this.props.gameService.gameToken !== "" && this.props.loginService.token !== ""){
+
+            console.log("GameToken",this.props.gameService.gameToken)
+console.log(this.props.gameService.gameToken !== "" && this.props.loginService.token !== "" && this.props.gameStore.nextGame)
+            if(this.props.gameService.gameToken !== "" && this.props.loginService.token !== "" && this.props.gameStore.nextGame){
                 this.props.routing.push("/game");
             }
         });
@@ -41,7 +43,6 @@ export default class WaitingRoom extends Component {
                     </div>
                 </div>
                 <WaitingModal />
-                <LoadingModal />
             </div>
         );
     }

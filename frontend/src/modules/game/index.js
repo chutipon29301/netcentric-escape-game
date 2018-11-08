@@ -5,10 +5,11 @@ import { withRouter } from "react-router-dom";
 import NavBar from "./components/navBar";
 import Field from "./components/field";
 import Keypad from "./components/keyPad";
+import LoadingModal from "./components/loadingModal";
 import ResultModal from "./components/resultModal";
 import { autorun } from "mobx";
 
-@inject("routing", "gameStore")
+@inject("routing", "gameStore","gameService","loginService")
 @withRouter
 @observer
 export default class Game extends Component {
@@ -19,6 +20,7 @@ export default class Game extends Component {
 
     componentWillUnmount() {
         this.props.gameStore.dispose();
+        
     }
     
     render() {
@@ -39,6 +41,7 @@ export default class Game extends Component {
                         </div>
                     </div>
                 </div>
+                <LoadingModal />
                 <ResultModal />
             </div>
         );
