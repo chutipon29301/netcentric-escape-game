@@ -44,6 +44,7 @@ class GameStore {
             this.gameSocket = new WebSocket(`${WEBSOCKET_URL}/game?player=${LoginService.token}&token=${RoomStore.selectedRoomToken}`);
             this.gameSocket.onmessage = ({data}) => {
                 this.setGameDetail(JSON.parse(data));
+                
             };
             this.gameSocket.onclose = ({code}) => {
                 if(code === 1006) { 
@@ -135,7 +136,7 @@ class GameStore {
 
     @action.bound
     setGameDetail(gameDetail) {
-        console.log(gameDetail);
+        // console.log(gameDetail);
         this.gameDetail = gameDetail;
         if(gameDetail.playerIndex !== -1) {
             this.shouldLoadingModalShow = false;            
@@ -147,7 +148,6 @@ class GameStore {
         this[key] = value;
     }
 
-    // @action.bound
     sendMove(direction) {
         if(this.gameSocket) {
             this.gameSocket.send(JSON.stringify({direction}))
