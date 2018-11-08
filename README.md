@@ -25,18 +25,14 @@ git clone https://github.com/chutipon29301/netcentric-escape-game.git
 ```sh
 docker-compose up
 ```
-- Start project with the following command
-```sh
-docker-compose -f docker-compose.dev.yml up
-```
 
 ## Deployment
 
 ```sh
 # Build
-bash build.sh
+bash build-frontend.sh
 # Deploy
-bash deploy.sh
+bash run-prod.sh
 ```
 
 ## Authors
