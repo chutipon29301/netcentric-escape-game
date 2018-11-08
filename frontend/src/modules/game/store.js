@@ -123,9 +123,6 @@ import { WEBSOCKET_URL } from "../../env";
 class GameStore {
 
     @observable
-    shouldResultModalShow = false;
-
-    @observable
     gameData = [];
 
     @observable
