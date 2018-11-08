@@ -51,9 +51,9 @@ bash deploy.sh
       
 * Register
 * Color table    
-* reate room  
+* Create room  
 * Background
-* GIF Animation   
+* GIF animation   
 * Description
 * Sign in
 * No repeat email   
