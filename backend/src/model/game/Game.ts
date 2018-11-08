@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatest, Observable, of, timer } from "rxjs";
+import { BehaviorSubject, combineLatest, Observable, of, Subscription, timer } from "rxjs";
 import { flatMap, map, take } from "rxjs/operators";
 import { PlayerType } from "../../type/playerType";
 import { Map } from "./component/Map";
@@ -10,6 +10,7 @@ export class Game {
 
     private info: BehaviorSubject<IGameInfo>;
     private timer: Observable<number>;
+    private timerDisposer: Subscription;
 
     constructor(roomToken: string, numberOfPlayer: number, dimensionX = 5, dimensionY = 5, obstaclePercent = 0.2) {
         this.resetTimer();
@@ -19,7 +20,7 @@ export class Game {
             map: new Map(dimensionX, dimensionY, obstaclePercent),
             numberOfPlayer,
             player: new GameSocketArray(),
-            playerIndex: 0,
+            playerIndex: -1,
             roomToken,
         });
     }
@@ -30,16 +31,16 @@ export class Game {
                 player: this.info.getValue().player.push(player),
             });
             if (this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
-                // setTimeout(() => {
-                //     this.shufflePlayer();
-                //     this.startGame();
-                // }, 2000);
+                setTimeout(() => {
+                    this.shufflePlayer();
+                    this.startGame();
+                }, 2000);
             }
         }
     }
 
     public resetGame() {
-        this.timer = null;
+        this.resetTimer();
         this.update({
             isGameRunning: false,
             map: this.info.getValue().backupMap,
@@ -65,7 +66,7 @@ export class Game {
                 playersInfo: [],
                 time,
             }), info.player.getInfo()).pipe(take(1))),
-            map(([result, player]) => ({...result, playersInfo: player})),
+            map(([result, player]) => ({ ...result, playersInfo: player })),
         );
     }
 
@@ -85,16 +86,20 @@ export class Game {
     public startGame() {
         if (!this.info.getValue().isGameRunning && this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
             this.resetTimer();
-            this.info.getValue().player.shuffle();
+            this.nextPlayer();
             this.update({
                 backupMap: this.info.getValue().map.clone(),
                 isGameRunning: true,
             });
-            const playerAction = this.info.pipe(
-                flatMap((info) => info.player.getPlayerAction()),
-            ).subscribe(
-                (responses) => {
-                    // responses.
+            this.info.getValue().player.getStaticArray()
+                .forEach((element) => this.info.getValue().map.insertPlayer(element, this.info.getValue().player));
+
+            this.info.getValue().player.getPlayerAction().subscribe(
+                (response) => {
+                    const moveSuccess = this.info.getValue().map.walk(response.player, response.direction, this.info.getValue().player);
+                    if (moveSuccess) {
+                        this.nextPlayer();
+                    }
                 },
             );
         }
@@ -102,9 +107,7 @@ export class Game {
 
     public nextPlayer() {
         this.resetTimer();
-        this.update({
-            playerIndex: this.info.getValue().playerIndex + 1 % this.info.getValue().player.staticLength(),
-        });
+        this.updatePlayerIndex((this.info.getValue().playerIndex + 1) % this.info.getValue().player.staticLength());
     }
 
     private shufflePlayer() {
@@ -112,6 +115,7 @@ export class Game {
         for (const [index, value] of this.info.getValue().player.getStaticArray().entries()) {
             value.setPlayerType((index === 0) ? PlayerType.WARDER : PlayerType.PRISONER);
         }
+
     }
 
     private update(value: Partial<IGameInfo>) {
@@ -126,9 +130,24 @@ export class Game {
         });
     }
 
+    private updatePlayerIndex(index: number) {
+        this.info.next({
+            backupMap: this.info.getValue().backupMap,
+            isGameRunning: this.info.getValue().isGameRunning,
+            map: this.info.getValue().map,
+            numberOfPlayer: this.info.getValue().numberOfPlayer,
+            player: this.info.getValue().player,
+            playerIndex: index,
+            roomToken: this.info.getValue().roomToken,
+        });
+    }
+
     private resetTimer() {
+        if (this.timerDisposer) {
+            this.timerDisposer.unsubscribe();
+        }
         this.timer = timer(1000, 1000);
-        this.timer.subscribe(
+        this.timerDisposer = this.timer.subscribe(
             (value) => {
                 if (value > 10) {
                     this.nextPlayer();

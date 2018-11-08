@@ -62,6 +62,18 @@ export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
         return this.data();
     }
 
+    public getStaticName(): string {
+        return this.name.getValue();
+    }
+
+    public getStaticPlayerType(): PlayerType {
+        return this.info.getValue().playerType;
+    }
+
+    public win() {
+        this.update({ isWin: true });
+    }
+
     private update(value: Partial<IPlayerInfo>) {
         this.info.next({
             coordinate: value.coordinate || this.info.getValue().coordinate,
