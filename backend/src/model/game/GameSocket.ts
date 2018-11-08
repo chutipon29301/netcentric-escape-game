@@ -1,11 +1,11 @@
-import { BehaviorSubject, combineLatest, Observable, of } from "rxjs";
-import { flatMap, map, take } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { map, take } from "rxjs/operators";
 import WebSocket from "ws";
 import Player from "../../models/Player.model";
 import { PlayerType } from "../../type/playerType";
 import { Socket } from "../socket/Socket";
 import { Coordinate } from "./component/Coordinate";
-import { IGamePlayerSummary, IGameResponse, IGameUpdate, IPlayerInfo } from "./GameInterface";
+import { IGamePlayerSummary, IGameResponse, IGameUpdate, IGameWinStatus, IPlayerInfo } from "./GameInterface";
 
 export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
 
@@ -71,7 +71,29 @@ export class GameSocket extends Socket<IGameUpdate, IGameResponse> {
     }
 
     public win() {
-        this.update({ isWin: true });
+        Player.win(this.info.getValue().token).pipe(
+            take(1),
+        ).subscribe(
+            () => this.update({ isWin: true }),
+        );
+    }
+
+    public resetWinStat() {
+        this.info.next({
+            coordinate: this.info.getValue().coordinate,
+            isWin: false,
+            playerType: this.info.getValue().playerType,
+            token: this.info.getValue().token,
+        });
+    }
+
+    public winStatus(): Observable<IGameWinStatus> {
+        return this.info.pipe(
+            map((info) => ({
+                isWin: info.isWin,
+                token: info.token,
+            })),
+        );
     }
 
     private update(value: Partial<IPlayerInfo>) {

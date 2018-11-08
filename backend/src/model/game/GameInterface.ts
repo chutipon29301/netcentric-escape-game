@@ -52,3 +52,8 @@ export interface IGamePlayerSummary {
 export interface IGameResponseDetail extends IGameResponse {
     player: GameSocket;
 }
+
+export interface IGameWinStatus {
+    isWin: boolean;
+    token: string;
+}

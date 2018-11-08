@@ -33,6 +33,20 @@ router.get(
     },
 );
 
+router.get(
+    "/winStat/:token",
+    param("token").isString(),
+    validateRequest,
+    (req, res) => {
+        User.getScore(req.params.token).pipe(
+            take(1),
+        ).subscribe(
+            (win) => res.status(200).send({ win }),
+            errorHandler(res),
+        );
+    },
+);
+
 router.post(
     "/register",
     body("nickname").isString(),
@@ -185,6 +199,16 @@ router.delete(
     validateRequest,
     (req, res) => {
         RoomArray.getInstance().remove(req.params.token);
+        res.sendStatus(200);
+    },
+);
+
+router.delete(
+    "/deleteGame/:token",
+    param("token").isString(),
+    validateRequest,
+    (req, res) => {
+        GameArray.getInstance().remove(req.params.token);
         res.sendStatus(200);
     },
 );

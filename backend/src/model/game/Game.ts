@@ -12,6 +12,7 @@ export class Game {
     private timer: BehaviorSubject<number> = new BehaviorSubject(0);
     private interval = interval(1000);
     private isFirstRun = true;
+    private winnerToken: string;
 
     constructor(roomToken: string, numberOfPlayer: number, dimensionX = 5, dimensionY = 5, obstaclePercent = 0.2) {
         this.interval.subscribe(
@@ -45,7 +46,6 @@ export class Game {
             });
             if (this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
                 setTimeout(() => {
-                    this.shufflePlayer();
                     this.startGame();
                 }, 2000);
             }
@@ -61,6 +61,7 @@ export class Game {
             playerIndex: -1,
         });
         this.info.getValue().player.resetCoordinate();
+        this.info.getValue().player.resetWinStat();
         this.startGame();
     }
 
@@ -101,9 +102,16 @@ export class Game {
     }
 
     public startGame() {
+        this.shufflePlayer();
         if (this.info.getValue().player.staticLength() === this.info.getValue().numberOfPlayer) {
             this.resetTimer();
             this.nextPlayer();
+            if (this.winnerToken) {
+                const index = this.info.getValue().player.findPlayerIndex(this.winnerToken);
+                if (index !== -1) {
+                    this.updatePlayerIndex(index);
+                }
+            }
             this.update({
                 backupMap: this.info.getValue().map.clone(),
                 isGameRunning: true,
@@ -117,6 +125,14 @@ export class Game {
                         const moveSuccess = this.info.getValue().map.walk(response.player, response.direction, this.info.getValue().player);
                         if (moveSuccess) {
                             this.nextPlayer();
+                        }
+                    },
+                );
+                this.info.getValue().player.winStatus().subscribe(
+                    (responses) => {
+                        const winner = responses.find((o) => o.isWin);
+                        if (winner) {
+                            this.winnerToken = winner.token;
                         }
                     },
                 );

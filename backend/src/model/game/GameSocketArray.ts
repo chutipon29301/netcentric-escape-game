@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, merge, Observable, of } from "rxjs";
 import { flatMap, map } from "rxjs/operators";
 import { JWTAuth } from "../../repositories/JWTAuth";
 import { Coordinate } from "./component/Coordinate";
-import { IGamePlayerSummary, IGameResponseDetail, IPlayerInfo } from "./GameInterface";
+import { IGamePlayerSummary, IGameResponseDetail, IGameWinStatus, IPlayerInfo } from "./GameInterface";
 import { GameSocket } from "./GameSocket";
 
 export class GameSocketArray {
@@ -20,8 +20,13 @@ export class GameSocketArray {
             flatMap((elements) => (elements.length === 0) ? of([]) : combineLatest(elements.map((o) => o.getInfo()))),
         );
     }
+
     public findPlayer(token: string): GameSocket {
         return this.array.getValue().find((o) => o.getToken() === token);
+    }
+
+    public findPlayerIndex(token: string): number {
+        return this.array.getValue().findIndex((o) => o.getToken() === token);
     }
 
     public length(): Observable<number> {
@@ -82,5 +87,15 @@ export class GameSocketArray {
 
     public resetCoordinate() {
         this.array.getValue().forEach((element) => element.setCoordinate(null));
+    }
+
+    public resetWinStat() {
+        this.array.getValue().forEach((element) => element.resetWinStat());
+    }
+
+    public winStatus(): Observable<IGameWinStatus[]> {
+        return this.array.pipe(
+            flatMap((elements) => combineLatest(elements.map((element) => element.winStatus()))),
+        );
     }
 }

@@ -39,7 +39,19 @@ export class GameArray {
         );
     }
 
+    public remove(token: string) {
+        const index = this.findGameIndex(token);
+        this.removeAtIndex(index);
+    }
+
     private findGameIndex(token: string): number {
         return this.array.getValue().findIndex((o) => o.getToken() === token);
+    }
+
+    private removeAtIndex(index: number) {
+        if (index !== -1) {
+            this.array.getValue().splice(index, 1);
+            this.array.next([...this.array.getValue()]);
+        }
     }
 }

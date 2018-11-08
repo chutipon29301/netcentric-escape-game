@@ -43,6 +43,10 @@ export class User {
         );
     }
 
+    public static getScore(token: string): Observable<number> {
+        return Player.getStat(token);
+    }
+
     public static getUserList(): Observable<IUserInfo[]> {
         Player.listPlayers().subscribe((players) => this.userList.next(players));
         return this.userList;
