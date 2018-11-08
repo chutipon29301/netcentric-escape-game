@@ -3,7 +3,7 @@ import LoginService from "../../services/login-service";
 import RoomStore from "../waitingRoom/store"
 import { WEBSOCKET_URL } from "../../env";
 import GameService from "../../services/game-service";
-
+import Axios from "../../axiosConfig"
 
 class GameStore {
 
@@ -26,10 +26,13 @@ class GameStore {
     winner;
 
     @observable
-    nextGame=true;
+    nextGame = true;
 
     @observable
     shouldLoadingModalShow = true;
+
+    @observable
+    scores = [];
 
     keyPad = ['Up','Left','Down','Right']
 
@@ -116,7 +119,7 @@ class GameStore {
 
     @computed
     get time() {
-        return (this.gameDetail.time%10);
+        return 10-this.gameDetail.time;
     }
 
     @computed
@@ -131,11 +134,8 @@ class GameStore {
     @computed
     get endGame() {
         if(this.gameDetail.playerIndex!==-1){
+            this.getScores();
             return this.gameDetail.playersInfo.findIndex(o => o.isWin) !== -1;
-            // const winner = this.playersInfo.find((player)=>{
-            //     player.isWin===true;
-            // });
-            // return winner
         }else {
             return false;
         }
@@ -157,9 +157,7 @@ class GameStore {
     }
 
     @action.bound
-    setGameDetail(gameDetail) {
-
-        console.log(gameDetail);
+    async setGameDetail(gameDetail) {
         this.gameDetail = gameDetail;
         if(gameDetail.playerIndex !== -1) {
             this.shouldLoadingModalShow = false;            
@@ -184,6 +182,28 @@ class GameStore {
         this[key] = value;
     }
 
+    @action.bound
+    setScores(scores){
+        this.scores = scores;
+    }
+
+    
+    async getScores(){
+        const response = await Promise.all(this.gameDetail.playersInfo.map((player)=> Axios({
+                method: 'get',
+                url: `/winStat/${player.token}`,
+            })
+        ));
+        this.setScores(response.map(o => o.data) || []);
+    }
+    
+    async playAgain(){
+        await Axios({
+            method: 'post',
+            url: `/resetGame/`,
+            data: {token:RoomStore.selectedRoomToken}
+        })
+    }
     
 }
 
