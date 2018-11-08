@@ -204,6 +204,16 @@ class GameStore {
     }
 
     @action.bound
+    dismissResultModal() {
+        this.shouldResultModalShow = false;
+    }
+
+    @action.bound
+    showResultModal() {
+        this.shouldResultModalShow = true;
+    }
+
+    @action.bound
     setGameDetail(gameDetail) {
         console.log(gameDetail);
         this.gameDetail = gameDetail;

@@ -16,6 +16,8 @@ class Login extends Component {
         const token = await this.props.loginStore.login();
         if (token) {
             this.props.routing.push("/waitingRoom");
+        }else{
+            alert("Error : Please check your input")
         }
     }
 
