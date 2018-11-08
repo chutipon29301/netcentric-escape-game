@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { SOKCET_URL } from '../../../env'
+import { SOCKET_URL } from '../../../env'
 class JoinRoom extends React.Component {
 
     constructor(props) {
@@ -21,7 +21,7 @@ class JoinRoom extends React.Component {
         console.log('JOIN!')
     }
     connectSocket(){
-        let socket = new WebSocket(`${SOKCET_URL}/room?token=${this.state.roomToken}&&player=${this.props.player.token}`);
+        let socket = new WebSocket(`${SOCKET_URL}/room?token=${this.state.roomToken}&&player=${this.props.player.token}`);
         socket.addEventListener('message', ({data}) => {
             console.log(data);
         })
