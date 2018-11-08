@@ -151,6 +151,15 @@ router.post(
     },
 );
 
+router.post(
+    "/resetScore",
+    (_, res) => {
+        User.resetScore().pipe(
+            take(1),
+        ).subscribe(completionHandler(res));
+    },
+);
+
 router.delete(
     "/user",
     body("email").isEmail(),

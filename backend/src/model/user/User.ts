@@ -48,6 +48,10 @@ export class User {
         return this.userList;
     }
 
+    public static resetScore(): Observable<number> {
+        return Player.resetScore();
+    }
+
     private static userList: BehaviorSubject<IUserInfo[]> = new BehaviorSubject([]);
 
     private static notifySocketFrom<T>(input: ObservableInput<T>, scheduler?: SchedulerLike): Observable<T> {
