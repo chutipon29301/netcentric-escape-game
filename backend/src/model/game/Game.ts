@@ -122,9 +122,14 @@ export class Game {
                 this.isFirstRun = false;
                 this.info.getValue().player.getPlayerAction().subscribe(
                     (response) => {
-                        const moveSuccess = this.info.getValue().map.walk(response.player, response.direction, this.info.getValue().player);
-                        if (moveSuccess) {
-                            this.nextPlayer();
+                        if (response.player.getToken() ===
+                            this.info.getValue().player.getStaticArray()[this.info.getValue().playerIndex].getToken()) {
+                            const moveSuccess =
+                                this.info.getValue().map.walk(response.player, response.direction, this.info.getValue().player);
+                            if (moveSuccess) {
+                                this.nextPlayer();
+                            }
+
                         }
                     },
                 );

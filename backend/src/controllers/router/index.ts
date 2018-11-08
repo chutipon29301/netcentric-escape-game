@@ -41,7 +41,7 @@ router.get(
         User.getScore(req.params.token).pipe(
             take(1),
         ).subscribe(
-            (win) => res.status(200).send({ win }),
+            (data) => res.status(200).send(data),
             errorHandler(res),
         );
     },

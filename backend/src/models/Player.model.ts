@@ -57,9 +57,9 @@ export default class Player extends Model<Player> {
         );
     }
 
-    public static getStat(token: string): Observable<number> {
+    public static getStat(token: string): Observable<{name: string, win: number}> {
         return Player.findWithToken(token).pipe(
-            map((player) => player.win),
+            map((player) => ({name: player.nickname, win: player.win})),
         );
     }
 

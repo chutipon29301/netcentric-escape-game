@@ -43,7 +43,7 @@ export class User {
         );
     }
 
-    public static getScore(token: string): Observable<number> {
+    public static getScore(token: string): Observable<{name: string, win: number}> {
         return Player.getStat(token);
     }
 
