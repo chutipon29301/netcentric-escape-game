@@ -64,7 +64,7 @@ bash deploy.sh
 | 11. Only owner (who create the room) can change the field dimension (e.g. 5x5, 6x6, 7x7)
 | 12. Disappear keypad when not be in your turn
 | 13. Role appear for that client
-| 14. Admin page (reset game, show online players, created room, delete room)
+| 14. Admin page (reset game, show online players, created room, delete room, remove game)
 | 15. List of online players
 | 16. Remove register players
 | 17. Current status player
@@ -76,3 +76,4 @@ bash deploy.sh
 | 23. Multiplayer !
 | 24. Random role multiplayer
 | 25. Watch mode
+| 26. Remove game
