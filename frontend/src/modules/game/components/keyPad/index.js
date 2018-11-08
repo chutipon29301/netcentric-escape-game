@@ -17,7 +17,7 @@ export default class KeyPad extends Component {
                     </div>
                     <div className="col-lg-4 pt-2 pr-4 d-flex align-items-end flex-column">
                         <CircularProgressbar
-                            percentage={this.props.gameStore.time}
+                            percentage={this.props.gameStore.time*10}
                             text={`${this.props.gameStore.time}`}
                             className="timer"
                         />

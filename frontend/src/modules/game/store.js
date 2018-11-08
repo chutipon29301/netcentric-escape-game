@@ -2,6 +2,8 @@ import { observable, action, autorun, computed } from 'mobx'
 import LoginService from "../../services/login-service";
 import RoomStore from "../waitingRoom/store"
 import { WEBSOCKET_URL } from "../../env";
+import GameService from "../../services/game-service";
+
 
 class GameStore {
 
@@ -17,7 +19,14 @@ class GameStore {
         },
         playerIndex: -1,
         time: 0,
+        playersInfo: []
     };
+
+    @observable
+    winner;
+
+    @observable
+    nextGame=true;
 
     @observable
     shouldLoadingModalShow = true;
@@ -107,7 +116,7 @@ class GameStore {
 
     @computed
     get time() {
-        return this.gameDetail.time;
+        return (this.gameDetail.time%10);
     }
 
     @computed
@@ -120,14 +129,27 @@ class GameStore {
     }
 
     @computed
+    get endGame() {
+        if(this.gameDetail.playerIndex!==-1){
+            return this.gameDetail.playersInfo.findIndex(o => o.isWin) !== -1;
+            // const winner = this.playersInfo.find((player)=>{
+            //     player.isWin===true;
+            // });
+            // return winner
+        }else {
+            return false;
+        }
+    }
+
+    @computed
     get role() {
         if (this.gameDetail.playersInfo) {
             const player = this.gameDetail.playersInfo.find((o)=> o.token === LoginService.token);
-            
-            return player.playerType;
+            return (player)?player.playerType:"";
         }
         return "";
     }
+    
 
     @action.bound
     dismissLoadingModal() {
@@ -135,18 +157,9 @@ class GameStore {
     }
 
     @action.bound
-    dismissResultModal() {
-        this.shouldResultModalShow = false;
-    }
-
-    @action.bound
-    showResultModal() {
-        this.shouldResultModalShow = true;
-    }
-
-    @action.bound
     setGameDetail(gameDetail) {
-        // console.log(gameDetail);
+
+        console.log(gameDetail);
         this.gameDetail = gameDetail;
         if(gameDetail.playerIndex !== -1) {
             this.shouldLoadingModalShow = false;            
@@ -154,16 +167,24 @@ class GameStore {
     }
     
     @action.bound
-    onChange(key, value) {
-        this[key] = value;
-    }
-
     sendMove(direction) {
         if(this.gameSocket) {
             this.gameSocket.send(JSON.stringify({direction}))
         }
     }
 
+    @computed
+    get winnerName(){
+        return (this.gameDetail.playersInfo.find(o => o.isWin)) ? this.gameDetail.playersInfo.find(o => o.isWin).name : "";
+    }
+
+
+    @action.bound
+    onChange(key, value) {
+        this[key] = value;
+    }
+
+    
 }
 
 export default new GameStore();
