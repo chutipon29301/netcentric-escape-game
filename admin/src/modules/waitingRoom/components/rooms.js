@@ -1,6 +1,6 @@
 import React from 'react';
 import Axios from '../../axiosConfig';
-import { SOKCET_URL } from '../../../env';
+import { SOCKET_URL } from '../../../env';
 import { observable,action } from 'mobx';
 
 import SocketListenerStore from '../stores/socketListenerStore';
@@ -42,7 +42,7 @@ class Rooms extends React.Component {
     }
 
     connectSocket(){
-        let socket = new WebSocket(`${SOKCET_URL}/roomListener`);
+        let socket = new WebSocket(`${SOCKET_URL}/roomListener`);
         socket.addEventListener('message', event => {
             try {
                 this.setState({ tableData: JSON.parse(event.data) });
@@ -84,7 +84,7 @@ class Rooms extends React.Component {
 
     reconnect(listener){
         let socket = new WebSocket(
-            `${SOKCET_URL}/roomDetailListener?token=${this.roomToken}`
+            `${SOCKET_URL}/roomDetailListener?token=${this.roomToken}`
         );
         SocketListenerStore.setListener(socket, this.roomToken);
 
