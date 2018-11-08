@@ -48,32 +48,30 @@ bash deploy.sh
 * **Nicha Rojsrikul** 5931259621 - Front-end developer - [NichaRoj](https://github.com/NichaRoj)
 
 # Extra Features
-
-| # Feature       
-| -------   |:-------------:
-| 1. Register
-| 2. Color table    
-| 3. reate room  
-| 4. Background
-| 5. GIF Animation   
-| 6. Description
-| 7. Sign in
-| 8. No repeat email   
-| 9. Join room
-| 10. No client in room
-| 11. Only owner (who create the room) can change the field dimension (e.g. 5x5, 6x6, 7x7)
-| 12. Disappear keypad when not be in your turn
-| 13. Role appear for that client
-| 14. Admin page (reset game, show online players, created room, delete room, remove game)
-| 15. List of online players
-| 16. Remove register players
-| 17. Current status player
-| 18. Game dimension
-| 19. Start when all players are ready 
-| 20. Toggle status
-| 21. List room
-| 22. Remove room
-| 23. Multiplayer !
-| 24. Random role multiplayer
-| 25. Watch mode
-| 26. Remove game
+      
+* Register
+* Color table    
+* reate room  
+* Background
+* GIF Animation   
+* Description
+* Sign in
+* No repeat email   
+* Join room
+* No client in room
+* Only owner (who create the room) can change the field dimension (e.g. 5x5, 6x6, 7x7)
+* Disappear keypad when not be in your turn
+* Role appear for that client
+* Admin page (reset game, show online players, created room, delete room, remove game)
+* List of online players
+* Remove register players
+* Current status player
+* Game dimension
+* Start when all players are ready 
+* Toggle status
+* List room
+* Remove room
+* Multiplayer !
+* Random role multiplayer
+* Watch mode
+* Remove game
