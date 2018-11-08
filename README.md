@@ -75,3 +75,4 @@ bash deploy.sh
 | 22. Remove room
 | 23. Multiplayer !
 | 24. Random role multiplayer
+| 25. Watch mode
