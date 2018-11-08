@@ -4,7 +4,7 @@ import { Route, Link } from 'react-router-dom';
 import WaitingRoom from './modules/waitingRoom';
 import EditUser from './modules/editUser';
 import GamePlay from './modules/gamePlay';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './bootstrap-dark.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const Home = () => <WaitingRoom />;

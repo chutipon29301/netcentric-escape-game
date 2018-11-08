@@ -17,7 +17,7 @@ class Login extends Component {
         if (token) {
             this.props.routing.push("/waitingRoom");
         }else{
-            alert("Error : Please check your input")
+            console.log("Error : Please check your input")
         }
     }
 

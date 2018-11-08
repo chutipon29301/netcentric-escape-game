@@ -42,7 +42,7 @@ class WaitingUser extends React.Component {
             } catch (error) {}
         });
         socket.addEventListener('error', function(error) {
-            alert(error.toString());
+            console.log("waitingUser-error",error.toString());
             console.log(error);
         });
         socket.addEventListener('close', (event)=> {
