@@ -39,7 +39,7 @@ bash run-prod.sh
 
 * **Chutipon Hirankanokkul** 5931239021 - Back-end developer - [Chutipon29301](https://github.com/chutipon29301)
 * **Jakpat Mingmonkolmitr** 5931217221 - DevOps - [WhatTheFar](https://github.com/WhatTheFar)
-* **Yanisa Sunthornyotin** 5931243521- Back-end developer - [mingyanisa](https://github.com/mingyanisa)
+* **Yanisa Sunthornyotin** 5931243521 - Back-end developer - [mingyanisa](https://github.com/mingyanisa)
 * **Jatuwat Sa-ngiampak** 5931216621 - Front-end developer - [Jatuwatsag](https://github.com/Jatuwatsag)
 * **Nicha Rojsrikul** 5931259621 - Front-end developer - [NichaRoj](https://github.com/NichaRoj)
 
