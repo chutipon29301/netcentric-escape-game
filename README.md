@@ -2,18 +2,18 @@
 
 This repository is a part of the project in Netcentric Architecture (2190472) of Chulalongkorn University
 
-### Prerequisites
+### Prerequisite
 
-Install the following tools and program to run the project
+Install the following tools and programs to run the project
 
 - [Docker](https://docs.docker.com/install/)
 - [docker-compose](https://docs.docker.com/compose/install/)
 
-### Installing
+### Install
 
-Follow these steps to running in development mode.
+Follow these steps to run the game in development mode.
 
-- Download the project or using `git clone`
+- Download the project or use `git clone`
 ```sh
 git clone https://github.com/chutipon29301/netcentric-escape-game.git
 ```
@@ -25,54 +25,54 @@ git clone https://github.com/chutipon29301/netcentric-escape-game.git
 ```sh
 docker-compose up
 ```
-- Start project with the following command
-```sh
-docker-compose -f docker-compose.dev.yml up
-```
 
 ## Deployment
 
 ```sh
 # Build
-bash build.sh
+bash build-frontend.sh
 # Deploy
-bash deploy.sh
+bash run-prod.sh
 ```
 
 ## Authors
 
 * **Chutipon Hirankanokkul** 5931239021 - Back-end developer - [Chutipon29301](https://github.com/chutipon29301)
 * **Jakpat Mingmonkolmitr** 5931217221 - DevOps - [WhatTheFar](https://github.com/WhatTheFar)
-* **Yanisa Sunthornyotin** 5931243521- Back-end developer - [mingyanisa](https://github.com/mingyanisa)
+* **Yanisa Sunthornyotin** 5931243521 - Back-end developer - [mingyanisa](https://github.com/mingyanisa)
 * **Jatuwat Sa-ngiampak** 5931216621 - Front-end developer - [Jatuwatsag](https://github.com/Jatuwatsag)
 * **Nicha Rojsrikul** 5931259621 - Front-end developer - [NichaRoj](https://github.com/NichaRoj)
 
 # Extra Features
       
-* Register
-* Color table    
-* Create room  
-* Background
-* GIF animation   
-* Description
+* Web deployment (https://escape.thinc.in.th)
+* Game description
+* Registration
+* No duplicated registered emails
 * Sign in
-* No repeat email   
+* Room creation
+* List of rooms
 * Join room
-* No client in room
-* Only owner (who create the room) can change the field dimension (e.g. 5x5, 6x6, 7x7)
-* Disappear keypad when not be in your turn
-* Role appear for that client
-* Admin page (reset game, show online players, create room, delete room, remove game)
-* List of all online players (playing and watching)
-* List of playing player in each game (exclude)
-* Remove register players
-* Current status player
-* Game dimension
-* Start when all players are ready 
-* Toggle status
-* List room
-* Remove room
-* Multiplayer !
-* Random role multiplayer
+
+* Ready status check in Start button
+* Status toggle button
+* Color table      
+* Background
+* GIF animation      
+* Dynamic field dimension
+* Field dimension edit accessible to only room creator
+* Dynamic keypad (only visible when it's your turn)
+* Role indicator
+* Multiplayers!
+* Randomized roles in multiplayer mode
 * Watch mode
-* Remove game
+
+* Admin page (reset game, show online players, create room, delete room, remove game)
+* List of all online players in admin page
+* List of players in each game in admin page
+* Ability to remove registered players
+* Current player status
+* Ability to remove rooms
+* Ability to remove games
+
+* No more than one player in a single block; otherwise automatic win for warder
